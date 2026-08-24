@@ -1,0 +1,575 @@
+import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
+import { Instagram, MapPin, Mail, Phone } from 'lucide-react'
+import { motion, useInView } from 'framer-motion'
+import { useSiteSettings } from '../hooks/useSiteSettings'
+
+const FALLBACK_FOOTER_LOGO = '/nivora-footer-logo.png'
+
+function useTransparentLogo(src: string) {
+  const [logoSrc, setLogoSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!src) return
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      const ctx = canvas.getContext('2d')!
+      ctx.drawImage(img, 0, 0)
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      const data = imageData.data
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i + 1], b = data[i + 2]
+        if (Math.abs(r - g) < 28 && Math.abs(g - b) < 28 && r > 170 && g > 160 && b > 150) {
+          data[i + 3] = 0
+        }
+      }
+      ctx.putImageData(imageData, 0, 0)
+      setLogoSrc(canvas.toDataURL('image/png'))
+    }
+    img.onerror = () => setLogoSrc(src) // fallback: show as-is
+    img.src = src
+  }, [src])
+
+  return logoSrc
+}
+
+const navLinks = [
+  { to: '/', label: 'Home' },
+  { to: '/portfolio', label: 'Portfolio' },
+  { to: '/services', label: 'Services' },
+  { to: '/about', label: 'About' },
+  { to: '/testimonials', label: 'Testimonials' },
+  { to: '/contact', label: 'Contact' },
+]
+
+const serviceLinks = [
+  { to: '/services', label: 'Residential Interiors' },
+  { to: '/services', label: 'Commercial Interiors' },
+  { to: '/services', label: 'Hospitality Interiors' },
+  { to: '/services', label: 'Architecture & Space Planning' },
+  { to: '/services', label: '2D & 3D Visualization' },
+  { to: '/services', label: 'Renovation & Makeovers' },
+]
+
+function FooterLink({ to, label }: { to: string; label: string }) {
+  return (
+    <li style={{ listStyle: 'none' }}>
+      <Link
+        to={to}
+        style={{
+          fontFamily: "'Jost', sans-serif",
+          fontSize: 13,
+          fontWeight: 300,
+          color: '#ede8e0',
+          textDecoration: 'none',
+          letterSpacing: '0.04em',
+          display: 'inline-block',
+          position: 'relative',
+          paddingBottom: 2,
+          transition: 'color 0.3s ease',
+          touchAction: 'manipulation',
+          WebkitTapHighlightColor: 'transparent',
+        }}
+        onMouseEnter={e => {
+          const el = e.currentTarget as HTMLElement
+          el.style.color = '#a18661'
+          const bar = el.querySelector('.link-bar') as HTMLElement | null
+          if (bar) bar.style.width = '100%'
+        }}
+        onMouseLeave={e => {
+          const el = e.currentTarget as HTMLElement
+          el.style.color = '#ede8e0'
+          const bar = el.querySelector('.link-bar') as HTMLElement | null
+          if (bar) bar.style.width = '0%'
+        }}
+        onTouchStart={e => {
+          const el = e.currentTarget as HTMLElement
+          const bar = el.querySelector('.link-bar') as HTMLElement | null
+          if (!bar) return
+          // Draw underline in immediately
+          bar.style.transition = 'width 0.3s ease'
+          bar.style.width = '100%'
+          // After 1 second, retract it
+          setTimeout(() => {
+            bar.style.width = '0%'
+          }, 1000)
+        }}
+      >
+        {label}
+        <span
+          className="link-bar"
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            height: 1,
+            width: '0%',
+            background: '#a18661',
+            transition: 'width 0.3s ease',
+            display: 'block',
+          }}
+        />
+      </Link>
+    </li>
+  )
+}
+
+export default function Footer() {
+  const { settings } = useSiteSettings()
+  const rawLogoSrc = settings?.footerLogoUrl || FALLBACK_FOOTER_LOGO
+  const logoSrc = useTransparentLogo(rawLogoSrc)
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, { once: true, amount: 0.1 })
+
+  const colVariant = (x: number, delay: number) => ({
+    hidden: { opacity: 0, x, y: x === 0 ? 20 : 0 },
+    visible: {
+      opacity: 1, x: 0, y: 0,
+      transition: {
+        duration: x !== 0 ? 0.7 : 0.6,
+        delay,
+        ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+      },
+    },
+  })
+
+  return (
+    <footer
+      ref={ref}
+      style={{ backgroundColor: '#21291a', borderTop: '1px solid rgba(255,255,255,0.05)' }}
+    >
+      <style>{`
+        @keyframes wa-pulse {
+          0%   { transform: scale(1);   opacity: 0.6; }
+          100% { transform: scale(1.5); opacity: 0;   }
+        }
+        .wa-pulse-ring {
+          position: absolute;
+          inset: 0;
+          border-radius: 50px;
+          background: rgba(37, 211, 102, 0.4);
+          animation: wa-pulse 1.8s ease-out infinite;
+          pointer-events: none;
+        }
+
+        /* ─────────────────────────────────────────────────────────
+           MOBILE FOOTER  (≤ 768 px)
+           Row 1 : logo (70px) + tagline  — same line
+           Row 2 : Navigate (left) | What We Do (right)
+           Row 3 : Find Us heading full-width,
+                   address (left) | email+phone+instagram (right)
+           Row 4 : © left  |  Designed with intention right
+        ───────────────────────────────────────────────────────── */
+        @media (max-width: 768px) {
+
+          /* Tight outer padding */
+          .footer-inner {
+            padding-top: 20px !important;
+            padding-bottom: 10px !important;
+            padding-left: 16px !important;
+            padding-right: 16px !important;
+          }
+
+          /* 2-col grid; rows driven by explicit grid-column/row on children */
+          .footer-main-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            row-gap: 16px !important;
+            column-gap: 0 !important;
+          }
+
+          /* ── ROW 1 : brand (full width, flex row) ── */
+          .footer-brand-col {
+            grid-column: 1 / -1 !important;
+            grid-row: 1 !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            gap: 12px !important;
+            padding: 0 !important;
+            border: none !important;
+          }
+          /* logo */
+          .footer-brand-col > a {
+            flex-shrink: 0 !important;
+            margin-bottom: 0 !important;
+          }
+          .footer-brand-col > a img,
+          .footer-brand-col > a > div {
+            width: 100px !important;
+            max-width: 100px !important;
+            height: auto !important;
+          }
+          /* tagline */
+          .footer-brand-col > p {
+            margin-bottom: 0 !important;
+            max-width: none !important;
+            font-size: 13px !important;
+            line-height: 1.5 !important;
+          }
+
+          /* ── ROW 2 : Navigate left, What We Do right ── */
+          .footer-nav-col {
+            grid-column: 1 !important;
+            grid-row: 2 !important;
+            padding: 0 !important;
+            border: none !important;
+          }
+          .footer-services-col {
+            grid-column: 2 !important;
+            grid-row: 2 !important;
+            padding: 0 0 0 12px !important;
+            border-right: none !important;
+            border-left: 1px solid rgba(255,255,255,0.06) !important;
+          }
+          .footer-nav-col h4,
+          .footer-services-col h4 {
+            font-size: 13px !important;
+            letter-spacing: 0.18em !important;
+            margin-bottom: 10px !important;
+          }
+          .footer-nav-col ul,
+          .footer-services-col ul {
+            gap: 7px !important;
+          }
+          .footer-nav-col li a,
+          .footer-services-col li a {
+            font-size: 14px !important;
+            letter-spacing: 0.03em !important;
+            line-height: 1.8 !important;
+          }
+
+          /* ── ROW 3 : Find Us (full width) ── */
+          .footer-findus-col {
+            grid-column: 1 / -1 !important;
+            grid-row: 3 !important;
+            padding: 0 !important;
+            border: none !important;
+          }
+          .footer-findus-col h4 {
+            font-size: 13px !important;
+            letter-spacing: 0.18em !important;
+            margin-bottom: 10px !important;
+          }
+          /* Split inner content: address left | email+phone+instagram right */
+          .footer-findus-col > div {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 0 12px !important;
+            align-items: start !important;
+          }
+          /* address — spans all right-column rows so it doesn't push instagram down */
+          .footer-findus-col > div > *:first-child {
+            grid-column: 1 !important;
+            grid-row: 1 / 3 !important;
+          }
+          /* email + phone block */
+          .footer-findus-col > div > *:nth-child(2) {
+            grid-column: 2 !important;
+            grid-row: 1 !important;
+          }
+          /* instagram link */
+          .footer-findus-col > div > *:nth-child(3) {
+            grid-column: 2 !important;
+            grid-row: 2 !important;
+            margin-top: 8px !important;
+          }
+          .footer-findus-col p {
+            font-size: 13px !important;
+            line-height: 1.7 !important;
+          }
+          .footer-findus-col a {
+            font-size: 13px !important;
+          }
+
+          /* ── Divider ── */
+          .footer-divider {
+            margin: 12px 0 0 !important;
+          }
+
+          /* ── ROW 4 : © left | Designed right ── */
+          .footer-bottom-bar {
+            flex-direction: row !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            padding-top: 10px !important;
+            text-align: left !important;
+            gap: 4px !important;
+          }
+          .footer-bottom-bar p {
+            font-size: 12px !important;
+          }
+        }
+      `}</style>
+
+      <div
+        className="footer-inner max-w-7xl mx-auto px-6 lg:px-12"
+        style={{ paddingTop: 56, paddingBottom: 28 }}
+      >
+        <div className="footer-main-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-0">
+
+          {/* Column 1 — Brand */}
+          <motion.div
+            variants={colVariant(-20, 0)}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            className="footer-brand-col pr-10 pb-12 lg:pb-0"
+            style={{
+              borderRight: '1px solid rgba(255,255,255,0.08)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+            }}
+          >
+            {/* Logo */}
+            <a
+              href="/"
+              style={{
+                display: 'block',
+                marginBottom: 24,
+                textDecoration: 'none',
+                flexShrink: 0,
+              }}
+            >
+              {logoSrc ? (
+                <img
+                  src={logoSrc}
+                  alt="Nivora Interiors"
+                  style={{
+                    display: 'block',
+                    width: settings?.footerLogoSize ?? 200,
+                    height: 'auto',
+                    objectFit: 'contain',
+                    opacity: 0.95,
+                    transition: 'filter 0.3s ease',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.filter = 'brightness(1.25)' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.filter = 'brightness(1)' }}
+                />
+              ) : (
+                <div style={{ width: 200, height: 80 }} />
+              )}
+            </a>
+
+            <p style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              color: 'rgba(245,242,237,0.72)',
+              fontSize: 13,
+              lineHeight: 1.8,
+              fontWeight: 300,
+              marginBottom: 24,
+              maxWidth: 210,
+            }}>
+              Thoughtful spaces designed<br />for refined living.
+            </p>
+
+          </motion.div>
+
+          {/* Column 2 — Navigate */}
+          <motion.div
+            variants={colVariant(0, 0.1)}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            className="footer-nav-col px-10 pb-12 lg:pb-0"
+            style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}
+          >
+            <h4 style={{
+              fontFamily: "'Jost', sans-serif",
+              fontSize: 10,
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              color: '#c4a87a',
+              marginBottom: 24,
+              fontWeight: 400,
+            }}>Navigate</h4>
+            <ul style={{ padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {navLinks.map(l => <FooterLink key={l.to} to={l.to} label={l.label} />)}
+            </ul>
+          </motion.div>
+
+          {/* Column 3 — What We Do */}
+          <motion.div
+            variants={colVariant(0, 0.2)}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            className="footer-services-col px-10 pb-12 lg:pb-0"
+            style={{ borderRight: '1px solid rgba(255,255,255,0.08)' }}
+          >
+            <h4 style={{
+              fontFamily: "'Jost', sans-serif",
+              fontSize: 10,
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              color: '#c4a87a',
+              marginBottom: 24,
+              fontWeight: 400,
+            }}>What We Do</h4>
+            <ul style={{ padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {serviceLinks.map(l => <FooterLink key={l.label} to={l.to} label={l.label} />)}
+            </ul>
+          </motion.div>
+
+          {/* Column 4 — Find Us */}
+          <motion.div
+            variants={colVariant(20, 0.3)}
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            className="footer-findus-col pl-10 pb-12 lg:pb-0"
+          >
+            <h4 style={{
+              fontFamily: "'Jost', sans-serif",
+              fontSize: 10,
+              letterSpacing: '0.25em',
+              textTransform: 'uppercase',
+              color: '#c4a87a',
+              marginBottom: 24,
+              fontWeight: 400,
+            }}>Find Us</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 9 }}>
+                <MapPin size={16} color="#c4a87a" style={{ flexShrink: 0, marginTop: 2 }} />
+                <p style={{
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: 13,
+                  fontWeight: 300,
+                  color: 'rgba(245,242,237,0.78)',
+                  lineHeight: 1.7,
+                  margin: 0,
+                }}>
+                  Shop No. 01, New Dhavalgiri Building,<br />above Hindustan Co-Op Bank,<br />Ambernath East, Maharashtra 421501
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <a
+                  href="mailto:nivora.inbox@gmail.com"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 9,
+                    fontFamily: "'Jost', sans-serif",
+                    fontSize: 13,
+                    fontWeight: 300,
+                    color: '#c4a87a',
+                    textDecoration: 'none',
+                    transition: 'opacity 0.25s ease',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '0.75' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1' }}
+                >
+                  <Mail size={16} color="#c4a87a" style={{ flexShrink: 0 }} />
+                  nivora.inbox@gmail.com
+                </a>
+                <a
+                  href="tel:+917276687805"
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 9,
+                    fontFamily: "'Jost', sans-serif",
+                    fontSize: 13,
+                    fontWeight: 300,
+                    color: 'rgba(245,242,237,0.78)',
+                    textDecoration: 'none',
+                    transition: 'color 0.25s ease',
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#c4a87a' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(245,242,237,0.78)' }}
+                >
+                  <Phone size={16} color="#c4a87a" style={{ flexShrink: 0 }} />
+                  +91 72766 87805
+                </a>
+              </div>
+
+              {/* Instagram */}
+              <a
+                href="https://www.instagram.com/nivora.interiors"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 9,
+                  marginTop: 4,
+                  fontFamily: "'Jost', sans-serif",
+                  fontSize: 13,
+                  fontWeight: 300,
+                  color: 'rgba(245,242,237,0.78)',
+                  textDecoration: 'none',
+                  opacity: 1,
+                  transition: 'opacity 0.3s ease, color 0.25s ease',
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.color = '#c4a87a'
+                  el.style.textDecoration = 'underline'
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement
+                  el.style.color = 'rgba(245,242,237,0.78)'
+                  el.style.textDecoration = 'none'
+                }}
+              >
+                <Instagram size={16} color="#c4a87a" style={{ flexShrink: 0 }} />
+                <span>nivora.interiors</span>
+              </a>
+            </div>
+          </motion.div>
+
+        </div>
+
+        {/* Gold divider */}
+        <motion.div
+          className="footer-divider"
+          initial={{ scaleX: 0 }}
+          animate={isInView ? { scaleX: 1 } : { scaleX: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
+          style={{
+            height: 1,
+            background: 'rgba(161,134,97,0.55)',
+            margin: '48px 0 0',
+            transformOrigin: 'left center',
+          }}
+        />
+
+        {/* Bottom bar */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.5, delay: 0.5, ease: 'easeOut' }}
+          className="footer-bottom-bar"
+          style={{
+            paddingTop: 20,
+            paddingBottom: 8,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            gap: 8,
+            flexWrap: 'wrap',
+          }}
+        >
+          <p style={{
+            fontFamily: "'Jost', sans-serif",
+            fontSize: 12,
+            fontWeight: 300,
+            color: 'rgba(245,242,237,0.48)',
+            margin: 0,
+          }}>
+            © 2025 Nivora Interiors. All rights reserved.
+          </p>
+          <p style={{
+            fontFamily: "'Jost', sans-serif",
+            fontSize: 12,
+            fontWeight: 300,
+            color: 'rgba(245,242,237,0.48)',
+            margin: 0,
+          }}>
+            Designed with intention.
+          </p>
+        </motion.div>
+
+      </div>
+    </footer>
+  )
+}

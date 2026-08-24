@@ -1,0 +1,678 @@
+import { useRef, useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
+import { motion, useInView } from 'framer-motion'
+
+const STEPS = [
+  {
+    num: '01',
+    title: 'Discover',
+    text: 'A free consultation to understand your lifestyle, vision, and budget — before anything is planned.',
+    side: 'left' as const,
+  },
+  {
+    num: '02',
+    title: 'Visualise',
+    text: '3D renders and mood boards bring your space to life before a single item is moved or purchased.',
+    side: 'right' as const,
+  },
+  {
+    num: '03',
+    title: 'Execute',
+    text: 'Master craftsmen, transparent timelines, and on-site precision deliver your design flawlessly.',
+    side: 'left' as const,
+  },
+  {
+    num: '04',
+    title: 'Reveal',
+    text: 'A styled, ready-to-move-in space that exceeds every expectation and reflects your vision.',
+    side: 'right' as const,
+  },
+  {
+    num: '05',
+    title: 'Handover',
+    text: 'Your space, fully ready. A lasting relationship that continues well beyond the final delivery.',
+    side: 'left' as const,
+  },
+]
+
+function AnimatedCheckmark({ active }: { active: boolean }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ display: 'block' }}>
+      <motion.path
+        d="M 3.5 9 L 7.5 13 L 14.5 5"
+        stroke="#C9A96E"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+        initial={{ pathLength: 0, opacity: 0 }}
+        animate={active ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+        transition={{ duration: 0.65, ease: 'easeInOut', delay: 0.35 }}
+      />
+    </svg>
+  )
+}
+
+function DiamondNode({ active, mobile }: { active: boolean; mobile?: boolean }) {
+  return (
+    <motion.div
+      className="process-diamond-outer"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={active ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+      transition={mobile
+        ? { duration: 0.5, ease: 'easeOut' }
+        : { duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      style={{
+        width: 52,
+        height: 52,
+        flexShrink: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        position: 'relative',
+        zIndex: 2,
+        willChange: 'transform, opacity',
+      }}
+    >
+      {/* Outer glow ring — pulses on mobile once active (every 2s), static fade on desktop (unchanged) */}
+      <motion.div
+        animate={mobile
+          ? (active ? { opacity: [0.4, 1, 0.4], scale: [0.9, 1.25, 0.9] } : { opacity: 0, scale: 0.8 })
+          : (active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.8 })
+        }
+        transition={mobile
+          ? (active ? { duration: 2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0.4 })
+          : { duration: 0.7, delay: 0.3 }
+        }
+        style={{
+          position: 'absolute',
+          inset: 0,
+          borderRadius: 2,
+          background: 'radial-gradient(ellipse at center, rgba(201,169,110,0.18) 0%, transparent 70%)',
+          transform: 'rotate(45deg)',
+          willChange: 'transform, opacity',
+        }}
+      />
+      {/* Diamond */}
+      <motion.div
+        className="process-diamond-inner"
+        animate={active
+          ? { background: '#2A3926', borderColor: '#C9A96E' }
+          : { background: '#F5F2ED', borderColor: 'rgba(201,169,110,0.4)' }
+        }
+        transition={{ duration: 0.45 }}
+        style={{
+          width: 38,
+          height: 38,
+          border: '1.5px solid rgba(201,169,110,0.4)',
+          transform: 'rotate(45deg)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+        }}
+      >
+        <div style={{ transform: 'rotate(-45deg)' }}>
+          <AnimatedCheckmark active={active} />
+        </div>
+      </motion.div>
+
+      {/* Ripple ring — mobile only, expands outward in gold after diamond appears, fades in 1s */}
+      {mobile && (
+        <motion.div
+          initial={{ scale: 1, opacity: 0 }}
+          animate={active ? { scale: 2.6, opacity: [0, 0.65, 0] } : { scale: 1, opacity: 0 }}
+          transition={{ duration: 1, ease: 'easeOut', delay: 0.5 }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            border: '1.5px solid #C9A96E',
+            borderRadius: 2,
+            transform: 'rotate(45deg)',
+            pointerEvents: 'none',
+            willChange: 'transform, opacity',
+          }}
+        />
+      )}
+    </motion.div>
+  )
+}
+
+function LineSegment({ active }: { active: boolean }) {
+  return (
+    <div className="process-line-outer" style={{
+      display: 'flex',
+      justifyContent: 'center',
+      position: 'relative',
+      zIndex: 1,
+    }}>
+      <div className="process-line-track" style={{
+        width: 1,
+        height: 90,
+        background: 'rgba(201,169,110,0.14)',
+        position: 'relative',
+        overflow: 'hidden',
+      }}>
+        <motion.div
+          initial={{ scaleY: 0 }}
+          animate={active ? { scaleY: 1 } : { scaleY: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.15 }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to bottom, #C9A96E 0%, rgba(201,169,110,0.45) 100%)',
+            transformOrigin: 'top',
+            willChange: 'transform',
+          }}
+        />
+      </div>
+    </div>
+  )
+}
+
+function StepContent({
+  step,
+  active,
+  align,
+  mobile,
+  side,
+}: {
+  step: typeof STEPS[0]
+  active: boolean
+  align: 'left' | 'right'
+  mobile?: boolean
+  side?: 'left' | 'right'
+}) {
+  const titleInitial = mobile
+    ? { opacity: 0, y: 18 }
+    : { opacity: 0, y: 14 }
+  const titleAnimate = active
+    ? { opacity: 1, y: 0 }
+    : titleInitial
+  const titleTransition = mobile
+    ? { duration: 0.6, ease: 'easeOut' as const, delay: 0.2 }
+    : { duration: 0.6, ease: [0.16, 1, 0.3, 1] as [number, number, number, number], delay: 0.15 }
+
+  return (
+    <div style={{ textAlign: align }}>
+      <motion.h3
+        className="process-title"
+        initial={titleInitial}
+        animate={titleAnimate}
+        transition={titleTransition}
+        style={{
+          fontFamily: "'Playfair Display', serif",
+          fontStyle: 'italic',
+          fontWeight: 400,
+          fontSize: 'clamp(1.6rem, 2.5vw, 2.1rem)',
+          color: '#262421',
+          margin: '0 0 12px',
+          lineHeight: 1.1,
+          position: mobile ? 'relative' : undefined,
+          display: mobile ? 'inline-block' : undefined,
+          willChange: 'transform, opacity',
+        }}
+      >
+        {step.title}
+        {mobile && (
+          <motion.span
+            aria-hidden="true"
+            initial={{ backgroundPositionX: '-150%' }}
+            animate={active ? { backgroundPositionX: '250%' } : { backgroundPositionX: '-150%' }}
+            transition={{ duration: 1, delay: 0.55, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundImage: 'linear-gradient(100deg, transparent 35%, rgba(201,169,110,0.9) 50%, transparent 65%)',
+              backgroundSize: '200% 100%',
+              WebkitBackgroundClip: 'text',
+              backgroundClip: 'text',
+              color: 'transparent',
+              pointerEvents: 'none',
+            }}
+          >{step.title}</motion.span>
+        )}
+      </motion.h3>
+
+      <motion.p
+        className="process-desc"
+        initial={{ opacity: 0, y: mobile ? 20 : 10, filter: mobile ? 'blur(4px)' : 'blur(0px)' }}
+        animate={active ? { opacity: 1, y: 0, filter: 'blur(0px)' } : { opacity: 0, y: mobile ? 20 : 10, filter: mobile ? 'blur(4px)' : 'blur(0px)' }}
+        transition={{ duration: mobile ? 0.4 : 0.6, ease: 'easeOut' as const, delay: mobile ? 0.4 : 0.25 }}
+        style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 300,
+          fontSize: 13,
+          color: 'rgba(28,40,24,0.52)',
+          lineHeight: 1.8,
+          margin: 0,
+          willChange: 'transform, opacity',
+        }}
+      >{step.text}</motion.p>
+    </div>
+  )
+}
+
+function StepRow({
+  step,
+  index,
+  isMobile,
+  onVisible,
+}: {
+  step: typeof STEPS[0]
+  index: number
+  isMobile: boolean
+  onVisible: (i: number, visible: boolean) => void
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  // Both mobile and desktop: always re-trigger on scroll in/out (once: false).
+  const inView = useInView(ref, { once: false, margin: '0px 0px -80px 0px', amount: 0.4 })
+
+  useEffect(() => {
+    onVisible(index, inView)
+  }, [inView, index, onVisible])
+
+  const isLeft = step.side === 'left'
+
+  // Both mobile and desktop: fade up from below (y: 24). Avoids overflow-x:hidden
+  // clipping on mobile, and matches the same animation quality on desktop.
+  const slideVariants = (_dir: 'left' | 'right') => ({
+    hidden: { opacity: 0, y: 24 },
+    visible: { opacity: 1, y: 0 },
+  })
+  const contentTransition = isMobile
+    ? { duration: 0.5, ease: 'easeOut' as const }
+    : { duration: 0.65, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 52px 1fr',
+        alignItems: 'center',
+        gap: 0,
+      }}
+      className="timeline-step-row"
+    >
+      {/* Left panel */}
+      <div style={{ paddingRight: 48, display: 'flex', justifyContent: 'flex-end' }} className="tl-left-cell">
+        {isLeft ? (
+          <motion.div
+            className="process-content-box"
+            variants={slideVariants('left')}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+            transition={contentTransition}
+            style={{ maxWidth: 320, width: '100%', willChange: 'transform, opacity' }}
+          >
+            <StepContent step={step} active={inView} align="right" mobile={isMobile} side="left" />
+          </motion.div>
+        ) : (
+          <div />
+        )}
+      </div>
+
+      {/* Center node */}
+      <DiamondNode active={inView} mobile={isMobile} />
+
+      {/* Right panel */}
+      <div style={{ paddingLeft: 48 }} className="tl-right-cell">
+        {!isLeft ? (
+          <motion.div
+            className="process-content-box"
+            variants={slideVariants('right')}
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+            transition={contentTransition}
+            style={{ maxWidth: 320, width: '100%', willChange: 'transform, opacity' }}
+          >
+            <StepContent step={step} active={inView} align="left" mobile={isMobile} side="right" />
+          </motion.div>
+        ) : (
+          <div />
+        )}
+      </div>
+    </div>
+  )
+}
+
+/* Section header — desktop keeps its original single-block fade; mobile gets a
+   word-by-word rotateX flip-in for the heading, plus replay-capable fades for
+   the label/subheading/divider. Desktop JSX/props are untouched. */
+function ProcessHeader({ isMobile }: { isMobile: boolean }) {
+  const headingRef = useRef<HTMLDivElement>(null)
+  const headingInView = useInView(headingRef, { once: !isMobile, amount: 0.5 })
+  const words = 'Our Process'.split(' ')
+
+  return (
+    <div style={{ textAlign: 'center', marginBottom: 88, padding: '0 24px' }} className="process-header">
+      <motion.p
+        initial={{ opacity: 0, y: 10, scale: isMobile ? 0.8 : 1 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        viewport={isMobile ? { once: false, amount: 0.4 } : { once: true }}
+        transition={{ duration: 0.6 }}
+        style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 300,
+          fontSize: 10,
+          letterSpacing: '0.44em',
+          textTransform: 'uppercase',
+          color: '#9B7D4E',
+          margin: '0 0 14px',
+          willChange: 'transform, opacity',
+        }}
+      >How We Do It</motion.p>
+
+      <div ref={headingRef}>
+        {/* Desktop heading — unchanged */}
+        <motion.h2
+          className="process-heading-desktop"
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, delay: 0.1 }}
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 400,
+            fontSize: 'clamp(1.9rem, 3.5vw, 3rem)',
+            color: '#262421',
+            lineHeight: 1.04,
+            margin: '0 0 18px',
+            letterSpacing: '-0.01em',
+          }}
+        >Our Process</motion.h2>
+
+        {/* Mobile heading — words flip in one by one (replays every time it re-enters view) */}
+        <h2
+          className="process-heading-mobile"
+          style={{
+            fontFamily: "'Playfair Display', serif",
+            fontWeight: 400,
+            fontSize: 'clamp(1.9rem, 3.5vw, 3rem)',
+            color: '#262421',
+            lineHeight: 1.04,
+            margin: '0 0 18px',
+            letterSpacing: '-0.01em',
+            justifyContent: 'center',
+            gap: '0.35em',
+            perspective: 500,
+          }}
+        >
+          {words.map((w, i) => (
+            <motion.span
+              key={i}
+              style={{ display: 'inline-block', transformStyle: 'preserve-3d', willChange: 'transform, opacity' }}
+              initial={{ opacity: 0, rotateX: 90 }}
+              animate={headingInView ? { opacity: 1, rotateX: 0 } : { opacity: 0, rotateX: 90 }}
+              transition={{ duration: 0.55, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
+            >{w}</motion.span>
+          ))}
+        </h2>
+      </div>
+
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={isMobile ? { once: false, amount: 0.4 } : { once: true }}
+        transition={{ duration: 0.7, delay: 0.25 }}
+        style={{
+          width: 44,
+          height: 1,
+          background: 'linear-gradient(90deg, transparent, #C9A96E, transparent)',
+          margin: '0 auto 18px',
+          transformOrigin: 'center',
+        }}
+      />
+
+      <motion.p
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={isMobile ? { once: false, amount: 0.4 } : { once: true }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 300,
+          fontSize: 14,
+          color: 'rgba(28,40,24,0.44)',
+          lineHeight: 1.8,
+        }}
+      >
+        From first conversation to final reveal — a seamless, end-to-end journey.
+      </motion.p>
+    </div>
+  )
+}
+
+export default function ProcessSection() {
+  const [visibleSet, setVisibleSet] = useState<Set<number>>(new Set())
+  const [isMobile, setIsMobile] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : false
+  )
+  const timelineRef = useRef<HTMLDivElement>(null)
+  // Mobile-only: continuous gold line, section-triggered scaleY draw (threshold 0.2), replays on re-entry.
+  const timelineInView = useInView(timelineRef, { once: false, amount: 0.2 })
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    setIsMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
+  const handleVisible = useCallback((i: number, visible: boolean) => {
+    setVisibleSet(prev => {
+      const has = prev.has(i)
+      if (visible && !has) return new Set([...prev, i])
+      // Only allow un-marking (for replay) on mobile — desktop stays "once visible, stays visible".
+      if (!visible && has) {
+        const next = new Set(prev)
+        next.delete(i)
+        return next
+      }
+      return prev
+    })
+  }, [isMobile])
+
+  return (
+    <section style={{ background: '#F5F2ED', padding: '120px 0' }}>
+
+      <ProcessHeader isMobile={isMobile} />
+
+      {/* Timeline */}
+      <div
+        ref={timelineRef}
+        style={{ maxWidth: 860, margin: '0 auto', padding: '0 24px', position: 'relative' }}
+        className="tl-container"
+      >
+        {/* Continuous gold line — mobile only. ScaleY 0->1 from top, replays every time the
+            section enters/leaves the viewport (desktop keeps per-segment LineSegment draws). */}
+        <div className="process-mobile-line-outer" style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 1,
+          height: '100%',
+          background: 'rgba(201,169,110,0.14)',
+          overflow: 'hidden',
+          zIndex: 3,
+          pointerEvents: 'none',
+        }}>
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={timelineInView ? { scaleY: 1 } : { scaleY: 0 }}
+            transition={{ duration: 1.5, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              transformOrigin: 'top',
+              background: 'linear-gradient(to bottom, #C9A96E 0%, rgba(201,169,110,0.45) 100%)',
+              willChange: 'transform',
+            }}
+          />
+          {/* Gold shimmer — travels down continuously while section is in viewport */}
+          <motion.div
+            animate={timelineInView ? { y: ['-100%', '110%'] } : { y: '-100%' }}
+            transition={timelineInView
+              ? { duration: 2.5, ease: 'linear', repeat: Infinity, repeatDelay: 0.3 }
+              : { duration: 0 }}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '25%',
+              background: 'linear-gradient(to bottom, transparent 0%, rgba(201,169,110,0.7) 50%, transparent 100%)',
+              pointerEvents: 'none',
+              willChange: 'transform',
+            }}
+          />
+        </div>
+
+        {STEPS.map((step, i) => (
+          <div key={step.num}>
+            <StepRow step={step} index={i} isMobile={isMobile} onVisible={handleVisible} />
+            {i < STEPS.length - 1 && (
+              <LineSegment active={visibleSet.has(i)} />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 18 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+        style={{ textAlign: 'center', marginTop: 80, padding: '0 24px' }}
+      >
+        <p style={{
+          fontFamily: "'Inter', sans-serif",
+          fontWeight: 300,
+          fontSize: 10,
+          letterSpacing: '0.35em',
+          color: 'rgba(28,40,24,0.32)',
+          textTransform: 'uppercase',
+          margin: '0 0 28px',
+        }}>
+          End-to-End &nbsp;·&nbsp; Transparent &nbsp;·&nbsp; Hassle-Free
+        </p>
+        <Link
+          to="/contact"
+          style={{
+            display: 'inline-block',
+            fontFamily: "'Inter', sans-serif",
+            fontWeight: 400,
+            fontSize: 10,
+            letterSpacing: '0.25em',
+            textTransform: 'uppercase',
+            background: '#2A3926',
+            color: '#ffffff',
+            padding: '18px 52px',
+            textDecoration: 'none',
+            transition: 'background 0.3s ease, transform 0.3s ease',
+          }}
+          onMouseEnter={e => {
+            const el = e.currentTarget as HTMLElement
+            el.style.background = '#3a5e3c'
+            el.style.transform = 'translateY(-2px)'
+          }}
+          onMouseLeave={e => {
+            const el = e.currentTarget as HTMLElement
+            el.style.background = '#2A3926'
+            el.style.transform = 'translateY(0)'
+          }}
+        >
+          Book Free Consultation
+        </Link>
+      </motion.div>
+
+      <style>{`
+        .process-heading-mobile { display: none; }
+
+        /* Mobile: keep the zig-zag layout, scaled down — center gold line, alternating sides */
+        @media (max-width: 768px) {
+          .process-header {
+            margin-bottom: 40px !important;
+            padding: 32px 24px 0 !important;
+          }
+          .process-heading-desktop {
+            display: none !important;
+          }
+          .process-heading-mobile {
+            display: flex !important;
+          }
+          .tl-container {
+            padding: 0 !important;
+          }
+          .timeline-step-row {
+            grid-template-columns: 1fr 36px 1fr !important;
+            gap: 0 !important;
+          }
+          .tl-left-cell {
+            padding-left: 12px !important;
+            padding-right: 8px !important;
+            display: flex !important;
+          }
+          .tl-right-cell {
+            padding-right: 12px !important;
+            padding-left: 8px !important;
+            display: block !important;
+          }
+          .process-content-box {
+            max-width: 100% !important;
+            width: 100% !important;
+            padding: 12px !important;
+          }
+          .process-diamond-outer {
+            width: 36px !important;
+            height: 36px !important;
+          }
+          .process-diamond-inner {
+            width: 26px !important;
+            height: 26px !important;
+          }
+          .process-title {
+            font-size: 18px !important;
+            margin: 0 0 12px !important;
+          }
+          .process-desc {
+            font-size: 12px !important;
+            line-height: 1.6 !important;
+          }
+          .process-line-outer .process-line-track {
+            width: 1px !important;
+            height: 48px !important;
+          }
+          .process-mobile-line-outer {
+            display: block !important;
+          }
+          .process-line-outer {
+            display: none !important;
+          }
+        }
+
+        /* Desktop/tablet: hide the mobile-only continuous scroll line */
+        .process-mobile-line-outer {
+          display: none;
+        }
+
+        /* Tablet: tighten padding */
+        @media (max-width: 1024px) and (min-width: 769px) {
+          .timeline-step-row {
+            grid-template-columns: 1fr 52px 1fr !important;
+          }
+          .tl-left-cell {
+            padding-right: 28px !important;
+          }
+          .tl-right-cell {
+            padding-left: 28px !important;
+          }
+        }
+      `}</style>
+    </section>
+  )
+}

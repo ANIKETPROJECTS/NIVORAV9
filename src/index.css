@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Brand colours */
+  --green-deep: #2D3E29;
+  --green-mid: #33452F;
+  --green-light: #3b4a35;
+  --gold: #C8A46A;
+  --gold-accent: #C8A46A;
+  --gold-light: #D4C0A1;
+  --cream: #f5f0e8;
+  --alabaster: #ede8df;
+  --charcoal: #3a3a3a;
+  --soft-grey: #7a7a7a;
+  --off-white: #faf8f4;
+  --olive: #33452F;
+  --deep-olive: #2D3E29;
+  --warm-beige: #D4C0A1;
+  --soft-gold: #C8A46A;
+
+  /* ── Design tokens ──────────────────────────────────────────────── */
+
+  /* Container */
+  --container-max: 1400px;
+  --container-pad: 2.5rem;
+
+  /* Section spacing */
+  --section-py: 100px;
+  --section-py-sm: 72px;
+  --section-py-lg: 112px;
+
+  /* Typography scale */
+  --text-hero:    clamp(44px, 5.8vw, 88px);
+  --text-h1:      clamp(2.1rem, 4.4vw, 3.8rem);
+  --text-h2:      clamp(1.75rem, 3.5vw, 3.1rem);
+  --text-h3:      clamp(1.2rem, 2.4vw, 2.1rem);
+  --text-subhead: clamp(1.05rem, 1.7vw, 1.5rem);
+  --text-body:    14.5px;
+  --text-label:   10px;
+
+  /* Border radius */
+  --radius-sm:   8px;
+  --radius-md:   16px;
+  --radius-lg:   24px;
+  --radius-xl:   32px;
+
+  /* Shadows */
+  --shadow-card:  0 4px 24px rgba(20,18,14,0.08), 0 1px 4px rgba(20,18,14,0.04);
+  --shadow-hover: 0 18px 52px rgba(20,18,14,0.15), 0 4px 14px rgba(20,18,14,0.08);
+
+  /* Animation */
+  --ease-out-expo: cubic-bezier(0.16,1,0.3,1);
+  --duration-fast: 300ms;
+  --duration-base: 480ms;
+  --duration-slow: 650ms;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Jost', sans-serif;
+  background-color: var(--green-deep);
+  color: var(--cream);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Responsive display headings — tightened ~15-20% */
+h1 { font-size: clamp(2.1rem, 4.4vw, 3.8rem); }
+h2 { font-size: clamp(1.75rem, 3.5vw, 3.1rem); }
+h3 { font-size: clamp(1.2rem, 2.4vw, 2.1rem); }
+
+::selection {
+  background: var(--gold);
+  color: var(--green-deep);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--green-deep); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+/* ── Section labels ───────────────────────────────────────────────── */
+.section-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #a18661;
+}
+.section-label::before,
+.section-label::after {
+  content: '';
+  display: inline-block;
+  width: 36px;
+  height: 1px;
+  background-color: #a18661;
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.section-label::before { margin-right: 12px; }
+.section-label::after  { margin-left:  12px; }
+
+/* ── Global container ─────────────────────────────────────────────── */
+.site-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--container-pad);
+}
+
+/* ── Consistent section padding ───────────────────────────────────── */
+.section-py    { padding-top: var(--section-py);    padding-bottom: var(--section-py); }
+.section-py-sm { padding-top: var(--section-py-sm); padding-bottom: var(--section-py-sm); }
+.section-py-lg { padding-top: var(--section-py-lg); padding-bottom: var(--section-py-lg); }
+
+/* ── Shared image wrapper ─────────────────────────────────────────── */
+.img-cover {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+
+/* ── Shared hover lift ─────────────────────────────────────────────── */
+.hover-lift {
+  transition: transform var(--duration-base) var(--ease-out-expo),
+              box-shadow var(--duration-base) var(--ease-out-expo);
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ── Hero background Ken Burns slow zoom ─────────────────────────── */
+@keyframes heroKenBurns {
+  0%   { transform: scale(1.0); }
+  100% { transform: scale(1.05); }
+}
+.hero-bg-img {
+  animation: heroKenBurns 6s ease-in-out infinite alternate;
+}
+
+/* ── WhatsApp pulse animation ─────────────────────────────────────── */
+@keyframes whatsapp-pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.08); }
+}
+.whatsapp-pulse { animation: whatsapp-pulse 3s ease-in-out infinite; }
+.whatsapp-pulse:hover { animation: none; transform: scale(1.1); }
+
+/* ── Founder section scroll-triggered animations ──────────────────── */
+.founder-animate {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 650ms ease-out, transform 650ms ease-out;
+}
+.founder-animate.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.founder-image-wrap {
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 900ms ease-out 200ms, transform 900ms ease-out 200ms;
+}
+.founder-image-wrap.in-view {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@media (max-width: 1023.98px) {
+  .founder-image-wrap {
+    height: auto !important;
+    aspect-ratio: 3 / 4;
+  }
+}
+
+/* Mobile: content slides from left, image slides from right, simultaneously; replays on re-entry */
+@media (max-width: 768px) {
+  .founder-mobile .founder-animate {
+    transform: translateX(-30px) !important;
+    transition-delay: 0ms !important;
+  }
+  .founder-mobile .founder-animate.in-view {
+    transform: translateX(0) !important;
+  }
+  .founder-mobile .founder-image-wrap {
+    transform: translateX(30px) !important;
+    transition-delay: 0ms !important;
+  }
+  .founder-mobile .founder-image-wrap.in-view {
+    transform: translateX(0) !important;
+  }
+}
+
+/* ── Philosophy section — mobile image fix ───────────────────────── */
+/* On mobile the parallax scroll handler is disabled in JS (Home.tsx).  */
+/* These rules ensure the full bedroom image is visible, uncropped.     */
+@media (max-width: 767px) {
+  .philosophy-section .philosophy-image-col {
+    flex: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-width: 0 !important;
+  }
+  .philosophy-section .philosophy-image-wrap {
+    height: auto !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+  }
+  .philosophy-section .philosophy-photo-inner {
+    height: auto !important;
+    overflow: visible !important;
+    position: relative !important;
+  }
+  .philosophy-section .philosophy-photo {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    transform: none !important;
+  }
+}
+
+/* ── Philosophy quote card — continuous shimmer/glow on gold border ── */
+@keyframes philosophy-card-glow {
+  0%, 100% {
+    border-color: rgba(201, 169, 110, 0.55);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28), 0 0 0px rgba(201, 169, 110, 0.4);
+  }
+  50% {
+    border-color: rgba(201, 169, 110, 1);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28), 0 0 22px rgba(201, 169, 110, 0.85);
+  }
+}
+.philosophy-quote-card {
+  animation: philosophy-card-glow 2.6s ease-in-out infinite;
+}
+
+@layer utilities {
+  .text-gold        { color: var(--gold); }
+  .text-gold-light  { color: var(--gold-light); }
+  .text-cream       { color: var(--cream); }
+  .text-soft-grey   { color: var(--soft-grey); }
+  .bg-green-deep    { background-color: var(--green-deep); }
+  .bg-green-mid     { background-color: var(--green-mid); }
+  .bg-green-light   { background-color: var(--green-light); }
+  .bg-cream         { background-color: var(--cream); }
+  .bg-alabaster     { background-color: var(--alabaster); }
+  .border-gold      { border-color: var(--gold); }
+  .font-serif       { font-family: 'Cormorant Garamond', serif; }
+  .font-sans        { font-family: 'Jost', sans-serif; }
+}

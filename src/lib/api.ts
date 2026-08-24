@@ -1,0 +1,369 @@
+// Thin API client — all calls go to /api (proxied to the Express server by Vite in dev,
+// and to the same origin in production if you server-side render or use a reverse proxy).
+
+export interface Project {
+  id: string
+  name: string
+  location: string
+  category: 'residential' | 'commercial' | 'architecture'
+  year: string
+  badge: string
+  order: number
+
+  // Concept section
+  conceptLabel: string
+  concept: string
+  description: string
+
+  // Design intent section
+  designIntentLabel: string
+  designIntent: string
+
+  // Materials
+  materials: string[]
+
+  // Images
+  coverImage: string
+  heroImage: string
+  images: string[]
+}
+
+export interface ContactEnquiry {
+  fullName: string
+  phone: string
+  email: string
+  spaceType: string
+  location: string
+  projectType: string
+  budget: string
+  referral: string
+  requirements: string
+  source?: string
+}
+
+export async function submitEnquiry(data: ContactEnquiry): Promise<void> {
+  const res = await fetch('/api/contact', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'Failed to send enquiry.')
+  }
+}
+
+// ── Contact-form records ("excelsheet") ────────────────────────────────────────
+export interface Enquiry extends ContactEnquiry {
+  _id: string
+  notes: string
+  emailSent: boolean
+  createdAt: string
+  updatedAt: string
+}
+
+export interface StatItem {
+  value: string
+  label: string
+}
+
+export interface ServiceCard {
+  img: string
+  title: string
+  desc: string
+}
+
+export interface HomePortfolioItem {
+  id: string
+  name: string
+  location: string
+  category: string
+  serviceHref: string
+  desc: string
+  img: string
+}
+
+export interface HomeHero {
+  backgroundImage: string
+  headline: string
+  subheadline: string
+  ctaText: string
+  ctaLink: string
+}
+
+export interface ServicePageHero {
+  backgroundImage: string
+  headline: string
+  subheadline: string
+}
+
+export interface ServiceItem {
+  img: string
+  title: string
+  desc: string
+}
+
+export interface InstagramPost {
+  image: string
+  url: string
+}
+
+export interface SiteSettings {
+  logoUrl: string
+  logoSize: number
+  footerLogoUrl: string
+  footerLogoSize: number
+  homeHero: HomeHero
+  serviceCards: ServiceCard[]
+  homePortfolio: HomePortfolioItem[]
+  instagramPosts?: InstagramPost[]
+  servicePageHero: ServicePageHero
+  servicesList: ServiceItem[]
+  homeStats?: StatItem[]
+  aboutStats?: StatItem[]
+}
+
+const BASE = '/api'
+
+// ── Admin session token (stored after login) ──────────────────────────────────
+const ADMIN_TOKEN_KEY = 'nivora_admin_token'
+
+export function getAdminToken(): string | null {
+  return sessionStorage.getItem(ADMIN_TOKEN_KEY)
+}
+export function setAdminToken(token: string) {
+  sessionStorage.setItem(ADMIN_TOKEN_KEY, token)
+  sessionStorage.setItem('nivora_admin', 'true')
+}
+export function clearAdminToken() {
+  sessionStorage.removeItem(ADMIN_TOKEN_KEY)
+  sessionStorage.removeItem('nivora_admin')
+}
+
+async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(`${BASE}${path}`, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || `Request failed: ${res.status}`)
+  }
+  return res.json()
+}
+
+async function adminRequest<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getAdminToken() || ''
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'x-admin-token': token,
+    ...(options?.headers as Record<string, string> | undefined),
+  }
+  const res = await fetch(`${BASE}${path}`, { ...options, headers })
+  if (res.status === 403) {
+    // Token was rejected — server likely restarted and issued a new token.
+    // Clear the stale token and redirect to login so the user can re-authenticate.
+    clearAdminToken()
+    window.location.href = '/adminpannel'
+    throw new Error('Session expired. Please log in again.')
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || `Request failed: ${res.status}`)
+  }
+  return res.json()
+}
+
+// ── Admin login ───────────────────────────────────────────────────────────────
+export async function adminLogin(username: string, password: string): Promise<void> {
+  const res = await fetch(`${BASE}/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'Login failed')
+  }
+  const data = await res.json()
+  setAdminToken(data.token)
+}
+
+// ── Portfolio grid ────────────────────────────────────────────────────────────
+export function fetchProjects(): Promise<Pick<Project, 'id' | 'name' | 'location' | 'category' | 'year' | 'badge' | 'concept' | 'coverImage' | 'heroImage' | 'order'>[]> {
+  return request('/projects')
+}
+
+// ── Reorder projects (admin) ───────────────────────────────────────────────────
+// ids: full ordered list of project ids representing the new display order
+export function reorderProjects(ids: string[]): Promise<{ message: string }> {
+  return adminRequest('/projects/reorder', { method: 'PUT', body: JSON.stringify({ order: ids }) })
+}
+
+// ── Project detail ────────────────────────────────────────────────────────────
+export function fetchProject(id: string): Promise<Project> {
+  return request(`/projects/${id}`)
+}
+
+// ── Admin helpers ─────────────────────────────────────────────────────────────
+export function createProject(data: Partial<Project>): Promise<Project> {
+  return adminRequest('/projects', { method: 'POST', body: JSON.stringify(data) })
+}
+
+export function updateProject(id: string, data: Partial<Project>): Promise<Project> {
+  return adminRequest(`/projects/${id}`, { method: 'PUT', body: JSON.stringify(data) })
+}
+
+export function deleteProject(id: string): Promise<{ message: string }> {
+  return adminRequest(`/projects/${id}`, { method: 'DELETE' })
+}
+
+/**
+ * Upload one or more image files to Cloudinary via the backend (projects folder).
+ * Returns an array of secure Cloudinary URLs.
+ */
+/** Shared 403 handler for multipart upload fetches (can't go through adminRequest). */
+function handleUploadResponse(res: Response) {
+  if (res.status === 403) {
+    clearAdminToken()
+    window.location.href = '/adminpannel'
+    throw new Error('Session expired. Please log in again.')
+  }
+}
+
+export async function uploadImages(files: File[]): Promise<string[]> {
+  const token = getAdminToken() || ''
+  const form = new FormData()
+  files.forEach(f => form.append('images', f))
+  const res = await fetch(`${BASE}/projects/upload-images`, {
+    method: 'POST',
+    headers: { 'x-admin-token': token },
+    body: form,
+  })
+  handleUploadResponse(res)
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'Upload failed')
+  }
+  const data = await res.json()
+  return data.urls as string[]
+}
+
+/**
+ * Upload a single image to the site/branding folder in Cloudinary.
+ * Returns the secure URL.
+ */
+export async function uploadSiteImage(file: File): Promise<string> {
+  const token = getAdminToken() || ''
+  const form = new FormData()
+  form.append('image', file)
+  const res = await fetch(`${BASE}/site-settings/upload-image`, {
+    method: 'POST',
+    headers: { 'x-admin-token': token },
+    body: form,
+  })
+  handleUploadResponse(res)
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'Upload failed')
+  }
+  const data = await res.json()
+  return data.url as string
+}
+
+// ── Site Settings ─────────────────────────────────────────────────────────────
+export function fetchSiteSettings(): Promise<SiteSettings> {
+  return request('/site-settings')
+}
+
+export function updateSiteSettings(data: Partial<SiteSettings>): Promise<SiteSettings> {
+  return adminRequest('/site-settings', { method: 'PUT', body: JSON.stringify(data) })
+}
+
+// ── Excel sheet (contact-form records) ─────────────────────────────────────────
+// Uses its own session key so logging out of one panel doesn't affect the other,
+// even though it checks the same ADMIN_USERNAME / ADMIN_PASSWORD credentials.
+const EXCEL_TOKEN_KEY = 'nivora_excel_token'
+
+export function getExcelToken(): string | null {
+  return sessionStorage.getItem(EXCEL_TOKEN_KEY)
+}
+function setExcelToken(token: string) {
+  sessionStorage.setItem(EXCEL_TOKEN_KEY, token)
+  sessionStorage.setItem('nivora_excel_admin', 'true')
+}
+export function clearExcelToken() {
+  sessionStorage.removeItem(EXCEL_TOKEN_KEY)
+  sessionStorage.removeItem('nivora_excel_admin')
+}
+
+export async function excelLogin(username: string, password: string): Promise<void> {
+  const res = await fetch(`${BASE}/admin/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'Login failed')
+  }
+  const data = await res.json()
+  setExcelToken(data.token)
+}
+
+async function excelRequest<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getExcelToken() || ''
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'x-admin-token': token,
+    ...(options?.headers as Record<string, string> | undefined),
+  }
+  const res = await fetch(`${BASE}${path}`, { ...options, headers })
+  if (res.status === 403) {
+    clearExcelToken()
+    window.location.href = '/excelsheet'
+    throw new Error('Session expired. Please log in again.')
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || `Request failed: ${res.status}`)
+  }
+  return res.json()
+}
+
+export function fetchEnquiries(): Promise<Enquiry[]> {
+  return excelRequest('/enquiries')
+}
+
+export function updateEnquiry(id: string, data: Partial<Enquiry>): Promise<Enquiry> {
+  return excelRequest(`/enquiries/${id}`, { method: 'PUT', body: JSON.stringify(data) })
+}
+
+export function deleteEnquiry(id: string): Promise<{ message: string }> {
+  return excelRequest(`/enquiries/${id}`, { method: 'DELETE' })
+}
+
+export async function downloadEnquiriesExcel(): Promise<void> {
+  const token = getExcelToken() || ''
+  const res = await fetch(`${BASE}/enquiries/export`, {
+    headers: { 'x-admin-token': token },
+  })
+  if (res.status === 403) {
+    clearExcelToken()
+    window.location.href = '/excelsheet'
+    throw new Error('Session expired. Please log in again.')
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}))
+    throw new Error(body.error || 'Failed to export enquiries')
+  }
+  const blob = await res.blob()
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `nivora-enquiries-${Date.now()}.xlsx`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  window.URL.revokeObjectURL(url)
+}
