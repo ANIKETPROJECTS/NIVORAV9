@@ -30,12 +30,33 @@ const COLUMNS = [
   ['createdAt', 'Submitted At'],
 ]
 
+function getDateRange(date, timezoneOffset = 0) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) return null
+  const [year, month, day] = date.split('-').map(Number)
+  const localDate = new Date(Date.UTC(year, month - 1, day))
+  if (
+    localDate.getUTCFullYear() !== year ||
+    localDate.getUTCMonth() !== month - 1 ||
+    localDate.getUTCDate() !== day ||
+    !Number.isInteger(timezoneOffset) ||
+    timezoneOffset < -840 ||
+    timezoneOffset > 840
+  ) return null
+
+  // Date#getTimezoneOffset is UTC - local time. Converting local midnight
+  // to UTC therefore means adding that signed offset to the UTC timestamp.
+  const start = new Date(localDate.getTime() + timezoneOffset * 60 * 1000)
+  return { $gte: start, $lt: new Date(start.getTime() + 24 * 60 * 60 * 1000) }
+}
+
 // ── IMPORTANT: static routes MUST come before /:id to avoid shadowing ─────────
 
 // ── GET /api/enquiries/export (static — must be before /:id) ──────────────────
-router.get('/export', requireAdmin, async (_req, res) => {
+router.get('/export', requireAdmin, async (req, res) => {
   try {
-    const enquiries = await Enquiry.find({}).sort({ createdAt: -1 }).lean()
+    const dateRange = getDateRange(req.query.date, Number(req.query.timezoneOffset || 0))
+    if (!dateRange) return res.status(400).json({ error: 'Invalid enquiry date.' })
+    const enquiries = await Enquiry.find({ createdAt: dateRange }).sort({ createdAt: -1 }).lean()
     const rows = enquiries.map(e => {
       const row = {}
       for (const [key, label] of COLUMNS) {
@@ -60,9 +81,11 @@ router.get('/export', requireAdmin, async (_req, res) => {
 })
 
 // ── GET /api/enquiries ──────────────────────────────────────────────────────
-router.get('/', requireAdmin, async (_req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
   try {
-    const enquiries = await Enquiry.find({}).sort({ createdAt: -1 })
+    const dateRange = getDateRange(req.query.date, Number(req.query.timezoneOffset || 0))
+    if (!dateRange) return res.status(400).json({ error: 'Invalid enquiry date.' })
+    const enquiries = await Enquiry.find({ createdAt: dateRange }).sort({ createdAt: -1 })
     res.json(enquiries)
   } catch (err) {
     console.error(err)

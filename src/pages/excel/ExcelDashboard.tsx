@@ -19,9 +19,23 @@ const EDITABLE_FIELDS: { key: keyof Enquiry; label: string; type: 'text' | 'text
   { key: 'notes', label: 'Notes', type: 'textarea' },
 ]
 
+function localDateString(date = new Date()) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function formatSelectedDate(date: string) {
+  return new Date(`${date}T00:00:00`).toLocaleDateString(undefined, {
+    day: 'numeric', month: 'short', year: 'numeric',
+  })
+}
+
 export default function ExcelDashboard() {
   const navigate = useNavigate()
   const [enquiries, setEnquiries] = useState<Enquiry[]>([])
+  const [selectedDate, setSelectedDate] = useState(() => localDateString())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
@@ -34,14 +48,15 @@ export default function ExcelDashboard() {
 
   const flash = (msg: string) => { setSuccessMsg(msg); setTimeout(() => setSuccessMsg(''), 3000) }
 
-  const load = async () => {
+  const load = async (date = selectedDate) => {
     setLoading(true); setError('')
-    try { setEnquiries(await fetchEnquiries()) }
-    catch (e: unknown) { setError((e as Error).message) }
+    setEnquiries([])
+    try { setEnquiries(await fetchEnquiries(date)) }
+    catch (e: unknown) { setError((e as Error).message || 'Failed to fetch enquiries') }
     finally { setLoading(false) }
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load(selectedDate) }, [selectedDate])
 
   const handleLogout = () => { clearExcelToken(); navigate('/excelsheet') }
 
@@ -55,7 +70,7 @@ export default function ExcelDashboard() {
     setSaving(true)
     try {
       await updateEnquiry(editing._id, editForm)
-      await load()
+      await load(selectedDate)
       setEditing(null)
       flash('Record updated.')
     } catch (e: unknown) {
@@ -67,17 +82,29 @@ export default function ExcelDashboard() {
 
   const handleDelete = async (id: string) => {
     setDeletingId(id)
-    try { await deleteEnquiry(id); await load(); flash('Record deleted.') }
+    try { await deleteEnquiry(id); await load(selectedDate); flash('Record deleted.') }
     catch (e: unknown) { setError((e as Error).message) }
     finally { setDeletingId(null); setConfirmDelete(null) }
   }
 
   const handleDownload = async () => {
     setDownloading(true)
-    try { await downloadEnquiriesExcel() }
+    try { await downloadEnquiriesExcel(selectedDate) }
     catch (e: unknown) { setError((e as Error).message) }
     finally { setDownloading(false) }
   }
+
+  const setRelativeDate = (days: number) => {
+    const date = new Date()
+    date.setDate(date.getDate() + days)
+    setSelectedDate(localDateString(date))
+  }
+
+  const dateLabel = selectedDate === localDateString()
+    ? `Today, ${formatSelectedDate(selectedDate)}`
+    : selectedDate === localDateString(new Date(Date.now() - 24 * 60 * 60 * 1000))
+      ? `Yesterday, ${formatSelectedDate(selectedDate)}`
+      : formatSelectedDate(selectedDate)
 
   return (
     <div className="exc-root">
@@ -96,11 +123,28 @@ export default function ExcelDashboard() {
       <main className="exc-main">
         <header className="exc-topbar">
           <div className="exc-topbar-left">
-            <h1 className="exc-page-title">Contact Form Records</h1>
+            <div>
+              <h1 className="exc-page-title">Contact Form Records</h1>
+              <p className="exc-date-status">Showing enquiries for: {dateLabel}</p>
+            </div>
             <span className="exc-count">{enquiries.length} {enquiries.length === 1 ? 'entry' : 'entries'}</span>
           </div>
           <div className="exc-topbar-right">
-            <button className="exc-btn-ghost-sm" onClick={load} title="Refresh"><RefreshCw size={15} /></button>
+            <div className="exc-date-controls">
+              <button className="exc-date-shortcut" onClick={() => setRelativeDate(0)}>Today</button>
+              <button className="exc-date-shortcut" onClick={() => setRelativeDate(-1)}>Yesterday</button>
+              <label className="exc-date-picker">
+                <span>Date</span>
+                <input
+                  type="date"
+                  value={selectedDate}
+                  max={localDateString()}
+                  onChange={e => e.target.value && setSelectedDate(e.target.value)}
+                  aria-label="Select enquiry date"
+                />
+              </label>
+            </div>
+            <button className="exc-btn-ghost-sm" onClick={() => load(selectedDate)} title="Refresh"><RefreshCw size={15} /></button>
             <button className="exc-btn-add" onClick={handleDownload} disabled={downloading || enquiries.length === 0}>
               {downloading ? <Loader2 size={16} className="exc-spin" /> : <Download size={16} />} Download Excel
             </button>
@@ -119,7 +163,7 @@ export default function ExcelDashboard() {
           {loading ? (
             <div className="exc-loading"><Loader2 size={28} className="exc-spin" /> Loading records…</div>
           ) : enquiries.length === 0 ? (
-            <div className="exc-empty"><p>No enquiries submitted yet.</p></div>
+            <div className="exc-empty"><p>No enquiries found</p></div>
           ) : (
             <div className="exc-table-wrap">
               <table className="exc-table">
@@ -237,9 +281,23 @@ export default function ExcelDashboard() {
           box-shadow: 0 1px 0 #e2d9ce;
         }
         .exc-topbar-left { display: flex; align-items: baseline; gap: 12px; }
+         .exc-topbar-left > div { display: flex; flex-direction: column; gap: 4px; }
         .exc-page-title { margin: 0; font-size: 18px; color: #1a1612; font-weight: normal; letter-spacing: 0.03em; }
+         .exc-date-status { margin: 0; font-size: 11px; color: #9a8e82; }
         .exc-count { font-size: 12px; color: #c0b5a8; }
-        .exc-topbar-right { display: flex; align-items: center; gap: 10px; }
+         .exc-topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+         .exc-date-controls { display: flex; align-items: center; gap: 6px; }
+         .exc-date-shortcut {
+           background: #faf8f5; border: 1px solid #ddd7ce; color: #7a6245;
+           border-radius: 4px; padding: 8px 10px; cursor: pointer; font-size: 11px;
+         }
+         .exc-date-shortcut:hover { border-color: #7a6245; background: #f4eee6; }
+         .exc-date-picker {
+           display: flex; align-items: center; gap: 7px; border: 1px solid #ddd7ce;
+           border-radius: 4px; padding: 5px 8px; background: #fff; color: #9a8e82;
+           font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+         }
+         .exc-date-picker input { border: none; outline: none; color: #2a2218; font: 12px Arial, sans-serif; cursor: pointer; }
         .exc-btn-ghost-sm {
           background: none; border: 1px solid #ddd7ce; color: #9a8e82;
           border-radius: 4px; padding: 7px 9px; cursor: pointer;
@@ -345,6 +403,21 @@ export default function ExcelDashboard() {
           display: flex; justify-content: flex-end; gap: 10px;
           padding: 16px 24px; border-top: 1px solid #ede8e1;
         }
+         @media (max-width: 900px) {
+           .exc-topbar { align-items: flex-start; flex-direction: column; gap: 14px; }
+           .exc-topbar-right { width: 100%; justify-content: space-between; }
+           .exc-date-controls { flex-wrap: wrap; }
+         }
+         @media (max-width: 560px) {
+           .exc-sidebar { width: 170px; }
+           .exc-topbar, .exc-content { padding-left: 16px; padding-right: 16px; }
+           .exc-topbar-left { align-items: flex-start; flex-direction: column; gap: 4px; }
+           .exc-topbar-right { align-items: stretch; }
+           .exc-date-controls { width: 100%; }
+           .exc-date-picker { flex: 1; justify-content: space-between; }
+           .exc-date-picker input { min-width: 0; width: 100%; }
+           .exc-btn-add { padding-left: 12px; padding-right: 12px; }
+         }
       `}</style>
     </div>
   )

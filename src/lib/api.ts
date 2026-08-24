@@ -331,8 +331,9 @@ async function excelRequest<T>(path: string, options?: RequestInit): Promise<T> 
   return res.json()
 }
 
-export function fetchEnquiries(): Promise<Enquiry[]> {
-  return excelRequest('/enquiries')
+export function fetchEnquiries(date: string): Promise<Enquiry[]> {
+  const timezoneOffset = new Date().getTimezoneOffset()
+  return excelRequest(`/enquiries?date=${encodeURIComponent(date)}&timezoneOffset=${timezoneOffset}`)
 }
 
 export function updateEnquiry(id: string, data: Partial<Enquiry>): Promise<Enquiry> {
@@ -343,9 +344,10 @@ export function deleteEnquiry(id: string): Promise<{ message: string }> {
   return excelRequest(`/enquiries/${id}`, { method: 'DELETE' })
 }
 
-export async function downloadEnquiriesExcel(): Promise<void> {
+export async function downloadEnquiriesExcel(date: string): Promise<void> {
   const token = getExcelToken() || ''
-  const res = await fetch(`${BASE}/enquiries/export`, {
+  const timezoneOffset = new Date().getTimezoneOffset()
+  const res = await fetch(`${BASE}/enquiries/export?date=${encodeURIComponent(date)}&timezoneOffset=${timezoneOffset}`, {
     headers: { 'x-admin-token': token },
   })
   if (res.status === 403) {

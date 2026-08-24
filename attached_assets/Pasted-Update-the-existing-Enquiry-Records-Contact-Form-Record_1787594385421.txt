@@ -1,0 +1,102 @@
+Update the existing **Enquiry Records / Contact Form Records** admin page so that enquiries can be filtered and displayed based on the date selected from a calendar date picker.
+
+Use the **second reference image** as the UI/UX reference for the date-filtering behavior and overall layout. Keep the existing visual design, branding, typography, colors, sidebar, and table styling of the current enquiry records page.
+
+### Required functionality
+
+1. **Add a proper Date Picker**
+
+   * Replace/upgrade the current date-filter area with a clickable date picker.
+   * When the user clicks the date field, open a calendar.
+   * The calendar must allow the user to select any available date.
+   * Display the selected date clearly in the date field.
+   * Default to **Today** when the page first loads.
+
+2. **Fetch enquiries based on selected date**
+
+   * When a date is selected, fetch enquiries submitted on that exact date from the existing backend/database/API.
+   * Do NOT use hardcoded/mock enquiry data.
+   * Use the existing enquiry data source and existing API/backend logic wherever possible.
+   * Pass the selected date correctly to the backend/API so the filtering happens using the actual enquiry submission date.
+   * Handle timezone/date formatting consistently so enquiries do not appear under the wrong day.
+
+3. **Display all enquiries for the selected date**
+
+   * If multiple enquiries exist for the selected date, show ALL of them in the table/list.
+   * Do not show only the latest enquiry.
+   * Do not limit the results unnecessarily.
+   * Each enquiry should appear as its own row/card according to the existing design.
+
+4. **Date navigation**
+
+   * Keep the date filter simple and intuitive.
+   * Include:
+
+     * Calendar/date picker
+     * **Today** button
+     * **Yesterday** button
+     * Optional previous/next date controls if they fit the existing design.
+   * When the user selects a date, update the displayed date immediately and refresh the enquiry list.
+
+5. **Dynamic heading/status**
+
+   * Update the heading/subheading dynamically based on the selected date.
+   * Example:
+
+     * `Showing enquiries for: Today, 24 Aug 2026`
+     * `Showing enquiries for: Yesterday, 23 Aug 2026`
+     * `Showing enquiries for: 20 Aug 2026`
+
+6. **Empty state**
+
+   * If there are no enquiries for the selected date, show a clean empty state:
+
+     * `No enquiries found`
+   * Do not show an error for a valid date that simply has zero records.
+
+7. **Error handling**
+
+   * If the API/database request actually fails, show a clear error message such as:
+
+     * `Failed to fetch enquiries`
+   * Keep the refresh/retry button functional.
+   * Do not silently fail or incorrectly display `No enquiries found` when the backend request failed.
+
+8. **Loading state**
+
+   * While enquiries are being fetched after changing the date, show a subtle loading state/skeleton/spinner.
+   * Prevent confusing stale results from appearing as if they belong to the newly selected date.
+
+9. **Download Excel**
+
+   * Keep the existing **Download Excel** button.
+   * Make it download the enquiries for the **currently selected date**, rather than downloading unrelated/all records.
+   * If there are no enquiries for that date, handle the action gracefully.
+
+10. **Preserve existing functionality**
+
+* Do not break the existing enquiry submission flow.
+* Do not change the database schema unless absolutely necessary.
+* Reuse existing API endpoints, database queries, models, and components where possible.
+* Do not remove existing authentication/admin functionality.
+* Keep the current sidebar and overall page structure.
+
+### Important implementation requirement
+
+First inspect the existing project structure and identify:
+
+* where enquiry records are stored,
+* the database schema/model,
+* the existing enquiry API/backend endpoint,
+* how the current Enquiry Records page fetches data,
+* how the Excel export currently works.
+
+Then implement the date filtering using the existing architecture instead of creating a parallel/mock system.
+
+The final behavior should be:
+
+**Open Enquiry Records → Today is selected by default → enquiries for today are fetched → click calendar → select any date → backend fetches enquiries for that exact date → all enquiries for that date are displayed → changing the date refreshes the list automatically.**
+
+Use the **second uploaded reference image** specifically as inspiration for the date-picker/filter interaction, while keeping the first page's existing Nivora/admin visual identity intact.
+
+Make the implementation production-ready, responsive, and clean. Do not modify unrelated sections of the application.
