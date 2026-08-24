@@ -574,6 +574,7 @@ function CompareSlider({
   const [transitionMs, setTransitionMs] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const draggingRef = useRef(false)
+  const activePointerIdRef = useRef<number | null>(null)
   const isAnimatingRef = useRef(false)
   const mountedRef = useRef(true)
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
@@ -659,33 +660,35 @@ function CompareSlider({
     updatePos(clientX)
   }
 
-  const onMouseDown = (e: React.MouseEvent) => { startDrag(e.clientX); e.preventDefault() }
-  const onMouseMove = (e: React.MouseEvent) => { if (draggingRef.current) updatePos(e.clientX) }
   const endDrag = () => {
     draggingRef.current = false
+    activePointerIdRef.current = null
     onDragChangeRef.current?.(false)
     setHandleScale(1)
   }
-  const onTouchStart = (e: React.TouchEvent) => startDrag(e.touches[0].clientX)
-  const onTouchMove = (e: React.TouchEvent) => {
-    if (!draggingRef.current) return
-    e.stopPropagation()
-    updatePos(e.touches[0].clientX)
-  }
 
-  // FIX 2: attach a non-passive native touchmove listener so preventDefault works
-  useEffect(() => {
-    const el = containerRef.current
-    if (!el) return
-    const handleNativeTouch = (e: TouchEvent) => {
-      if (draggingRef.current) {
-        e.preventDefault()
-        e.stopPropagation()
-      }
+  // Pointer capture keeps the drag attached to the slider after the finger
+  // moves away from the handle or briefly leaves the element. This gives
+  // mouse and touch the same continuous, no-jump interaction path.
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return
+    activePointerIdRef.current = e.pointerId
+    e.currentTarget.setPointerCapture(e.pointerId)
+    e.preventDefault()
+    startDrag(e.clientX)
+  }
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!draggingRef.current || e.pointerId !== activePointerIdRef.current) return
+    e.preventDefault()
+    updatePos(e.clientX)
+  }
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerId !== activePointerIdRef.current) return
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId)
     }
-    el.addEventListener('touchmove', handleNativeTouch, { passive: false })
-    return () => el.removeEventListener('touchmove', handleNativeTouch)
-  }, [])
+    endDrag()
+  }
 
   const onContainerMouseEnter = () => {
     if (!isAnimatingRef.current && !draggingRef.current) playReveal()
@@ -726,14 +729,12 @@ function CompareSlider({
         WebkitUserSelect: 'none',
         touchAction: 'none',
       }}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={endDrag}
-      onMouseLeave={endDrag}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      onLostPointerCapture={endDrag}
       onMouseEnter={onContainerMouseEnter}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={endDrag}
     >
       {/* After image — base layer */}
       <img
@@ -776,10 +777,6 @@ function CompareSlider({
       `}</style>
       <div
         className="cs-handle"
-        onMouseDown={onMouseDown}
-        onTouchStart={onTouchStart}
-        onTouchMove={onTouchMove}
-        onTouchEnd={endDrag}
         style={{
           position: 'absolute',
           top: '50%', left: `${pos}%`,
