@@ -25,6 +25,14 @@ const LABEL: React.CSSProperties = {
   color: '#a18661',
 }
 
+const THANK_YOU_WHATSAPP_NUMBER = '917276687805'
+const THANK_YOU_WHATSAPP_MESSAGE = `Hi NIVORA Interiors!
+
+I’d love to discuss my interior project with your team. I’ve just submitted an enquiry through your website and would like to know more about how we can work together.
+
+Looking forward to connecting!`
+const THANK_YOU_WHATSAPP_URL = `https://wa.me/${THANK_YOU_WHATSAPP_NUMBER}?text=${encodeURIComponent(THANK_YOU_WHATSAPP_MESSAGE)}`
+
 const steps = [
   'We review your enquiry and match you with the right design approach.',
   'Our Designer will personally reach out to understand your vision and requirements.',
@@ -160,7 +168,7 @@ export default function ThankYou() {
         {/* WhatsApp nudge */}
         <motion.div {...fadeIn(1.8)} className="mt-12">
           <a
-            href="https://wa.me/917276687805?text=Hi%20NIVORA%20Interiors!%0A%0AI%E2%80%99d%20love%20to%20discuss%20my%20interior%20project%20with%20your%20team.%20I%E2%80%99ve%20just%20submitted%20an%20enquiry%20through%20your%20website%20and%20would%20like%20to%20know%20more%20about%20how%20we%20can%20work%20together.%0A%0ALooking%20forward%20to%20connecting!"
+            href={THANK_YOU_WHATSAPP_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-light transition-colors duration-300 hover:text-[#a18661]"
