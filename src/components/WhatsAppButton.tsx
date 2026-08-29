@@ -1,7 +1,21 @@
+const WHATSAPP_NUMBER = '917276687805'
+const WHATSAPP_MESSAGE = `Hi NIVORA Interiors! 👋
+
+I’m interested in your interior design services and would like to discuss my project.
+
+📍 Project Location:
+🏠 Property Type:
+📐 Approx. Area:
+💰 Budget:
+📅 Expected Start Date:
+
+I came across NIVORA Interiors through your website and would love to know more about your services.`
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
+
 export default function WhatsAppButton() {
   return (
     <a
-      href="https://wa.me/917276687805?text=Hi%20NIVORA%20Interiors!%20%F0%9F%91%8B%0A%0AI%E2%80%99m%20interested%20in%20your%20interior%20design%20services%20and%20would%20like%20to%20discuss%20my%20project.%0A%0A%F0%9F%93%8D%20Project%20Location%3A%0A%F0%9F%8F%A0%20Property%20Type%3A%0A%F0%9F%93%90%20Approx.%20Area%3A%0A%F0%9F%92%B0%20Budget%3A%0A%F0%9F%93%85%20Expected%20Start%20Date%3A%0A%0AI%20came%20across%20NIVORA%20Interiors%20through%20your%20website%20and%20would%20love%20to%20know%20more%20about%20your%20services."
+      href={WHATSAPP_URL}
       target="_blank"
       rel="noopener noreferrer"
       className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform duration-300 whatsapp-pulse"
