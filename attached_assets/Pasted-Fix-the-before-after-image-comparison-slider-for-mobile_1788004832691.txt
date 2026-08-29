@@ -1,0 +1,40 @@
+Fix the before/after image comparison slider for mobile touch interaction without changing the existing desktop design, animation, or transition.
+
+The slider currently works perfectly with a mouse on laptop/desktop, but on mobile I cannot grab/hold the circular slider handle and drag it smoothly from left to right.
+
+Please update the slider implementation so it supports both desktop mouse and mobile touch seamlessly.
+
+Requirements:
+Use Pointer Events (pointerdown, pointermove, pointerup, pointercancel) instead of relying only on mouse events.
+The circular slider handle must be fully draggable on mobile by pressing and holding it and moving the finger horizontally.
+Allow the user to start dragging by touching the slider handle, and optionally slightly around the handle for easier mobile interaction.
+During dragging, calculate the slider position based on the touch/pointer's clientX relative to the image/container's getBoundingClientRect().
+Clamp the slider position between 0% and 100% so it never goes outside the image.
+Add:
+touch-action: none;
+user-select: none;
+-webkit-user-select: none;
+
+to the draggable handle/container where appropriate.
+
+Use setPointerCapture(pointerId) on pointerdown so dragging continues smoothly even if the finger moves slightly outside the handle.
+Release it with releasePointerCapture(pointerId) on pointerup/pointercancel.
+Prevent the browser's default scrolling/gesture behavior only while the user is actively dragging the slider. Do not disable normal page scrolling elsewhere.
+Make the handle sufficiently easy to grab on mobile, preferably with a minimum 44px × 44px touch target, while keeping the visible circular icon/design exactly as it currently looks.
+Ensure the slider remains smooth at 60fps. Use requestAnimationFrame if necessary rather than causing excessive React state updates during pointer movement.
+Do not remove or alter the existing before/after animation, transition, styling, layout, typography, or desktop behavior.
+Make the fix responsive for both iOS Safari and Android Chrome.
+Check all before/after comparison cards on the page and apply the same mobile interaction fix consistently.
+
+Important: Do not create a separate mobile version of the slider. Fix the existing slider component so the same component works with mouse, touch, and stylus using Pointer Events.
+
+After implementing, test specifically on a mobile viewport:
+
+Touch and hold the circular handle
+Drag slowly left/right
+Drag quickly left/right
+Start dragging near the edges
+Release the finger
+Scroll the page normally when not dragging
+
+The expected result is that on mobile I can press and hold the slider icon and smoothly drag it horizontally, exactly like using the mouse on laptop.

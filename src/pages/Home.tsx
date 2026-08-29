@@ -580,6 +580,9 @@ function CompareSlider({
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const onDragChangeRef = useRef(onDragChange)
   const [handleScale, setHandleScale] = useState(1)
+  const [isDragging, setIsDragging] = useState(false)
+  const pendingClientXRef = useRef<number | null>(null)
+  const positionRafRef = useRef<number | null>(null)
   const [beforeHover, setBeforeHover] = useState(false)
   const [afterHover, setAfterHover] = useState(false)
 
@@ -590,6 +593,9 @@ function CompareSlider({
     return () => {
       mountedRef.current = false
       timeoutsRef.current.forEach(clearTimeout)
+      if (positionRafRef.current !== null) {
+        cancelAnimationFrame(positionRafRef.current)
+      }
     }
   }, [])
 
@@ -644,12 +650,36 @@ function CompareSlider({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPlayKey])
 
-  const updatePos = (clientX: number) => {
+  const applyPosition = (clientX: number) => {
     if (!containerRef.current) return
     setTransitionMs(0)
     const rect = containerRef.current.getBoundingClientRect()
-    const x = Math.max(2, Math.min(clientX - rect.left, rect.width - 2))
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width))
     setPos((x / rect.width) * 100)
+  }
+
+  const flushPositionUpdate = () => {
+    if (positionRafRef.current !== null) {
+      cancelAnimationFrame(positionRafRef.current)
+      positionRafRef.current = null
+    }
+    const pendingClientX = pendingClientXRef.current
+    pendingClientXRef.current = null
+    if (pendingClientX !== null) applyPosition(pendingClientX)
+  }
+
+  const queuePositionUpdate = (clientX: number) => {
+    pendingClientXRef.current = clientX
+    if (positionRafRef.current !== null) return
+
+    positionRafRef.current = requestAnimationFrame(() => {
+      positionRafRef.current = null
+      const pendingClientX = pendingClientXRef.current
+      pendingClientXRef.current = null
+      if (draggingRef.current && pendingClientX !== null) {
+        applyPosition(pendingClientX)
+      }
+    })
   }
 
   const startDrag = (clientX: number) => {
@@ -657,14 +687,17 @@ function CompareSlider({
     onDragChangeRef.current?.(true)
     cancelAnim()
     setHandleScale(1.15)
-    updatePos(clientX)
+    setIsDragging(true)
+    applyPosition(clientX)
   }
 
   const endDrag = () => {
+    pendingClientXRef.current = null
     draggingRef.current = false
     activePointerIdRef.current = null
     onDragChangeRef.current?.(false)
     setHandleScale(1)
+    setIsDragging(false)
   }
 
   // Pointer capture keeps the drag attached to the slider after the finger
@@ -680,13 +713,19 @@ function CompareSlider({
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!draggingRef.current || e.pointerId !== activePointerIdRef.current) return
     e.preventDefault()
-    updatePos(e.clientX)
+    queuePositionUpdate(e.clientX)
   }
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerId !== activePointerIdRef.current) return
+    flushPositionUpdate()
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId)
     }
+    endDrag()
+  }
+  const onLostPointerCapture = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerId !== activePointerIdRef.current) return
+    flushPositionUpdate()
     endDrag()
   }
 
@@ -727,13 +766,13 @@ function CompareSlider({
         cursor: 'ew-resize',
         userSelect: 'none',
         WebkitUserSelect: 'none',
-        touchAction: 'none',
+        touchAction: isDragging ? 'none' : 'pan-y',
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
-      onLostPointerCapture={endDrag}
+      onLostPointerCapture={onLostPointerCapture}
       onMouseEnter={onContainerMouseEnter}
     >
       {/* After image — base layer */}
@@ -788,7 +827,9 @@ function CompareSlider({
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           pointerEvents: 'auto',
           cursor: 'ew-resize',
-          touchAction: 'none',
+          touchAction: isDragging ? 'none' : 'pan-y',
+          userSelect: 'none',
+          WebkitUserSelect: 'none',
           zIndex: 5,
           transition: dividerTransition ? `left ${transitionMs}ms ease-in-out, transform 120ms ease` : 'transform 120ms ease',
         }}
