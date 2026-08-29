@@ -467,7 +467,7 @@ export default function Contact() {
                       </>
                     ) : (
                       <>
-                        Claim My Free Layout Design <ArrowRight size={14} />
+                        We’ll get back to you within 24 hours <ArrowRight size={14} />
                       </>
                     )}
                   </motion.button>
