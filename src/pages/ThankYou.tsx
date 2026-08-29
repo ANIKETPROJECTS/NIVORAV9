@@ -160,7 +160,7 @@ export default function ThankYou() {
         {/* WhatsApp nudge */}
         <motion.div {...fadeIn(1.8)} className="mt-12">
           <a
-            href="https://wa.me/917276687805?text=Hi%20Shweta%2C%20I%20just%20submitted%20an%20enquiry%20on%20your%20website%20and%20would%20love%20to%20chat."
+            href="https://wa.me/917276687805?text=Hi%20NIVORA%20Interiors!%0A%0AI%E2%80%99d%20love%20to%20discuss%20my%20interior%20project%20with%20your%20team.%20I%E2%80%99ve%20just%20submitted%20an%20enquiry%20through%20your%20website%20and%20would%20like%20to%20know%20more%20about%20how%20we%20can%20work%20together.%0A%0ALooking%20forward%20to%20connecting!"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-light transition-colors duration-300 hover:text-[#a18661]"
