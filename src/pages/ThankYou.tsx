@@ -27,9 +27,9 @@ const LABEL: React.CSSProperties = {
 
 const steps = [
   'We review your enquiry and match you with the right design approach.',
-  'Shweta will personally reach out to schedule a free 30-minute consultation.',
+  'Our Designer will personally reach out to understand your vision and requirements.',
   'We begin understanding your space, lifestyle, and vision.',
-  'You receive a tailored design brief and next steps — at no cost.',
+  'You receive a tailored design brief and next steps.',
 ]
 
 export default function ThankYou() {
@@ -94,7 +94,7 @@ export default function ThankYou() {
           className="font-light leading-relaxed max-w-md mx-auto mb-10"
           style={{ fontFamily: "'Inter', sans-serif", fontWeight: 300, fontSize: 14, color: '#5c5c5c' }}
         >
-          Thank you for reaching out to NIVORA. We've received your enquiry and will be in touch within 24 hours to schedule your free consultation.
+          Thank you for reaching out to NIVORA. We've received your enquiry and will be in touch within 24 hours to discuss your requirements.
         </motion.p>
 
         {/* What Happens Next box */}
