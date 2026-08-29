@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import BackToTopButton from './components/BackToTopButton'
+import WhatsAppButton from './components/WhatsAppButton'
 import IntroOverlay from './components/IntroOverlay'
 import ConsultationPopup from './components/ConsultationPopup'
 import Home from './pages/Home'
@@ -56,6 +57,7 @@ function Layout({ children }: { children: React.ReactNode }) {
       <main>{children}</main>
       <Footer />
       <BackToTopButton />
+      <WhatsAppButton />
     </>
   )
 }

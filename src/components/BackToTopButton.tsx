@@ -21,10 +21,11 @@ export default function BackToTopButton() {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       aria-label="Back to top"
+      className="back-to-top-button"
       style={{
         position: 'fixed',
         bottom: 24,
-        right: 24,
+        right: 96,
         zIndex: 50,
         width: 56,
         height: 56,

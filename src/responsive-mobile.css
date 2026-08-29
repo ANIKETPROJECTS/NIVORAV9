@@ -577,5 +577,10 @@
     right: 16px !important;
   }
 
+  .back-to-top-button {
+    bottom: 20px !important;
+    right: 84px !important;
+  }
+
 }
 /* end @media (max-width: 767px) */
