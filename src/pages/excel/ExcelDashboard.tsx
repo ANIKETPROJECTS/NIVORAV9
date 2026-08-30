@@ -165,8 +165,9 @@ export default function ExcelDashboard() {
           ) : enquiries.length === 0 ? (
             <div className="exc-empty"><p>No enquiries found</p></div>
           ) : (
-            <div className="exc-table-wrap">
-              <table className="exc-table">
+            <>
+              <div className="exc-table-wrap">
+                <table className="exc-table">
                 <thead>
                   <tr>
                     <th>Submitted</th>
@@ -215,8 +216,79 @@ export default function ExcelDashboard() {
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
+                </table>
+              </div>
+              <div className="exc-cards">
+              {enquiries.map(e => (
+                <article className="exc-card" key={e._id}>
+                  <div className="exc-card-header">
+                    <h2 className="exc-card-name">{e.fullName}</h2>
+                    <div className="exc-card-submitted">
+                      <span>Submitted</span>
+                      <time dateTime={e.createdAt}>{new Date(e.createdAt).toLocaleString()}</time>
+                    </div>
+                  </div>
+
+                  <div className="exc-card-fields">
+                    <div className="exc-card-field exc-card-field-full">
+                      <span className="exc-card-label">Phone Number</span>
+                      <span className="exc-card-value">{e.phone || '—'}</span>
+                    </div>
+                    <div className="exc-card-field exc-card-field-full">
+                      <span className="exc-card-label">Email</span>
+                      <span className="exc-card-value">{e.email || '—'}</span>
+                    </div>
+                    <div className="exc-card-field">
+                      <span className="exc-card-label">Space Type</span>
+                      <span className="exc-card-value">{e.spaceType || '—'}</span>
+                    </div>
+                    <div className="exc-card-field">
+                      <span className="exc-card-label">Location</span>
+                      <span className="exc-card-value">{e.location || '—'}</span>
+                    </div>
+                    <div className="exc-card-field">
+                      <span className="exc-card-label">Project Type</span>
+                      <span className="exc-card-value">{e.projectType || '—'}</span>
+                    </div>
+                    <div className="exc-card-field">
+                      <span className="exc-card-label">Budget</span>
+                      <span className="exc-card-value">{e.budget || '—'}</span>
+                    </div>
+                    <div className="exc-card-field">
+                      <span className="exc-card-label">Email Sent</span>
+                      <span className={`exc-badge ${e.emailSent ? 'exc-badge-yes' : 'exc-badge-no'}`}>
+                        {e.emailSent ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="exc-card-actions">
+                    <div className="exc-actions">
+                      <button className="exc-action-btn" onClick={() => openEdit(e)} title="Edit">
+                        <Pencil size={14} /> <span>Edit</span>
+                      </button>
+                      {confirmDelete === e._id ? (
+                        <div className="exc-confirm">
+                          <span>Delete?</span>
+                          <button className="exc-confirm-yes" onClick={() => handleDelete(e._id)} disabled={deletingId === e._id}>
+                            {deletingId === e._id ? <Loader2 size={12} className="exc-spin" /> : <Check size={12} />}
+                            <span>Yes</span>
+                          </button>
+                          <button className="exc-confirm-no" onClick={() => setConfirmDelete(null)}>
+                            <X size={12} /> <span>No</span>
+                          </button>
+                        </div>
+                      ) : (
+                        <button className="exc-action-btn exc-action-del" onClick={() => setConfirmDelete(e._id)} title="Delete">
+                          <Trash2 size={14} /> <span>Delete</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              ))}
+              </div>
+            </>
           )}
         </div>
       </main>
@@ -350,6 +422,7 @@ export default function ExcelDashboard() {
         }
         .exc-table tbody tr:last-child td { border-bottom: none; }
         .exc-table tbody tr:hover td { background: #faf8f5; }
+         .exc-cards { display: none; }
         .exc-name { color: #1a1612; font-size: 14px; font-weight: 500; }
         .exc-cell-muted { color: #9a8e82; }
         .exc-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; }
@@ -418,6 +491,142 @@ export default function ExcelDashboard() {
            .exc-date-picker input { min-width: 0; width: 100%; }
            .exc-btn-add { padding-left: 12px; padding-right: 12px; }
          }
+          @media (max-width: 767px) {
+            .exc-root { display: block; }
+            .exc-sidebar {
+              width: 100%;
+              min-height: auto;
+              height: auto;
+              position: relative;
+              border-right: none;
+              border-bottom: 1px solid #e2d9ce;
+              display: flex;
+              flex-direction: row;
+              align-items: center;
+              justify-content: space-between;
+            }
+            .exc-sidebar-brand { padding: 16px; border-bottom: none; }
+            .exc-sidebar-footer { margin-top: 0; padding: 16px; border-top: none; }
+            .exc-topbar { position: relative; }
+            .exc-topbar-right {
+              width: 100%;
+              justify-content: flex-start;
+              align-items: center;
+            }
+            .exc-date-controls {
+              width: 100%;
+              flex-wrap: wrap;
+            }
+            .exc-date-picker {
+              flex: 1 1 150px;
+              min-width: 0;
+            }
+            .exc-date-picker input { min-width: 0; width: 100%; }
+            .exc-btn-add {
+              flex: 1 1 180px;
+              justify-content: center;
+              min-width: 0;
+            }
+            .exc-table-wrap { display: none; }
+            .exc-cards {
+              display: flex;
+              flex-direction: column;
+              gap: 14px;
+            }
+            .exc-card {
+              width: 100%;
+              min-width: 0;
+              background: #ffffff;
+              border: 1px solid #e2d9ce;
+              border-radius: 8px;
+              padding: 16px;
+              box-shadow: 0 3px 14px rgba(100,80,60,0.06);
+            }
+            .exc-card-header {
+              display: flex;
+              align-items: flex-start;
+              justify-content: space-between;
+              gap: 12px;
+              padding-bottom: 14px;
+              border-bottom: 1px solid #ede8e1;
+            }
+            .exc-card-name {
+              min-width: 0;
+              margin: 0;
+              color: #1a1612;
+              font-size: 16px;
+              line-height: 1.3;
+              font-weight: 600;
+              overflow-wrap: anywhere;
+            }
+            .exc-card-submitted {
+              flex: 0 0 auto;
+              display: flex;
+              flex-direction: column;
+              align-items: flex-end;
+              gap: 3px;
+              color: #9a8e82;
+              font-size: 10px;
+              line-height: 1.3;
+              text-align: right;
+            }
+            .exc-card-submitted span {
+              color: #b0a498;
+              font-size: 9px;
+              letter-spacing: 0.12em;
+              text-transform: uppercase;
+            }
+            .exc-card-submitted time { overflow-wrap: anywhere; }
+            .exc-card-fields {
+              display: grid;
+              grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+              gap: 14px 12px;
+              padding: 16px 0;
+            }
+            .exc-card-field {
+              min-width: 0;
+              display: flex;
+              flex-direction: column;
+              gap: 4px;
+            }
+            .exc-card-field-full { grid-column: 1 / -1; }
+            .exc-card-label {
+              color: #9a8e82;
+              font-size: 9px;
+              letter-spacing: 0.12em;
+              line-height: 1.2;
+              text-transform: uppercase;
+            }
+            .exc-card-value {
+              min-width: 0;
+              color: #2a2218;
+              font-size: 13px;
+              line-height: 1.45;
+              overflow-wrap: anywhere;
+            }
+            .exc-card-actions {
+              padding-top: 14px;
+              border-top: 1px solid #ede8e1;
+            }
+            .exc-card-actions .exc-actions {
+              justify-content: flex-start;
+              flex-wrap: wrap;
+              gap: 8px;
+            }
+            .exc-card-actions .exc-action-btn,
+            .exc-card-actions .exc-confirm-yes,
+            .exc-card-actions .exc-confirm-no {
+              min-height: 34px;
+              align-items: center;
+              gap: 6px;
+              padding: 8px 11px;
+              font-size: 11px;
+            }
+            .exc-card-actions .exc-confirm {
+              flex-wrap: wrap;
+              gap: 6px;
+            }
+          }
       `}</style>
     </div>
   )
