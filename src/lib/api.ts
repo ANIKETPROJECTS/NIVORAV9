@@ -335,9 +335,16 @@ async function excelRequest<T>(path: string, options?: RequestInit): Promise<T> 
   return res.json()
 }
 
-export function fetchEnquiries(date: string): Promise<Enquiry[]> {
+function enquiryRangeQuery(startDate: string, endDate = startDate) {
   const timezoneOffset = new Date().getTimezoneOffset()
-  return excelRequest(`/enquiries?date=${encodeURIComponent(date)}&timezoneOffset=${timezoneOffset}`)
+  const dateQuery = startDate === endDate
+    ? `date=${encodeURIComponent(startDate)}`
+    : `startDate=${encodeURIComponent(startDate)}&endDate=${encodeURIComponent(endDate)}`
+  return `${dateQuery}&timezoneOffset=${timezoneOffset}`
+}
+
+export function fetchEnquiries(startDate: string, endDate = startDate): Promise<Enquiry[]> {
+  return excelRequest(`/enquiries?${enquiryRangeQuery(startDate, endDate)}`)
 }
 
 export function updateEnquiry(id: string, data: Partial<Enquiry>): Promise<Enquiry> {
@@ -348,10 +355,9 @@ export function deleteEnquiry(id: string): Promise<{ message: string }> {
   return excelRequest(`/enquiries/${id}`, { method: 'DELETE' })
 }
 
-export async function downloadEnquiriesExcel(date: string): Promise<void> {
+export async function downloadEnquiriesExcel(startDate: string, endDate = startDate): Promise<void> {
   const token = getExcelToken() || ''
-  const timezoneOffset = new Date().getTimezoneOffset()
-  const res = await fetch(`${BASE}/enquiries/export?date=${encodeURIComponent(date)}&timezoneOffset=${timezoneOffset}`, {
+  const res = await fetch(`${BASE}/enquiries/export?${enquiryRangeQuery(startDate, endDate)}`, {
     headers: { 'x-admin-token': token },
   })
   if (res.status === 403) {

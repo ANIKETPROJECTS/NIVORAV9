@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   fetchEnquiries, updateEnquiry, deleteEnquiry, downloadEnquiriesExcel,
   clearExcelToken, Enquiry,
 } from '../../lib/api'
-import { LogOut, RefreshCw, Download, Pencil, Trash2, Loader2, X, Check } from 'lucide-react'
+import { LogOut, RefreshCw, Download, Pencil, Trash2, Loader2, X, Check, SlidersHorizontal } from 'lucide-react'
 
 const EDITABLE_FIELDS: { key: keyof Enquiry; label: string; type: 'text' | 'textarea' }[] = [
   { key: 'fullName', label: 'Full Name', type: 'text' },
@@ -32,10 +32,44 @@ function formatSelectedDate(date: string) {
   })
 }
 
+function localMonthString(date = new Date()) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
+}
+
+function monthRange(month: string) {
+  if (!/^\d{4}-\d{2}$/.test(month)) return null
+  const [year, monthNumber] = month.split('-').map(Number)
+  if (monthNumber < 1 || monthNumber > 12) return null
+  const start = new Date(year, monthNumber - 1, 1)
+  const end = new Date(year, monthNumber, 0)
+  return { startDate: localDateString(start), endDate: localDateString(end) }
+}
+
+function previousMonthRange() {
+  const now = new Date()
+  return monthRange(localMonthString(new Date(now.getFullYear(), now.getMonth() - 1, 1)))!
+}
+
+type FilterKind = 'day' | 'lastMonth' | 'month' | 'custom'
+type EnquiryFilter = {
+  kind: FilterKind
+  startDate: string
+  endDate: string
+}
+
 export default function ExcelDashboard() {
   const navigate = useNavigate()
+  const today = localDateString()
   const [enquiries, setEnquiries] = useState<Enquiry[]>([])
-  const [selectedDate, setSelectedDate] = useState(() => localDateString())
+  const [selectedDate, setSelectedDate] = useState(today)
+  const [activeFilter, setActiveFilter] = useState<EnquiryFilter>({
+    kind: 'day', startDate: today, endDate: today,
+  })
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false)
+  const [monthDraft, setMonthDraft] = useState(localMonthString())
+  const [customStartDate, setCustomStartDate] = useState(today)
+  const [customEndDate, setCustomEndDate] = useState(today)
+  const filterPopoverRef = useRef<HTMLDivElement>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [successMsg, setSuccessMsg] = useState('')
@@ -48,15 +82,28 @@ export default function ExcelDashboard() {
 
   const flash = (msg: string) => { setSuccessMsg(msg); setTimeout(() => setSuccessMsg(''), 3000) }
 
-  const load = async (date = selectedDate) => {
+  const load = async (range = { startDate: activeFilter.startDate, endDate: activeFilter.endDate }) => {
     setLoading(true); setError('')
     setEnquiries([])
-    try { setEnquiries(await fetchEnquiries(date)) }
+    try { setEnquiries(await fetchEnquiries(range.startDate, range.endDate)) }
     catch (e: unknown) { setError((e as Error).message || 'Failed to fetch enquiries') }
     finally { setLoading(false) }
   }
 
-  useEffect(() => { load(selectedDate) }, [selectedDate])
+  useEffect(() => {
+    load({ startDate: activeFilter.startDate, endDate: activeFilter.endDate })
+  }, [activeFilter.startDate, activeFilter.endDate])
+
+  useEffect(() => {
+    if (!filterMenuOpen) return
+    const handlePointerDown = (event: PointerEvent) => {
+      if (filterPopoverRef.current && !filterPopoverRef.current.contains(event.target as Node)) {
+        setFilterMenuOpen(false)
+      }
+    }
+    document.addEventListener('pointerdown', handlePointerDown)
+    return () => document.removeEventListener('pointerdown', handlePointerDown)
+  }, [filterMenuOpen])
 
   const handleLogout = () => { clearExcelToken(); navigate('/excelsheet') }
 
@@ -70,7 +117,7 @@ export default function ExcelDashboard() {
     setSaving(true)
     try {
       await updateEnquiry(editing._id, editForm)
-      await load(selectedDate)
+      await load()
       setEditing(null)
       flash('Record updated.')
     } catch (e: unknown) {
@@ -82,29 +129,67 @@ export default function ExcelDashboard() {
 
   const handleDelete = async (id: string) => {
     setDeletingId(id)
-    try { await deleteEnquiry(id); await load(selectedDate); flash('Record deleted.') }
+    try { await deleteEnquiry(id); await load(); flash('Record deleted.') }
     catch (e: unknown) { setError((e as Error).message) }
     finally { setDeletingId(null); setConfirmDelete(null) }
   }
 
   const handleDownload = async () => {
     setDownloading(true)
-    try { await downloadEnquiriesExcel(selectedDate) }
+    try { await downloadEnquiriesExcel(activeFilter.startDate, activeFilter.endDate) }
     catch (e: unknown) { setError((e as Error).message) }
     finally { setDownloading(false) }
+  }
+
+  const applyDay = (date: string) => {
+    if (!date) return
+    setSelectedDate(date)
+    setActiveFilter({ kind: 'day', startDate: date, endDate: date })
+    setFilterMenuOpen(false)
   }
 
   const setRelativeDate = (days: number) => {
     const date = new Date()
     date.setDate(date.getDate() + days)
-    setSelectedDate(localDateString(date))
+    applyDay(localDateString(date))
   }
 
-  const dateLabel = selectedDate === localDateString()
-    ? `Today, ${formatSelectedDate(selectedDate)}`
-    : selectedDate === localDateString(new Date(Date.now() - 24 * 60 * 60 * 1000))
-      ? `Yesterday, ${formatSelectedDate(selectedDate)}`
-      : formatSelectedDate(selectedDate)
+  const applyLastMonth = () => {
+    const range = previousMonthRange()
+    setActiveFilter({ kind: 'lastMonth', ...range })
+    setFilterMenuOpen(false)
+  }
+
+  const applySelectedMonth = () => {
+    const range = monthRange(monthDraft)
+    if (!range) {
+      setError('Please select a valid month.')
+      return
+    }
+    setActiveFilter({ kind: 'month', ...range })
+    setFilterMenuOpen(false)
+  }
+
+  const applyCustomRange = () => {
+    if (!customStartDate || !customEndDate || customStartDate > customEndDate) {
+      setError('Choose a valid start and end date.')
+      return
+    }
+    setActiveFilter({ kind: 'custom', startDate: customStartDate, endDate: customEndDate })
+    setFilterMenuOpen(false)
+  }
+
+  const dateLabel = activeFilter.kind === 'day'
+    ? activeFilter.startDate === localDateString()
+      ? `Today, ${formatSelectedDate(activeFilter.startDate)}`
+      : activeFilter.startDate === localDateString(new Date(Date.now() - 24 * 60 * 60 * 1000))
+        ? `Yesterday, ${formatSelectedDate(activeFilter.startDate)}`
+        : formatSelectedDate(activeFilter.startDate)
+    : activeFilter.kind === 'lastMonth'
+      ? `Last month, ${formatSelectedDate(activeFilter.startDate)} – ${formatSelectedDate(activeFilter.endDate)}`
+      : activeFilter.kind === 'month'
+        ? `Selected month, ${formatSelectedDate(activeFilter.startDate)} – ${formatSelectedDate(activeFilter.endDate)}`
+        : `Custom range, ${formatSelectedDate(activeFilter.startDate)} – ${formatSelectedDate(activeFilter.endDate)}`
 
   return (
     <div className="exc-root">
@@ -133,6 +218,81 @@ export default function ExcelDashboard() {
             <div className="exc-date-controls">
               <button type="button" className="exc-date-shortcut" onClick={() => setRelativeDate(0)}>Today</button>
               <button type="button" className="exc-date-shortcut" onClick={() => setRelativeDate(-1)}>Yesterday</button>
+              <div className="exc-filter-control" ref={filterPopoverRef}>
+                <button
+                  type="button"
+                  className={`exc-filter-button ${activeFilter.kind !== 'day' ? 'is-active' : ''}`}
+                  onClick={() => setFilterMenuOpen(open => !open)}
+                  aria-label="Open enquiry filters"
+                  aria-expanded={filterMenuOpen}
+                  aria-haspopup="dialog"
+                  title="More date filters"
+                >
+                  <SlidersHorizontal size={15} />
+                </button>
+                {filterMenuOpen && (
+                  <div className="exc-filter-popover" role="dialog" aria-label="Enquiry date filters">
+                    <div className="exc-filter-popover-header">
+                      <strong>Filter enquiries</strong>
+                      <button type="button" className="exc-filter-close" onClick={() => setFilterMenuOpen(false)} aria-label="Close filters">
+                        <X size={14} />
+                      </button>
+                    </div>
+
+                    <button type="button" className="exc-filter-option exc-filter-option-button" onClick={applyLastMonth}>
+                      <span>
+                        <strong>Last Month</strong>
+                        <small>{formatSelectedDate(previousMonthRange().startDate)} – {formatSelectedDate(previousMonthRange().endDate)}</small>
+                      </span>
+                    </button>
+
+                    <div className="exc-filter-option">
+                      <label className="exc-filter-field">
+                        <span>Select Month</span>
+                        <input
+                          type="month"
+                          value={monthDraft}
+                          max={localMonthString()}
+                          onChange={e => setMonthDraft(e.target.value)}
+                        />
+                      </label>
+                      <button type="button" className="exc-filter-apply" onClick={applySelectedMonth} disabled={!monthDraft}>Apply</button>
+                    </div>
+
+                    <div className="exc-filter-option exc-filter-range">
+                      <div className="exc-filter-range-fields">
+                        <label className="exc-filter-field">
+                          <span>Start Date</span>
+                          <input
+                            type="date"
+                            value={customStartDate}
+                            max={customEndDate || localDateString()}
+                            onChange={e => setCustomStartDate(e.target.value)}
+                          />
+                        </label>
+                        <label className="exc-filter-field">
+                          <span>End Date</span>
+                          <input
+                            type="date"
+                            value={customEndDate}
+                            min={customStartDate}
+                            max={localDateString()}
+                            onChange={e => setCustomEndDate(e.target.value)}
+                          />
+                        </label>
+                      </div>
+                      <button
+                        type="button"
+                        className="exc-filter-apply"
+                        onClick={applyCustomRange}
+                        disabled={!customStartDate || !customEndDate}
+                      >
+                        Custom Range
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
               <label className="exc-date-picker">
                 <span>Date</span>
                 <input
@@ -373,6 +533,66 @@ export default function ExcelDashboard() {
            font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
          }
          .exc-date-picker input { border: none; outline: none; color: #2a2218; font: 12px Arial, sans-serif; cursor: pointer; }
+         .exc-filter-control { position: relative; flex: 0 0 auto; }
+         .exc-filter-button {
+           min-width: 34px; min-height: 32px; padding: 7px 8px;
+           display: inline-flex; align-items: center; justify-content: center;
+           background: #faf8f5; border: 1px solid #ddd7ce; border-radius: 4px;
+           color: #7a6245; cursor: pointer; pointer-events: auto; touch-action: manipulation;
+         }
+         .exc-filter-button:hover, .exc-filter-button.is-active {
+           border-color: #7a6245; background: #f4eee6;
+         }
+         .exc-filter-popover {
+           position: absolute; top: calc(100% + 8px); left: 0; z-index: 30;
+           width: 292px; max-width: calc(100vw - 32px); padding: 14px;
+           background: #fff; border: 1px solid #e2d9ce; border-radius: 8px;
+           box-shadow: 0 12px 30px rgba(75, 58, 42, 0.16);
+           color: #2a2218; pointer-events: auto;
+         }
+         .exc-filter-popover-header {
+           display: flex; align-items: center; justify-content: space-between;
+           padding-bottom: 10px; border-bottom: 1px solid #ede8e1;
+         }
+         .exc-filter-popover-header strong { font-size: 13px; font-weight: 600; }
+         .exc-filter-close {
+           display: inline-flex; align-items: center; justify-content: center;
+           width: 30px; height: 30px; padding: 0; border: 1px solid #ddd7ce;
+           border-radius: 4px; background: #fff; color: #9a8e82; cursor: pointer;
+         }
+         .exc-filter-close:hover { color: #7a6245; border-color: #7a6245; }
+         .exc-filter-option {
+           display: flex; align-items: flex-end; justify-content: space-between; gap: 10px;
+           padding: 12px 0; border-bottom: 1px solid #f0ebe3;
+         }
+         .exc-filter-option:last-child { border-bottom: none; padding-bottom: 0; }
+         .exc-filter-option-button {
+           width: 100%; align-items: center; border: none; background: transparent;
+           color: #2a2218; text-align: left; cursor: pointer;
+         }
+         .exc-filter-option-button:hover { color: #7a6245; }
+         .exc-filter-option-button > span { display: flex; flex-direction: column; gap: 4px; }
+         .exc-filter-option-button small { color: #9a8e82; font-size: 10px; }
+         .exc-filter-field { display: flex; flex: 1; flex-direction: column; gap: 5px; min-width: 0; }
+         .exc-filter-field > span {
+           color: #9a8e82; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+         }
+         .exc-filter-field input {
+           width: 100%; min-width: 0; min-height: 34px; padding: 7px 8px;
+           border: 1px solid #ddd7ce; border-radius: 4px; background: #fff;
+           color: #2a2218; font: 12px Arial, sans-serif; outline: none;
+         }
+         .exc-filter-field input:focus { border-color: #7a6245; }
+         .exc-filter-apply {
+           min-height: 34px; padding: 7px 10px; border: 1px solid #7a6245;
+           border-radius: 4px; background: #7a6245; color: #fff; cursor: pointer;
+           font-size: 11px; white-space: nowrap;
+         }
+         .exc-filter-apply:hover:not(:disabled) { background: #6a5438; }
+         .exc-filter-apply:disabled { opacity: 0.45; cursor: default; }
+         .exc-filter-range { display: flex; flex-direction: column; align-items: stretch; }
+         .exc-filter-range-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+         .exc-filter-range .exc-filter-apply { align-self: flex-end; }
         .exc-btn-ghost-sm {
           background: none; border: 1px solid #ddd7ce; color: #9a8e82;
           border-radius: 4px; padding: 7px 9px; cursor: pointer;
@@ -547,16 +767,19 @@ export default function ExcelDashboard() {
             }
             .exc-date-controls {
                display: grid;
-               grid-template-columns: repeat(2, minmax(0, 1fr));
+               grid-template-columns: repeat(3, minmax(0, 1fr));
                gap: 8px;
                grid-column: 1 / -1;
               width: 100%;
+               position: static;
+               overflow: visible;
                pointer-events: auto;
                touch-action: manipulation;
             }
              .exc-date-shortcut {
                width: 100%;
                min-width: 0;
+               min-height: 44px;
                position: static;
                pointer-events: auto;
                touch-action: manipulation;
@@ -566,6 +789,7 @@ export default function ExcelDashboard() {
                grid-column: 1 / -1;
                width: 100%;
               min-width: 0;
+               min-height: 44px;
                justify-content: space-between;
                position: static;
                pointer-events: auto;
@@ -574,8 +798,25 @@ export default function ExcelDashboard() {
              .exc-date-picker input {
                min-width: 0;
                width: 100%;
+               min-height: 44px;
+               padding: 0;
                pointer-events: auto;
                touch-action: manipulation;
+             }
+             .exc-filter-control { width: 100%; }
+             .exc-filter-button {
+               width: 100%;
+               min-width: 0;
+               min-height: 44px;
+               padding: 10px;
+             }
+             .exc-filter-popover {
+               top: calc(100% + 10px);
+               right: 0;
+               left: auto;
+               width: min(320px, calc(100vw - 32px));
+               max-height: min(70vh, 560px);
+               overflow-y: auto;
              }
              .exc-btn-ghost-sm {
                position: static;

@@ -1,0 +1,24 @@
+"Two things to fix/add on the mobile Contact Form Records page:
+
+1. Date picker still not clickable on mobile:
+The calendar/date input still doesn't respond to taps on mobile. Please dig deeper — check the native <input type='date'> element specifically:
+
+Confirm it has sufficient tap target size (minimum 44x44px) and isn't being clipped or shrunk by a parent container's overflow: hidden or fixed width
+Check if any sibling/parent element with position: absolute and no pointer-events: none is invisibly stacked on top of it, intercepting the tap before it reaches the input
+Test this on an actual mobile device/viewport (not desktop resize simulation) since native date inputs can behave differently across browsers
+
+2. Add a new filter option — icon next to 'Yesterday' button:
+Please add a small filter/calendar icon button positioned right next to the 'Yesterday' button (same row). When tapped, it should open a dropdown/popover with 3 filter options:
+
+Last Month — automatically filters and shows all entries from the previous calendar month
+Select Month — shows a month + year picker; once selected, filters and displays entries for that specific month
+Custom Range — shows two date fields, 'Start Date' and 'End Date'; once both are selected, filters and displays entries between those dates (inclusive)
+
+Requirements:
+
+This new filter option should work alongside the existing Today/Yesterday buttons and date picker — selecting one filter type should clear/override the other active filter
+The dropdown/popover should be mobile-friendly (proper size, easily tappable options, closes when an option is selected or when tapping outside)
+Once a filter is applied (Last Month, a selected month, or a custom range), the entries list and the 'Download Excel' button should reflect only that filtered data, same as how Today/Yesterday currently work
+Please implement this for both mobile and desktop, keeping the existing filter row layout intact and just adding this new icon/dropdown alongside it
+
+Please test both fixes thoroughly on mobile and share a screenshot showing the new filter icon and its dropdown options."
