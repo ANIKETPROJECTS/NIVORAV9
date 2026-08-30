@@ -131,8 +131,8 @@ export default function ExcelDashboard() {
           </div>
           <div className="exc-topbar-right">
             <div className="exc-date-controls">
-              <button className="exc-date-shortcut" onClick={() => setRelativeDate(0)}>Today</button>
-              <button className="exc-date-shortcut" onClick={() => setRelativeDate(-1)}>Yesterday</button>
+              <button type="button" className="exc-date-shortcut" onClick={() => setRelativeDate(0)}>Today</button>
+              <button type="button" className="exc-date-shortcut" onClick={() => setRelativeDate(-1)}>Yesterday</button>
               <label className="exc-date-picker">
                 <span>Date</span>
                 <input
@@ -144,8 +144,8 @@ export default function ExcelDashboard() {
                 />
               </label>
             </div>
-            <button className="exc-btn-ghost-sm" onClick={() => load(selectedDate)} title="Refresh"><RefreshCw size={15} /></button>
-            <button className="exc-btn-add" onClick={handleDownload} disabled={downloading || enquiries.length === 0}>
+            <button type="button" className="exc-btn-ghost-sm" onClick={() => load(selectedDate)} title="Refresh"><RefreshCw size={15} /></button>
+            <button type="button" className="exc-btn-add" onClick={handleDownload} disabled={downloading || enquiries.length === 0}>
               {downloading ? <Loader2 size={16} className="exc-spin" /> : <Download size={16} />} Download Excel
             </button>
           </div>
@@ -516,16 +516,21 @@ export default function ExcelDashboard() {
                top: auto;
                z-index: auto;
                flex-shrink: 0;
+               display: flex;
+               flex-direction: column;
                align-items: stretch;
                gap: 16px;
                margin: 0;
+               pointer-events: auto;
              }
              .exc-topbar-left {
+               order: 2;
                width: 100%;
                align-items: flex-start;
                gap: 6px;
              }
             .exc-topbar-right {
+               order: 1;
                display: grid;
                grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
                gap: 10px;
@@ -538,6 +543,7 @@ export default function ExcelDashboard() {
                margin: 0;
                align-items: stretch;
                justify-content: stretch;
+               pointer-events: auto;
             }
             .exc-date-controls {
                display: grid;
@@ -545,15 +551,32 @@ export default function ExcelDashboard() {
                gap: 8px;
                grid-column: 1 / -1;
               width: 100%;
+               pointer-events: auto;
+               touch-action: manipulation;
             }
-             .exc-date-shortcut { width: 100%; min-width: 0; }
+             .exc-date-shortcut {
+               width: 100%;
+               min-width: 0;
+               position: static;
+               pointer-events: auto;
+               touch-action: manipulation;
+               cursor: pointer;
+             }
             .exc-date-picker {
                grid-column: 1 / -1;
                width: 100%;
               min-width: 0;
                justify-content: space-between;
+               position: static;
+               pointer-events: auto;
+               touch-action: manipulation;
             }
-            .exc-date-picker input { min-width: 0; width: 100%; }
+             .exc-date-picker input {
+               min-width: 0;
+               width: 100%;
+               pointer-events: auto;
+               touch-action: manipulation;
+             }
              .exc-btn-ghost-sm {
                position: static;
                top: auto;
@@ -563,6 +586,8 @@ export default function ExcelDashboard() {
                grid-column: 1;
                width: 100%;
                justify-content: center;
+               pointer-events: auto;
+               touch-action: manipulation;
              }
             .exc-btn-add {
                position: static;
@@ -574,6 +599,8 @@ export default function ExcelDashboard() {
                width: 100%;
               justify-content: center;
               min-width: 0;
+               pointer-events: auto;
+               touch-action: manipulation;
             }
              .exc-content {
                position: static;
