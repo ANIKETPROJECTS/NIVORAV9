@@ -1,5 +1,7 @@
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { fetchProjects, fetchSiteSettings } from '../lib/api'
 
 const testimonials = [
   {
@@ -76,11 +78,70 @@ const testimonials = [
   },
 ]
 
-const stats = [
-  { value: '50+', label: 'Projects Completed' },
-  { value: '5+', label: 'Years of Design Excellence' },
-  { value: '100%', label: 'On-Time Handover' },
-]
+const statDefinitions = [
+  { key: 'projects', suffix: '+', label: 'Projects Completed' },
+  { key: 'years', suffix: '+', label: 'Years of Design Excellence' },
+  { key: 'handover', suffix: '%', label: 'On-Time Handover' },
+] as const
+
+type StatKey = typeof statDefinitions[number]['key']
+
+// The Project model does not currently track handover status, so this is the
+// requested fallback until an on-time/completion status field is available.
+const ON_TIME_HANDOVER_FALLBACK = 100
+
+function parseStatNumber(value?: string): number | null {
+  const match = value?.match(/\d+(?:\.\d+)?/)
+  return match ? Number(match[0]) : null
+}
+
+function AnimatedStatValue({
+  value,
+  suffix,
+  shouldStart,
+  delay,
+}: {
+  value: number | null
+  suffix: string
+  shouldStart: boolean
+  delay: number
+}) {
+  const [displayValue, setDisplayValue] = useState(0)
+  const startedRef = useRef(false)
+
+  useEffect(() => {
+    if (!shouldStart || value === null || startedRef.current) return
+    startedRef.current = true
+
+    let frameId = 0
+    let delayId = 0
+    let startTime: number | null = null
+    const duration = 1100
+
+    const tick = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp
+      const progress = Math.min((timestamp - startTime) / duration, 1)
+      const easedProgress = 1 - Math.pow(1 - progress, 3)
+      setDisplayValue(Math.round(value * easedProgress))
+
+      if (progress < 1) {
+        frameId = window.requestAnimationFrame(tick)
+      }
+    }
+
+    delayId = window.setTimeout(() => {
+      frameId = window.requestAnimationFrame(tick)
+    }, delay)
+
+    return () => {
+      window.clearTimeout(delayId)
+      window.cancelAnimationFrame(frameId)
+    }
+  }, [shouldStart, value, delay])
+
+  if (value === null) return <>—</>
+  return <>{displayValue}{suffix}</>
+}
 
 const fadeUp = (delay = 0) => ({
   hidden: { opacity: 0, y: 25 },
@@ -252,6 +313,73 @@ function TestimonialCard({ t, index }: { t: typeof testimonials[0]; index: numbe
 }
 
 export default function Testimonials() {
+  const [projectCount, setProjectCount] = useState<number | null>(null)
+  const [yearsOfExcellence, setYearsOfExcellence] = useState<number | null>(null)
+  const [statsInView, setStatsInView] = useState(false)
+  const statsSectionRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    fetchProjects()
+      .then(projects => {
+        if (cancelled) return
+        setProjectCount(projects.length)
+
+        // Use the project years as a meaningful fallback if the configured
+        // SiteSettings value cannot be loaded.
+        const projectYears = projects
+          .map(project => Number(project.year))
+          .filter(year => Number.isFinite(year) && year > 0)
+        if (projectYears.length > 0) {
+          setYearsOfExcellence(Math.max(0, new Date().getFullYear() - Math.min(...projectYears)))
+        }
+      })
+      .catch(() => {
+        // Keep the project value unavailable rather than showing a stale
+        // hardcoded count when the live source cannot be reached.
+      })
+
+    fetchSiteSettings()
+      .then(settings => {
+        if (cancelled) return
+        const configuredYears = settings.homeStats?.find(stat =>
+          stat.label.toLowerCase().includes('years')
+        )
+        const parsedYears = parseStatNumber(configuredYears?.value)
+        if (parsedYears !== null) setYearsOfExcellence(parsedYears)
+      })
+      .catch(() => {
+        // The project-year-derived value remains in place when available.
+      })
+
+    return () => { cancelled = true }
+  }, [])
+
+  useEffect(() => {
+    const section = statsSectionRef.current
+    if (!section) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStatsInView(true)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.4 }
+    )
+
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
+
+  const statValues: Record<StatKey, number | null> = {
+    projects: projectCount,
+    years: yearsOfExcellence,
+    handover: ON_TIME_HANDOVER_FALLBACK,
+  }
+
   return (
     <div style={{ background: '#f5f2ed', minHeight: '100vh' }}>
 
@@ -331,7 +459,7 @@ export default function Testimonials() {
       </section>
 
       {/* Stats Bar */}
-      <section style={{ background: '#ffffff', borderTop: '1px solid rgba(95,116,94,0.18)', borderBottom: '1px solid rgba(95,116,94,0.18)', padding: '64px 24px' }}>
+      <section ref={statsSectionRef} style={{ background: '#ffffff', borderTop: '1px solid rgba(95,116,94,0.18)', borderBottom: '1px solid rgba(95,116,94,0.18)', padding: '64px 24px' }}>
         <div
           style={{
             maxWidth: 900,
@@ -356,9 +484,9 @@ export default function Testimonials() {
               }
             }
           `}</style>
-          {stats.map((s, i) => (
+          {statDefinitions.map((stat, i) => (
             <motion.div
-              key={i}
+              key={stat.key}
               className="stats-bar-item"
               variants={fadeUp(i * 0.12)}
               initial="hidden"
@@ -373,7 +501,14 @@ export default function Testimonials() {
                 color: '#21291a',
                 margin: '0 0 8px',
                 lineHeight: 1,
-              }}>{s.value}</p>
+              }}>
+                <AnimatedStatValue
+                  value={statValues[stat.key]}
+                  suffix={stat.suffix}
+                  shouldStart={statsInView && statValues[stat.key] !== null}
+                  delay={i * 120}
+                />
+              </p>
               <p style={{
                 fontFamily: "'Jost', sans-serif",
                 fontWeight: 400,
@@ -382,7 +517,7 @@ export default function Testimonials() {
                 textTransform: 'uppercase',
                 color: 'rgba(33,41,26,0.5)',
                 margin: 0,
-              }}>{s.label}</p>
+              }}>{stat.label}</p>
             </motion.div>
           ))}
         </div>
