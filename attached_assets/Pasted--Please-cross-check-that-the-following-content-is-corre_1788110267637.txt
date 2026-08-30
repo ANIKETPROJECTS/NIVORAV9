@@ -1,0 +1,41 @@
+"Please cross-check that the following content is correctly and fully entered for each of the 8 Portfolio projects — checking ONLY the Portfolio section (project detail pages and admin panel Portfolio Projects), NOT the Testimonials page. For each project, verify: (1) the Client/Project name is correct, (2) the Design Intent paragraph matches exactly, and (3) all 10 Materials Used items are present and correct.
+
+1. Royal Living Redefined (Client: Arvind Mohite)
+Design Intent: 'Designed for an army family, this 4BHK penthouse embodies discipline, warmth, and understated luxury. The design language blends contemporary elegance with subtle neo-classical influences, creating interiors that feel timeless and refined. Rich teak finishes, balanced proportions, and carefully layered lighting establish visual harmony, while thoughtful planning ensures every space supports comfortable family living. The result is a home that reflects strength, sophistication, and lasting value.'
+Materials Used: Italian Vitrified Flooring, Natural Teak Veneer, Walnut Matte Laminates, Fluted Glass Panels, Champagne Gold PVD Metal Accents, Quartz Countertops, Gypsum False Ceiling, Warm White LED Lighting (3000K), Hettich Soft-Close Hardware, Asian Paints Royale Matt Finish
+
+2. Modern Elegance (Client: Tushar Shah)
+Design Intent: 'This residence was envisioned as a calm, clutter-free urban home where modern aesthetics meet everyday practicality. Clean lines, warm wood textures, and soft neutral tones create an inviting atmosphere, while custom-designed furniture maximizes functionality without compromising elegance. Every element has been carefully curated to ensure effortless living with timeless appeal.'
+Materials Used: Large Format Vitrified Tiles, Oak Finish Laminates, Acrylic Modular Kitchen, Quartz Kitchen Countertop, Matte PU Wardrobes, Decorative Veneer Panels, Cove Lighting, Toughened Glass, Hettich Hardware, Asian Paints Royale
+
+3. Casa Élan Bungalow
+Design Intent: 'Casa Élan was designed as a contemporary bungalow that celebrates openness, natural light, and refined simplicity. Clean architectural forms are softened through warm materials and subtle textures, creating interiors that feel elegant without excess. Every room flows seamlessly into the next, promoting comfort, functionality, and a timeless living experience.'
+Materials Used: Imported Marble Finish Tiles, Natural Oak Veneer, Stone Texture Laminates, Quartz Countertops, Wooden Fluted Panels, PU Painted Furniture, Gypsum Ceiling, Premium Decorative Lighting, Toughened Glass Railings, Brushed Brass Accessories
+
+4. The Neutral Edit (Commercial Office)
+Design Intent: 'The office was designed to enhance productivity while expressing understated luxury. A neutral colour palette, clean geometries, and integrated lighting create a calm, professional environment. Spatial planning prioritizes smooth circulation, collaborative work, and client interaction, while refined detailing reinforces the company's professional identity.'
+Materials Used: Double Charged Vitrified Tiles, Walnut Veneer, Matte Laminates, Quartz Reception Counter, Fluted Glass Partitions, Aluminium Profiles, Linear LED Lighting, Acoustic Ceiling Panels, Hettich Hardware, Royale Matt Paint
+
+5. The Quiet Curve (Shivganga Project)
+Design Intent: 'The Quiet Curve explores softness through gentle arches, warm timber finishes, and a restrained neutral palette. Curved architectural elements introduce a sense of calm while layered lighting enhances depth and intimacy. The design creates a welcoming environment where every detail contributes to a relaxed and timeless living experience.'
+Materials Used: Neutral Vitrified Flooring, Wooden Veneer Panels, Curved Gypsum Elements, Stone Texture Laminates, Matte PU Finish, Cove Lighting, Quartz Countertops, Decorative Fluted Glass, Soft Fabric Upholstery, Hettich Hardware
+
+6. The Soft Neutral Story (Client: Samiksha)
+Design Intent: 'This home was designed around the philosophy that simplicity creates lasting elegance. Soft neutral tones, textured stone finishes, and warm wooden surfaces work together to establish a peaceful atmosphere. Carefully positioned indirect lighting highlights materiality while maintaining visual balance, resulting in interiors that feel sophisticated yet effortlessly comfortable.'
+Materials Used: Beige Vitrified Tiles, Stone Finish Laminates, Wooden Veneer, PU Painted Furniture, Quartz Kitchen Counter, Indirect LED Lighting, Decorative Mirrors, Toughened Glass, Soft Matte Paint, Premium Hardware
+
+7. The Layered Calm (Client: Kapil)
+Design Intent: 'Designed for modern family living, this duplex combines layered materials with a refined neutral palette to create warmth and spatial harmony. Carefully composed lighting, premium finishes, and custom detailing establish a luxurious yet welcoming environment. Every space has been planned to encourage effortless movement while maintaining a sense of calm throughout the home.'
+Materials Used: Large Format Tiles, Natural Walnut Veneer, PU Finish Wardrobes, Quartz Countertops, Wooden Fluted Panels, Gypsum False Ceiling, Warm Cove Lighting, Toughened Glass, Premium Fabric Upholstery, Hettich Hardware
+
+8. Blushwood Haven (Client: Jhalak)
+Design Intent: 'Blushwood Haven celebrates warmth, elegance, and contemporary living through a carefully curated blend of blush tones, natural wood, and ambient lighting. Bespoke furniture, sculpted headboards, and thoughtfully integrated storage create interiors that feel luxurious yet highly functional. Every element has been designed to enhance comfort while maintaining a timeless and sophisticated aesthetic.'
+Materials Used: Premium Vitrified Flooring, Blush Matte PU Finish, Walnut Veneer, Quartz Kitchen Counter, Acrylic Modular Kitchen, Wooden Wall Panelling, Decorative Pendant Lighting, Fluted Glass, Premium Upholstery Fabric, Hettich Soft-Close Hardware
+
+Please report back for each of the 8 projects:
+
+Whether the Design Intent text matches exactly, is missing, is empty, or differs from what's listed above
+Whether all 10 Materials Used items are present and match exactly, or if any are missing, extra, or worded differently
+Any project where the client name is missing or incorrect
+
+Do NOT touch the Testimonials page or its content in this check — only verify the Portfolio section (Portfolio Projects admin panel + Portfolio detail pages on the frontend). Just investigate and report back clearly — do not make any changes yet."
