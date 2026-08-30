@@ -61,7 +61,6 @@ const FALLBACK_SERVICE_CARDS = [
 const SERVICE_DETAILS = [
   {
     num: '01',
-    eyebrow: '01 — RESIDENTIAL INTERIORS',
     title: 'Residential Interiors',
     intro: 'Designing Homes That Feel Like You',
     desc: 'Your home should be more than just a place to live—it should reflect your personality, lifestyle, and aspirations. Whether you’re moving into a new apartment, building your dream villa, renovating an existing home, or creating a weekend retreat, we design spaces that are functional, timeless, and uniquely yours.',
@@ -70,7 +69,6 @@ const SERVICE_DETAILS = [
   },
   {
     num: '02',
-    eyebrow: '02 — COMMERCIAL INTERIORS',
     title: 'Commercial Interiors',
     intro: 'Spaces Designed for Productivity & Impact',
     desc: 'A well-designed workspace inspires creativity, improves efficiency, and leaves a lasting impression on clients and visitors. From corporate offices and co-working spaces to retail stores, clinics, and fitness studios, we create environments that balance functionality, comfort, and brand identity.',
@@ -79,7 +77,6 @@ const SERVICE_DETAILS = [
   },
   {
     num: '03',
-    eyebrow: '03 — HOSPITALITY INTERIORS',
     title: 'Hospitality Interiors',
     intro: 'Creating Experiences Through Design',
     desc: 'In hospitality, every detail contributes to the guest experience. We design inviting and memorable environments that combine aesthetics, comfort, and functionality, ensuring every visitor feels welcomed and inspired.',
@@ -88,7 +85,6 @@ const SERVICE_DETAILS = [
   },
   {
     num: '04',
-    eyebrow: '04 — ARCHITECTURE & SPACE PLANNING',
     title: 'Architecture & Space Planning',
     intro: 'Building Strong Foundations for Exceptional Spaces',
     desc: 'Great design begins with thoughtful planning. Our architectural and space planning services focus on creating efficient layouts, striking elevations, and well-balanced spaces that maximize both aesthetics and functionality.',
@@ -97,7 +93,6 @@ const SERVICE_DETAILS = [
   },
   {
     num: '05',
-    eyebrow: '05 — INTERIOR DESIGN & 3D VISUALIZATION',
     title: 'Interior Design & 3D Visualization',
     intro: 'Bringing Ideas to Life Before Execution',
     desc: 'Visualize your future space with confidence through detailed drawings and realistic 3D renderings. Our design process helps you explore layouts, materials, finishes, and design concepts before construction begins.',
@@ -106,7 +101,6 @@ const SERVICE_DETAILS = [
   },
   {
     num: '06',
-    eyebrow: '06 — DEVELOPER & BUILDER SOLUTIONS',
     title: 'Developer & Builder Solutions',
     intro: 'Enhancing Properties to Maximize Market Appeal',
     desc: 'We collaborate with developers and builders to create thoughtfully designed spaces that elevate property value and attract potential buyers. From show apartments to common amenities, every space is crafted to leave a lasting impression.',
@@ -115,7 +109,6 @@ const SERVICE_DETAILS = [
   },
   {
     num: '07',
-    eyebrow: '07 — RENOVATION & MAKEOVERS',
     title: 'Renovation & Makeovers',
     intro: 'Transforming Existing Spaces with Purpose',
     desc: 'Whether you’re updating a home, refreshing a workplace, or modernizing an outdated interior, our renovation services breathe new life into existing spaces while preserving what matters most.',
@@ -328,9 +321,6 @@ function ServiceDetailSection({
         delay={0.12}
       >
         <div className="svc-detail-content">
-          <ServiceReveal delay={0}>
-            <p className="svc-detail-eyebrow">{service.eyebrow}</p>
-          </ServiceReveal>
           <ServiceReveal delay={0.06}>
             <h2>{service.title}</h2>
           </ServiceReveal>
