@@ -5,13 +5,23 @@ export default function BackToTopButton() {
   const [hovered, setHovered] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 300)
+    const onScroll = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      const hasScrolledToLowerPage = maxScroll > 0 && window.scrollY >= Math.max(600, maxScroll * 0.7)
+      setVisible(hasScrolledToLowerPage)
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
     onScroll()
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
   }, [])
 
   const handleClick = () => {
+    setVisible(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -24,8 +34,8 @@ export default function BackToTopButton() {
       className="back-to-top-button"
       style={{
         position: 'fixed',
-        bottom: 24,
-        right: 96,
+         bottom: 96,
+         right: 24,
         zIndex: 50,
         width: 56,
         height: 56,
@@ -41,8 +51,8 @@ export default function BackToTopButton() {
         boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? 'auto' : 'none',
-        transition: 'opacity 0.35s ease, background-color 0.25s ease, transform 0.25s ease',
-        transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
+         transition: 'opacity 0.35s ease, background-color 0.25s ease, transform 0.35s ease',
+         transform: hovered ? 'translateY(-3px)' : visible ? 'translateY(0)' : 'translateY(12px)',
       }}
     >
       <svg
