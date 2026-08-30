@@ -18,9 +18,9 @@ Two workflows must both be running:
 
 The Vite dev server proxies `/api/*` requests to the Express API on port 3001.
 
-## Required secrets
+## Replit secrets
 
-All set as Replit Secrets (not plaintext env vars):
+The startup secrets are set as Replit Secrets (not plaintext env vars):
 
 | Secret | Description |
 |---|---|
@@ -31,6 +31,13 @@ All set as Replit Secrets (not plaintext env vars):
 | `ADMIN_USERNAME` | Username for the admin panel |
 | `ADMIN_PASSWORD` | Password for the admin panel |
 | `SESSION_SECRET` | Session signing secret |
+
+The following email secrets are optional. Without them, contact enquiries are
+still saved to MongoDB and remain available in the records dashboard, but no
+notification email is sent:
+
+| Secret | Description |
+|---|---|
 | `EMAIL_USER` | Gmail address used to send contact-form enquiries |
 | `EMAIL_APP_SECRET` | Gmail app password |
 | `EMAIL_TO` | Inbox that receives contact-form enquiries |
