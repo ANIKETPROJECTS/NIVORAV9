@@ -4,6 +4,7 @@
 export interface Project {
   id: string
   name: string
+  client: string
   location: string
   category: 'residential' | 'commercial' | 'architecture'
   year: string

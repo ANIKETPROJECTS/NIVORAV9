@@ -32,7 +32,7 @@ const testimonials = [
     stars: 5,
     text: 'Our office now represents our brand perfectly. The layout has improved productivity, while the elegant interiors leave a lasting impression on every client who visits. NIVORA managed the entire project professionally and delivered exactly as promised.',
     name: 'Parag Bari',
-    location: 'The Office Neutral Edit, Mumbai',
+    location: 'The Neutral Edit, Mumbai',
     project: 'COMMERCIAL — OFFICE',
     initials: 'PB',
   },

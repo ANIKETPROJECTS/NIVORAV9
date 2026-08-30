@@ -145,7 +145,7 @@ export const projects: Project[] = [
   },
   {
     id: 'tamarind-home-pune',
-    name: 'The Office Neutral Edit',
+    name: 'The Neutral Edit',
     location: 'Aundh, Pune',
     category: 'residential',
     concept: 'Heritage warmth in a contemporary frame',

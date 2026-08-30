@@ -22,6 +22,7 @@ interface Props {
 const DEFAULT: Partial<FormData> = {
   id: '',
   name: '',
+  client: '',
   location: '',
   category: 'residential',
   year: new Date().getFullYear().toString(),
@@ -200,6 +201,10 @@ export default function AdminProjectForm({ initial, onSave, onCancel, isEdit }: 
               <div className="apf-field">
                 <label>Location</label>
                 <input value={form.location || ''} onChange={e => set('location', e.target.value)} placeholder="e.g. Juhu, Mumbai" />
+              </div>
+              <div className="apf-field">
+                <label>Client Name</label>
+                <input value={form.client || ''} onChange={e => set('client', e.target.value)} placeholder="e.g. Arvind Mohite" />
               </div>
               <div className="apf-field">
                 <label>Year</label>

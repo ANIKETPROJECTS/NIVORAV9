@@ -15,6 +15,7 @@ const projects = [
   {
     id: 'serenity-villa-mumbai',
     name: 'Royal Living Redefined',
+    client: 'Arvind Mohite',
     location: 'Juhu, Mumbai',
     category: 'residential',
     year: '2024',
@@ -47,6 +48,7 @@ const projects = [
   {
     id: 'verdant-apartment-pune',
     name: 'Modern Elegance',
+    client: 'Tushar Shah',
     location: 'Koregaon Park, Pune',
     category: 'residential',
     year: '2024',
@@ -126,7 +128,7 @@ const projects = [
   },
   {
     id: 'tamarind-home-pune',
-    name: 'The Office Neutral Edit',
+    name: 'The Neutral Edit',
     location: 'Aundh, Pune',
     category: 'residential',
     year: '2023',
@@ -181,6 +183,7 @@ const projects = [
   {
     id: 'amber-bungalow-lonavala',
     name: 'The Soft Neutral Story',
+    client: 'Samiksha Shetty',
     location: 'Lonavala',
     category: 'residential',
     year: '2024',
@@ -204,6 +207,7 @@ const projects = [
   {
     id: 'onyx-office-mumbai',
     name: 'The Layered Calm',
+    client: 'Kapil Arora',
     location: 'BKC, Mumbai',
     category: 'commercial',
     year: '2024',
@@ -232,6 +236,7 @@ const projects = [
   {
     id: 'sage-cafe-pune',
     name: 'Blushwood Haven',
+    client: 'Jhalak',
     location: 'FC Road, Pune',
     category: 'commercial',
     year: '2023',

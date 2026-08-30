@@ -11,6 +11,9 @@ const projectSchema = new mongoose.Schema(
     // Main heading shown on the card and hero
     name: { type: String, required: true, trim: true },
 
+    // Optional client name shown on the project detail page
+    client: { type: String, default: '', trim: true },
+
     // Subtitle / location shown below the heading
     location: { type: String, default: '', trim: true },
 

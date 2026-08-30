@@ -309,6 +309,11 @@ export default function ProjectDetail() {
               {project.name}
             </h1>
             <p style={{ color: 'rgba(245,240,232,0.7)', letterSpacing: '0.08em' }}>{project.location}</p>
+            {project.client?.trim() && (
+              <p style={{ color: 'rgba(245,240,232,0.62)', letterSpacing: '0.06em', fontSize: 12, margin: '0.45rem 0 0' }}>
+                Client: {project.client}
+              </p>
+            )}
           </FadeIn>
         </div>
       </div>
