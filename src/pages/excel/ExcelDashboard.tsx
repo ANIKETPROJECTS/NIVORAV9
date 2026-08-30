@@ -255,7 +255,7 @@ export default function ExcelDashboard() {
                 {filterMenuOpen && (
                   <div className="exc-filter-popover" role="dialog" aria-label="Enquiry date filters">
                     <div className="exc-filter-popover-header">
-                      <strong>Filter enquiries</strong>
+                      <strong>Filter Enquiries</strong>
                       <button type="button" className="exc-filter-close" onClick={() => setFilterMenuOpen(false)} aria-label="Close filters">
                         <X size={14} />
                       </button>
@@ -584,23 +584,25 @@ export default function ExcelDashboard() {
         .exc-count { font-size: 12px; color: #c0b5a8; }
          .exc-topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
          .exc-date-controls { display: flex; align-items: center; gap: 6px; }
-         .exc-date-shortcut {
+          .exc-date-shortcut {
            background: #faf8f5; border: 1px solid #ddd7ce; color: #7a6245;
-           border-radius: 4px; padding: 8px 10px; cursor: pointer; font-size: 11px;
+            border-radius: 4px; padding: 8px 10px; cursor: pointer; font-size: 13px;
+            font-weight: 500;
          }
          .exc-date-shortcut:hover { border-color: #7a6245; background: #f4eee6; }
          .exc-date-picker {
            display: flex; align-items: center; gap: 7px; border: 1px solid #ddd7ce;
            border-radius: 4px; padding: 5px 8px; background: #fff; color: #9a8e82;
-           font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+            font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em;
          }
-         .exc-date-picker input { border: none; outline: none; color: #2a2218; font: 12px Arial, sans-serif; cursor: pointer; }
+          .exc-date-picker input { border: none; outline: none; color: #2a2218; font: 13px Arial, sans-serif; cursor: pointer; }
           .exc-range-summary {
-            display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px;
-            margin: 0 0 24px; padding: 0 0 14px; border-bottom: 1px solid #e2d9ce;
-            color: #9a8e82; font-size: 11px; line-height: 1.5;
+             display: block; position: relative; clear: both; width: 100%;
+             margin: 24px 0 28px; padding: 0 0 16px; border-bottom: 1px solid #e2d9ce;
+             color: #9a8e82; font-size: 13px; line-height: 1.5;
          }
-          .exc-range-summary strong { color: #6b5d4f; font-weight: 600; }
+           .exc-range-summary span, .exc-range-summary strong { display: inline; }
+           .exc-range-summary strong { color: #6b5d4f; font-weight: 600; }
          .exc-filter-control { position: relative; flex: 0 0 auto; }
          .exc-filter-button {
            min-width: 34px; min-height: 32px; padding: 7px 8px;
@@ -616,15 +618,15 @@ export default function ExcelDashboard() {
            width: 292px; max-width: calc(100vw - 32px); padding: 14px;
            background: #fff; border: 1px solid #e2d9ce; border-radius: 8px;
            box-shadow: 0 12px 30px rgba(75, 58, 42, 0.16);
-            color: #2a2218; font-family: Arial, sans-serif; font-size: 10px; pointer-events: auto;
+             color: #2a2218; font-family: Arial, sans-serif; font-size: 13px; pointer-events: auto;
          }
          .exc-filter-popover-header {
            display: flex; align-items: center; justify-content: space-between;
            padding-bottom: 10px; border-bottom: 1px solid #ede8e1;
          }
-          .exc-filter-popover-header strong {
-            color: #7a6245; font-size: 10px; font-weight: 600;
-            letter-spacing: 0.1em; text-transform: uppercase;
+           .exc-filter-popover-header strong {
+             color: #1a1612; font-size: 18px; font-weight: 700;
+             letter-spacing: 0; text-transform: none;
           }
          .exc-filter-close {
            display: inline-flex; align-items: center; justify-content: center;
@@ -650,21 +652,21 @@ export default function ExcelDashboard() {
             content: ""; width: 7px; height: 7px; border-radius: 50%; background: #7a6245;
           }
           .exc-filter-radio-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-          .exc-filter-radio-copy strong { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
-          .exc-filter-radio-copy small { color: #9a8e82; font-size: 10px; line-height: 1.35; }
+           .exc-filter-radio-copy strong { font-size: 13px; font-weight: 600; letter-spacing: 0; }
+           .exc-filter-radio-copy small { color: #9a8e82; font-size: 12px; line-height: 1.35; }
           .exc-filter-selection {
             margin-top: 10px; padding: 12px; border: 1px solid #e2d9ce;
             border-radius: 5px; background: #fff;
           }
-          .exc-filter-last-month-note { margin: 0; color: #9a8e82; font-size: 10px; line-height: 1.5; }
+           .exc-filter-last-month-note { margin: 0; color: #9a8e82; font-size: 12px; line-height: 1.5; }
          .exc-filter-field { display: flex; flex: 1; flex-direction: column; gap: 5px; min-width: 0; }
          .exc-filter-field > span {
-            color: #9a8e82; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+             color: #9a8e82; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
          }
          .exc-filter-field input {
            width: 100%; min-width: 0; min-height: 34px; padding: 7px 8px;
            border: 1px solid #ddd7ce; border-radius: 4px; background: #fff;
-            color: #2a2218; font: 10px Arial, sans-serif; outline: none;
+             color: #2a2218; font: 13px Arial, sans-serif; outline: none;
          }
          .exc-filter-field input:focus { border-color: #7a6245; }
          .exc-filter-range-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
@@ -672,7 +674,7 @@ export default function ExcelDashboard() {
             width: 100%; min-height: 38px; margin-top: 14px; padding: 8px 12px;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             border: 1px solid #7a6245; border-radius: 4px; background: #7a6245;
-            color: #fff; cursor: pointer; font-size: 10px; font-weight: 600;
+             color: #fff; cursor: pointer; font-size: 13px; font-weight: 600;
             letter-spacing: 0.08em; text-transform: uppercase;
           }
           .exc-filter-submit:hover:not(:disabled) { background: #6a5438; }
