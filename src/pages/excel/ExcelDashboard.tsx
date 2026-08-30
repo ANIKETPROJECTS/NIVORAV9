@@ -709,7 +709,10 @@ export default function ExcelDashboard() {
           display: flex; justify-content: space-between; align-items: center;
         }
         .exc-error button { background: none; border: none; color: #b85a4a; cursor: pointer; font-size: 18px; }
-        .exc-content { padding: 28px 32px; flex: 1; }
+        .exc-content {
+          display: block; position: relative; z-index: 0;
+          padding: 28px 32px; flex: 1;
+        }
         .exc-loading, .exc-empty {
           display: flex; align-items: center; justify-content: center;
           flex-direction: column; gap: 16px; color: #b0a498;
@@ -911,7 +914,7 @@ export default function ExcelDashboard() {
                min-height: 44px;
              }
              .exc-filter-field input {
-               font-size: 12px;
+               font-size: 13px;
              }
              .exc-btn-ghost-sm {
                position: static;
@@ -939,8 +942,8 @@ export default function ExcelDashboard() {
                touch-action: manipulation;
             }
              .exc-content {
-               position: static;
-               z-index: auto;
+               position: relative;
+               z-index: 0;
                clear: both;
                margin: 0;
                padding-top: 24px;
