@@ -4,7 +4,7 @@ import {
   fetchEnquiries, updateEnquiry, deleteEnquiry, downloadEnquiriesExcel,
   clearExcelToken, Enquiry,
 } from '../../lib/api'
-import { LogOut, RefreshCw, Download, Pencil, Trash2, Loader2, X, Check, SlidersHorizontal, CalendarRange } from 'lucide-react'
+import { LogOut, RefreshCw, Download, Pencil, Trash2, Loader2, X, Check, SlidersHorizontal } from 'lucide-react'
 
 const EDITABLE_FIELDS: { key: keyof Enquiry; label: string; type: 'text' | 'textarea' }[] = [
   { key: 'fullName', label: 'Full Name', type: 'text' },
@@ -233,7 +233,6 @@ export default function ExcelDashboard() {
           <div className="exc-topbar-left">
             <div>
               <h1 className="exc-page-title">Contact Form Records</h1>
-              <p className="exc-date-status">Showing enquiries for: {dateLabel}</p>
             </div>
             <span className="exc-count">{enquiries.length} {enquiries.length === 1 ? 'entry' : 'entries'}</span>
           </div>
@@ -262,62 +261,84 @@ export default function ExcelDashboard() {
                       </button>
                     </div>
 
-                    <button
-                      type="button"
-                      className={`exc-filter-option exc-filter-option-button ${pendingFilterKind === 'lastMonth' ? 'is-selected' : ''}`}
-                      onClick={selectLastMonth}
-                    >
-                      <span>
-                        <strong>Last Month</strong>
-                        <small>{formatSelectedDate(previousMonthRange().startDate)} – {formatSelectedDate(previousMonthRange().endDate)}</small>
-                      </span>
-                    </button>
-
-                    <div className={`exc-filter-option ${pendingFilterKind === 'month' ? 'is-selected' : ''}`}>
-                      <label className="exc-filter-field">
-                        <span>Select Month</span>
-                        <input
-                          type="month"
-                          value={monthDraft}
-                          max={localMonthString()}
-                          onChange={e => { setMonthDraft(e.target.value); selectMonth() }}
-                        />
-                      </label>
-                      <button type="button" className="exc-filter-apply" onClick={selectMonth} disabled={!monthDraft}>
-                        <Check size={13} /> Apply
+                    <div className="exc-filter-options" role="radiogroup" aria-label="Date filter type">
+                      <button
+                        type="button"
+                        role="radio"
+                        aria-checked={pendingFilterKind === 'lastMonth'}
+                        className={`exc-filter-radio ${pendingFilterKind === 'lastMonth' ? 'is-selected' : ''}`}
+                        onClick={selectLastMonth}
+                      >
+                        <span className="exc-filter-radio-mark" aria-hidden="true" />
+                        <span className="exc-filter-radio-copy">
+                          <strong>Last Month</strong>
+                          <small>{formatSelectedDate(previousMonthRange().startDate)} – {formatSelectedDate(previousMonthRange().endDate)}</small>
+                        </span>
+                      </button>
+                      <button
+                        type="button"
+                        role="radio"
+                        aria-checked={pendingFilterKind === 'month'}
+                        className={`exc-filter-radio ${pendingFilterKind === 'month' ? 'is-selected' : ''}`}
+                        onClick={selectMonth}
+                      >
+                        <span className="exc-filter-radio-mark" aria-hidden="true" />
+                        <span className="exc-filter-radio-copy"><strong>Select Month</strong></span>
+                      </button>
+                      <button
+                        type="button"
+                        role="radio"
+                        aria-checked={pendingFilterKind === 'custom'}
+                        className={`exc-filter-radio ${pendingFilterKind === 'custom' ? 'is-selected' : ''}`}
+                        onClick={selectCustomRange}
+                      >
+                        <span className="exc-filter-radio-mark" aria-hidden="true" />
+                        <span className="exc-filter-radio-copy"><strong>Custom Range</strong></span>
                       </button>
                     </div>
 
-                    <div className={`exc-filter-option exc-filter-range ${pendingFilterKind === 'custom' ? 'is-selected' : ''}`}>
-                      <div className="exc-filter-range-fields">
+                    <div className="exc-filter-selection">
+                      {pendingFilterKind === 'lastMonth' && (
+                        <p className="exc-filter-last-month-note">
+                          Enquiries from {formatSelectedDate(previousMonthRange().startDate)} to {formatSelectedDate(previousMonthRange().endDate)}
+                        </p>
+                      )}
+
+                      {pendingFilterKind === 'month' && (
                         <label className="exc-filter-field">
-                          <span>Start Date</span>
+                          <span>Month</span>
                           <input
-                            type="date"
-                            value={customStartDate}
-                            max={customEndDate || localDateString()}
-                            onChange={e => { setCustomStartDate(e.target.value); selectCustomRange() }}
+                            type="month"
+                            value={monthDraft}
+                            max={localMonthString()}
+                            onChange={e => setMonthDraft(e.target.value)}
                           />
                         </label>
-                        <label className="exc-filter-field">
-                          <span>End Date</span>
-                          <input
-                            type="date"
-                            value={customEndDate}
-                            min={customStartDate}
-                            max={localDateString()}
-                            onChange={e => { setCustomEndDate(e.target.value); selectCustomRange() }}
-                          />
-                        </label>
-                      </div>
-                      <button
-                        type="button"
-                        className="exc-filter-apply"
-                        onClick={selectCustomRange}
-                        disabled={!customStartDate || !customEndDate}
-                      >
-                        <CalendarRange size={13} /> Custom Range
-                      </button>
+                      )}
+
+                      {pendingFilterKind === 'custom' && (
+                        <div className="exc-filter-range-fields">
+                          <label className="exc-filter-field">
+                            <span>Start Date</span>
+                            <input
+                              type="date"
+                              value={customStartDate}
+                              max={customEndDate || localDateString()}
+                              onChange={e => setCustomStartDate(e.target.value)}
+                            />
+                          </label>
+                          <label className="exc-filter-field">
+                            <span>End Date</span>
+                            <input
+                              type="date"
+                              value={customEndDate}
+                              min={customStartDate}
+                              max={localDateString()}
+                              onChange={e => setCustomEndDate(e.target.value)}
+                            />
+                          </label>
+                        </div>
+                      )}
                     </div>
 
                     <button
@@ -358,7 +379,10 @@ export default function ExcelDashboard() {
         )}
 
         <div className="exc-content">
-          <div className="exc-range-summary" aria-live="polite">Showing enquiries for: {dateLabel}</div>
+          <section className="exc-range-summary" aria-label="Active enquiry date range" aria-live="polite">
+            <span>Showing enquiries for:</span>
+            <strong>{dateLabel}</strong>
+          </section>
           {loading ? (
             <div className="exc-loading"><Loader2 size={28} className="exc-spin" /> Loading records…</div>
           ) : enquiries.length === 0 ? (
@@ -557,7 +581,6 @@ export default function ExcelDashboard() {
         .exc-topbar-left { display: flex; align-items: baseline; gap: 12px; }
          .exc-topbar-left > div { display: flex; flex-direction: column; gap: 4px; }
         .exc-page-title { margin: 0; font-size: 18px; color: #1a1612; font-weight: normal; letter-spacing: 0.03em; }
-         .exc-date-status { margin: 0; font-size: 11px; color: #9a8e82; }
         .exc-count { font-size: 12px; color: #c0b5a8; }
          .exc-topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
          .exc-date-controls { display: flex; align-items: center; gap: 6px; }
@@ -572,10 +595,12 @@ export default function ExcelDashboard() {
            font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
          }
          .exc-date-picker input { border: none; outline: none; color: #2a2218; font: 12px Arial, sans-serif; cursor: pointer; }
-         .exc-range-summary {
-           margin: 0 0 18px; padding: 0 0 12px; border-bottom: 1px solid #e2d9ce;
-           color: #9a8e82; font-size: 11px; line-height: 1.4;
+          .exc-range-summary {
+            display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px;
+            margin: 0 0 24px; padding: 0 0 14px; border-bottom: 1px solid #e2d9ce;
+            color: #9a8e82; font-size: 11px; line-height: 1.5;
          }
+          .exc-range-summary strong { color: #6b5d4f; font-weight: 600; }
          .exc-filter-control { position: relative; flex: 0 0 auto; }
          .exc-filter-button {
            min-width: 34px; min-height: 32px; padding: 7px 8px;
@@ -591,7 +616,7 @@ export default function ExcelDashboard() {
            width: 292px; max-width: calc(100vw - 32px); padding: 14px;
            background: #fff; border: 1px solid #e2d9ce; border-radius: 8px;
            box-shadow: 0 12px 30px rgba(75, 58, 42, 0.16);
-           color: #2a2218; pointer-events: auto;
+            color: #2a2218; font-family: Arial, sans-serif; font-size: 10px; pointer-events: auto;
          }
          .exc-filter-popover-header {
            display: flex; align-items: center; justify-content: space-between;
@@ -607,20 +632,31 @@ export default function ExcelDashboard() {
            border-radius: 4px; background: #fff; color: #9a8e82; cursor: pointer;
          }
          .exc-filter-close:hover { color: #7a6245; border-color: #7a6245; }
-         .exc-filter-option {
-           display: flex; align-items: flex-end; justify-content: space-between; gap: 10px;
-           padding: 12px 0; border-bottom: 1px solid #f0ebe3;
-         }
-         .exc-filter-option:last-child { border-bottom: none; padding-bottom: 0; }
-         .exc-filter-option-button {
-           width: 100%; align-items: center; border: none; background: transparent;
-           color: #2a2218; text-align: left; cursor: pointer;
-         }
-          .exc-filter-option-button:hover, .exc-filter-option-button.is-selected { color: #7a6245; background: #faf8f5; }
-          .exc-filter-option.is-selected { padding-left: 8px; padding-right: 8px; border-radius: 4px; }
-         .exc-filter-option-button > span { display: flex; flex-direction: column; gap: 4px; }
-          .exc-filter-option-button strong { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
-          .exc-filter-option-button small { color: #9a8e82; font-size: 10px; }
+          .exc-filter-options { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; }
+          .exc-filter-radio {
+            width: 100%; min-height: 38px; padding: 8px; display: flex; align-items: flex-start;
+            gap: 9px; border: 1px solid transparent; border-radius: 5px;
+            background: transparent; color: #2a2218; text-align: left; cursor: pointer;
+          }
+          .exc-filter-radio:hover { background: #faf8f5; }
+          .exc-filter-radio.is-selected { border-color: #cdbda9; background: #faf8f5; color: #7a6245; }
+          .exc-filter-radio-mark {
+            width: 15px; height: 15px; flex: 0 0 15px; margin-top: 1px;
+            border: 1px solid #b7aa9c; border-radius: 50%; background: #fff;
+            display: inline-flex; align-items: center; justify-content: center;
+          }
+          .exc-filter-radio.is-selected .exc-filter-radio-mark { border-color: #7a6245; }
+          .exc-filter-radio.is-selected .exc-filter-radio-mark::after {
+            content: ""; width: 7px; height: 7px; border-radius: 50%; background: #7a6245;
+          }
+          .exc-filter-radio-copy { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+          .exc-filter-radio-copy strong { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; }
+          .exc-filter-radio-copy small { color: #9a8e82; font-size: 10px; line-height: 1.35; }
+          .exc-filter-selection {
+            margin-top: 10px; padding: 12px; border: 1px solid #e2d9ce;
+            border-radius: 5px; background: #fff;
+          }
+          .exc-filter-last-month-note { margin: 0; color: #9a8e82; font-size: 10px; line-height: 1.5; }
          .exc-filter-field { display: flex; flex: 1; flex-direction: column; gap: 5px; min-width: 0; }
          .exc-filter-field > span {
             color: #9a8e82; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
@@ -631,19 +667,9 @@ export default function ExcelDashboard() {
             color: #2a2218; font: 10px Arial, sans-serif; outline: none;
          }
          .exc-filter-field input:focus { border-color: #7a6245; }
-         .exc-filter-apply {
-           min-height: 34px; padding: 7px 10px; border: 1px solid #7a6245;
-           border-radius: 4px; background: #7a6245; color: #fff; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            font-size: 10px; white-space: nowrap;
-         }
-         .exc-filter-apply:hover:not(:disabled) { background: #6a5438; }
-         .exc-filter-apply:disabled { opacity: 0.45; cursor: default; }
-         .exc-filter-range { display: flex; flex-direction: column; align-items: stretch; }
          .exc-filter-range-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-         .exc-filter-range .exc-filter-apply { align-self: flex-end; }
           .exc-filter-submit {
-            width: 100%; min-height: 38px; margin-top: 12px; padding: 8px 12px;
+            width: 100%; min-height: 38px; margin-top: 14px; padding: 8px 12px;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             border: 1px solid #7a6245; border-radius: 4px; background: #7a6245;
             color: #fff; cursor: pointer; font-size: 10px; font-weight: 600;
@@ -877,8 +903,8 @@ export default function ExcelDashboard() {
                overflow-y: auto;
              }
              .exc-filter-close,
+             .exc-filter-radio,
              .exc-filter-field input,
-             .exc-filter-apply,
              .exc-filter-submit {
                min-height: 44px;
              }
