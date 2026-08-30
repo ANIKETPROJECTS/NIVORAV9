@@ -163,9 +163,9 @@ export default function ExcelDashboard() {
           {loading ? (
             <div className="exc-loading"><Loader2 size={28} className="exc-spin" /> Loading records…</div>
           ) : enquiries.length === 0 ? (
-            <div className="exc-empty">
+            <div className="exc-empty" role="status" aria-live="polite">
               <p className="exc-empty-desktop">No enquiries found</p>
-              <p className="exc-empty-mobile">No entries found for this date</p>
+              <p className="exc-empty-mobile">No enquiries found for this date</p>
             </div>
           ) : (
             <>
@@ -512,10 +512,13 @@ export default function ExcelDashboard() {
             .exc-sidebar-brand { padding: 16px; border-bottom: none; }
             .exc-sidebar-footer { margin-top: 0; padding: 16px; border-top: none; }
              .exc-topbar {
-               position: relative;
+               position: static;
+               top: auto;
+               z-index: auto;
                flex-shrink: 0;
                align-items: stretch;
                gap: 16px;
+               margin: 0;
              }
              .exc-topbar-left {
                width: 100%;
@@ -527,6 +530,12 @@ export default function ExcelDashboard() {
                grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
                gap: 10px;
               width: 100%;
+               position: static;
+               top: auto;
+               right: auto;
+               bottom: auto;
+               z-index: auto;
+               margin: 0;
                align-items: stretch;
                justify-content: stretch;
             }
@@ -546,19 +555,40 @@ export default function ExcelDashboard() {
             }
             .exc-date-picker input { min-width: 0; width: 100%; }
              .exc-btn-ghost-sm {
+               position: static;
+               top: auto;
+               right: auto;
+               bottom: auto;
+               z-index: auto;
                grid-column: 1;
                width: 100%;
                justify-content: center;
              }
             .exc-btn-add {
+               position: static;
+               top: auto;
+               right: auto;
+               bottom: auto;
+               z-index: auto;
                grid-column: 2;
                width: 100%;
               justify-content: center;
               min-width: 0;
             }
+             .exc-content {
+               position: static;
+               z-index: auto;
+               clear: both;
+               margin: 0;
+               padding-top: 24px;
+             }
             .exc-table-wrap { display: none; }
             .exc-cards {
               display: flex;
+               position: static;
+               z-index: auto;
+               clear: both;
+               margin: 0;
               flex-direction: column;
               gap: 14px;
             }
