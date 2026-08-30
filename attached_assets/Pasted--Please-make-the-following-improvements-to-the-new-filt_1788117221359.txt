@@ -1,0 +1,15 @@
+"Please make the following improvements to the new filter dropdown (Last Month / Select Month / Custom Range) on the Contact Form Records page — apply to both mobile and desktop:
+
+1. Show 'Showing enquiries for: [range]' text after a filter is applied:
+Currently after selecting a filter and applying it, there's no confirmation text showing what range is being displayed. Please add a line like 'Showing enquiries for: [date range]' (matching the existing style already used elsewhere on this page, e.g., 'Showing enquiries for: Yesterday, Aug 30, 2026') right above the entries list, so it's clear which filter/range is currently active — for all 3 new filter types (Last Month, Select Month, Custom Range), not just Today/Yesterday.
+
+2. Fix inconsistent font sizes in the filter dropdown:
+Currently the text inside the filter popover (e.g., 'Filter enquiries', 'Last Month', date range text, 'SELECT MONTH', 'START DATE', 'END DATE' labels) uses different font sizes/weights inconsistently. Please make all labels and text within this dropdown use the same consistent font size and style, matching the rest of the site's form label styling (e.g., same size as 'DATE' label already used in the main filter bar).
+
+3. Add a clickable icon inside the 'Apply' and 'Custom Range' buttons:
+Both the 'Apply' button (next to Select Month) and 'Custom Range' button should each display a small relevant icon (e.g., a checkmark or filter icon for 'Apply', a calendar-range icon for 'Custom Range') alongside their text label, styled consistently with the site's existing button icon usage (like the download icon already used on 'Download Excel').
+
+4. Add a final 'Apply' button at the bottom of the entire filter popover:
+Currently the popover has separate 'Apply' (for Select Month) and 'Custom Range' (for date range) buttons within each section, but there's no single overall 'Apply' button to confirm and close the popover after making a selection. Please add one clear 'Apply' button at the bottom of the popover — once clicked, it should apply whichever filter option was selected (Last Month / Select Month / Custom Range) and close the dropdown, showing the filtered results with the 'Showing enquiries for: [range]' text as described in point 1.
+
+Please test on both mobile and desktop, and share screenshots of the updated filter popover along with the 'Showing enquiries for' text appearing correctly after applying a filter."
