@@ -64,7 +64,7 @@ const testimonials = [
     stars: 5,
     text: 'NIVORA beautifully balanced warmth, luxury, and functionality in our home. The custom furniture, lighting, and thoughtful detailing have completely transformed our everyday living experience. We highly recommend NIVORA to anyone looking for premium interiors.',
     name: 'Rahul Patil',
-    location: 'Blushwood Heaven, Mumbai',
+    location: 'Blushwood Haven, Mumbai',
     project: 'RESIDENTIAL — APARTMENT',
     initials: 'RP',
   },

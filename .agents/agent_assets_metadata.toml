@@ -1,0 +1,30 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "GeGX_AJhA9mLvKwWT1xed"
+uri = "file://screenshots/portfolio-updated.jpg"
+type = "image"
+title = "Updated Portfolio page"
+description = "Portfolio grid showing the year alongside each category badge."
+logical_id = "035b4b51-f747-4364-bf16-8e4b7d5b319d"
+content_hash = "sha256:014d25567e79deab551252ae442b0ce6d96f6ef9284716b466d4f274e2c66e8b"
+size = 73565
+mtime_ms = 1788109882975
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:f66de70c-0fa5-47ce-83c8-853eea47b92c/035b4b51-f747-4364-bf16-8e4b7d5b319d/ed51c88a-3c80-46e2-8d50-2f67e7369a6f"
+storage_version_token = "1788109899034370"
+content_type = "image/jpeg"
+
+[[outputs]]
+id = "fn-DnsTITTN-wCVwzolIr"
+uri = "file://screenshots/the-quiet-curve-updated.jpg"
+type = "image"
+title = "Updated The Quiet Curve detail page"
+description = "Corrected detail page heading and new quiet-curve URL slug."
+logical_id = "e676d39f-b12a-4026-b6fd-6e899ccec7d7"
+content_hash = "sha256:0a2bf9bae72874b1f2206d7c9ba79c636a8cfc9e18b5adeccaacc25c7c119342"
+size = 77107
+mtime_ms = 1788109886375
+storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:f66de70c-0fa5-47ce-83c8-853eea47b92c/e676d39f-b12a-4026-b6fd-6e899ccec7d7/c9204b42-dab3-4e57-a479-085b70aceeb2"
+storage_version_token = "1788109900348910"
+content_type = "image/jpeg"

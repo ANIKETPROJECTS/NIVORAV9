@@ -1,0 +1,31 @@
+Please make the following fixes on the Portfolio page and project detail pages:
+
+1. Add Year to Portfolio cards:
+Currently the Portfolio grid cards only show category (e.g., 'RESIDENTIAL') and location — the year is missing. Please add the year (e.g., '2026') to each card, displayed alongside or near the category badge, matching the style already used on the detail pages (e.g., 'RESIDENTIAL · 2026').
+
+2. Fix spelling — 'THE QUITE CURVE' → 'The Quiet Curve':
+Correct this spelling error everywhere it appears — Portfolio card, project detail page heading, admin panel, and the URL slug (change from the-quite-curve to the-quiet-curve, and update any internal links/references accordingly so the page doesn't break).
+
+3. Add missing Design Intent text for 2 projects:
+
+For 'The Quiet Curve', add this Design Intent text:
+'The Quiet Curve explores softness through gentle arches, warm timber finishes, and a restrained neutral palette. Curved architectural elements introduce a sense of calm while layered lighting enhances depth and intimacy. The design creates a welcoming environment where every detail contributes to a relaxed and timeless living experience.'
+
+For 'The Soft Neutral Story', add this Design Intent text:
+'This home was designed around the philosophy that simplicity creates lasting elegance. Soft neutral tones, textured stone finishes, and warm wooden surfaces work together to establish a peaceful atmosphere. Carefully positioned indirect lighting highlights materiality while maintaining visual balance, resulting in interiors that feel sophisticated yet effortlessly comfortable.'
+
+4. Fix 'Blushwood Haven' URL slug inconsistency:
+The displayed name is 'Blushwood Haven' but the URL slug is blushwood-haven — please confirm this is spelled correctly and consistent between the display name and the slug (checking for any hidden typo like 'Heaven' vs 'Haven' in either place), and fix if there's a mismatch.
+
+5. Fix title/heading capitalization site-wide on Portfolio:
+Currently some project titles are in ALL CAPS (e.g., 'THE QUITE CURVE', 'THE OFFICE NEUTRAL EDIT', 'CASA ÉLAN BUNGALOW') while others use proper title case (e.g., 'The Soft Neutral Story', 'The Layered Calm'). Please standardize ALL project titles — on both the Portfolio grid cards and the detail page headings — to use proper Title Case (first letter of each major word capitalized, rest lowercase), for example:
+
+'THE QUITE CURVE' → 'The Quiet Curve'
+'THE OFFICE NEUTRAL EDIT' → 'The Office Neutral Edit'
+'CASA ÉLAN BUNGALOW' → 'Casa Élan Bungalow'
+'ROYAL LIVING REDEFINED' → 'Royal Living Redefined'
+'MODERN ELEGANCE' → 'Modern Elegance'
+
+Apply this consistently across the Admin Panel, Portfolio grid, and all detail pages — every project name should follow the same Title Case style, matching how 'The Soft Neutral Story' and 'The Layered Calm' already display.
+
+Please confirm each fix once done, and show me a screenshot of the updated Portfolio page and one corrected detail page (The Quiet Curve) so I can verify everything is correct.

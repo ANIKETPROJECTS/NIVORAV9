@@ -125,7 +125,7 @@ function ProjectCard({ project, index, delay }: {
           padding: '5px 10px',
           borderRadius: 20,
           border: '1px solid rgba(255,255,255,0.1)',
-        }}>{project.category}</div>
+          }}>{project.category}{project.year ? ` · ${project.year}` : ''}</div>
 
         {/* Text overlay */}
         <div style={{
