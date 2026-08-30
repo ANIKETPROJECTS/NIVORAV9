@@ -558,9 +558,12 @@ export default function ExcelDashboard() {
 
       <style>{`
         * { box-sizing: border-box; }
-        .exc-root { min-height: 100vh; display: flex; background: #f0ebe3; font-family: Arial, sans-serif; }
+        .exc-root {
+          min-height: 100vh; display: flex; overflow-x: hidden;
+          background: #f0ebe3; font-family: Arial, sans-serif;
+        }
         .exc-sidebar {
-          width: 230px; min-height: 100vh; flex-shrink: 0;
+          width: clamp(12rem, 20vw, 14.375rem); min-height: 100vh; flex-shrink: 0;
           background: #ffffff; border-right: 1px solid #e2d9ce;
           display: flex; flex-direction: column;
           position: sticky; top: 0; height: 100vh;
@@ -574,20 +577,21 @@ export default function ExcelDashboard() {
         .exc-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
         .exc-topbar {
           display: flex; align-items: center; justify-content: space-between;
-          padding: 20px 32px; border-bottom: 1px solid #e2d9ce;
+          gap: 1rem; padding: clamp(1rem, 2.5vw, 2rem);
+          border-bottom: 1px solid #e2d9ce;
           background: #ffffff; position: sticky; top: 0; z-index: 10;
           box-shadow: 0 1px 0 #e2d9ce;
         }
-        .exc-topbar-left { display: flex; align-items: baseline; gap: 12px; }
-         .exc-topbar-left > div { display: flex; flex-direction: column; gap: 4px; }
+        .exc-topbar-left { display: flex; align-items: baseline; gap: 0.75rem; min-width: 0; }
+         .exc-topbar-left > div { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
         .exc-page-title { margin: 0; font-size: 18px; color: #1a1612; font-weight: normal; letter-spacing: 0.03em; }
         .exc-count { font-size: 12px; color: #c0b5a8; }
-         .exc-topbar-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
-         .exc-date-controls { display: flex; align-items: center; gap: 6px; }
+         .exc-topbar-right { display: flex; align-items: center; gap: 0.625rem; flex-wrap: wrap; justify-content: flex-end; min-width: 0; }
+         .exc-date-controls { display: flex; align-items: center; gap: 0.375rem; min-width: 0; }
           .exc-date-shortcut {
            background: #faf8f5; border: 1px solid #ddd7ce; color: #7a6245;
-            border-radius: 4px; padding: 8px 10px; cursor: pointer; font-size: 13px;
-            font-weight: 500;
+            border-radius: 4px; padding: 0.5rem 0.625rem; cursor: pointer; font-size: 13px;
+            font-weight: 500; white-space: nowrap;
          }
          .exc-date-shortcut:hover { border-color: #7a6245; background: #f4eee6; }
          .exc-date-picker {
@@ -598,8 +602,8 @@ export default function ExcelDashboard() {
           .exc-date-picker input { border: none; outline: none; color: #2a2218; font: 13px Arial, sans-serif; cursor: pointer; }
           .exc-range-summary {
              display: block; position: relative; clear: both; width: 100%;
-             margin: 24px 0 28px; padding: 0 0 16px; border-bottom: 1px solid #e2d9ce;
-             color: #9a8e82; font-size: 13px; line-height: 1.5;
+             margin: 1.5rem 0 1.75rem; padding: 0 0 1rem; border-bottom: 1px solid #e2d9ce;
+             color: #9a8e82; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere;
          }
            .exc-range-summary span, .exc-range-summary strong { display: inline; }
            .exc-range-summary strong { color: #6b5d4f; font-weight: 600; }
@@ -614,8 +618,8 @@ export default function ExcelDashboard() {
            border-color: #7a6245; background: #f4eee6;
          }
          .exc-filter-popover {
-           position: absolute; top: calc(100% + 8px); left: 0; z-index: 30;
-           width: 292px; max-width: calc(100vw - 32px); padding: 14px;
+           position: absolute; top: calc(100% + 0.5rem); right: 0; left: auto; z-index: 30;
+           width: min(22rem, calc(100vw - 2rem)); max-width: calc(100vw - 2rem); padding: 0.875rem;
            background: #fff; border: 1px solid #e2d9ce; border-radius: 8px;
            box-shadow: 0 12px 30px rgba(75, 58, 42, 0.16);
              color: #2a2218; font-family: Arial, sans-serif; font-size: 13px; pointer-events: auto;
@@ -789,14 +793,22 @@ export default function ExcelDashboard() {
           display: flex; justify-content: flex-end; gap: 10px;
           padding: 16px 24px; border-top: 1px solid #ede8e1;
         }
-         @media (max-width: 900px) {
-           .exc-topbar { align-items: flex-start; flex-direction: column; gap: 14px; }
-           .exc-topbar-right { width: 100%; justify-content: space-between; }
-           .exc-date-controls { flex-wrap: wrap; }
+         @media (max-width: 1024px) {
+           .exc-topbar { align-items: stretch; flex-direction: column; gap: 1rem; }
+           .exc-topbar-left, .exc-topbar-right { width: 100%; }
+           .exc-topbar-right {
+             display: grid; grid-template-columns: minmax(0, 1fr) auto;
+             gap: 0.75rem; justify-content: stretch;
+           }
+           .exc-date-controls {
+             grid-column: 1 / -1; display: grid;
+             grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(9rem, 1.4fr);
+             width: 100%; gap: 0.5rem;
+           }
+           .exc-date-shortcut, .exc-filter-control, .exc-date-picker { min-width: 0; width: 100%; }
          }
          @media (max-width: 560px) {
-           .exc-sidebar { width: 170px; }
-           .exc-topbar, .exc-content { padding-left: 16px; padding-right: 16px; }
+           .exc-topbar, .exc-content { padding-left: 1rem; padding-right: 1rem; }
            .exc-topbar-left { align-items: flex-start; flex-direction: column; gap: 4px; }
            .exc-topbar-right { align-items: stretch; }
            .exc-date-controls { width: 100%; }
@@ -857,7 +869,7 @@ export default function ExcelDashboard() {
             .exc-date-controls {
                display: grid;
                grid-template-columns: repeat(3, minmax(0, 1fr));
-               gap: 8px;
+               gap: 0.5rem;
                grid-column: 1 / -1;
               width: 100%;
                position: static;
@@ -900,11 +912,12 @@ export default function ExcelDashboard() {
                padding: 10px;
              }
              .exc-filter-popover {
-               top: calc(100% + 10px);
+                top: calc(100% + 0.625rem);
                right: 0;
                left: auto;
-               width: min(320px, calc(100vw - 32px));
-               max-height: min(70vh, 560px);
+                width: min(22rem, calc(100vw - 2rem));
+                max-width: calc(100vw - 2rem);
+                max-height: min(70vh, 35rem);
                overflow-y: auto;
              }
              .exc-filter-close,
@@ -1001,9 +1014,9 @@ export default function ExcelDashboard() {
             .exc-card-submitted time { overflow-wrap: anywhere; }
             .exc-card-fields {
               display: grid;
-              grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-              gap: 14px 12px;
-              padding: 16px 0;
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+              gap: 0.875rem 0.75rem;
+              padding: 1rem 0;
             }
             .exc-card-field {
               min-width: 0;
