@@ -21,8 +21,8 @@ const GOLD = '#7a6245'
 // ── Shared sub-components ─────────────────────────────────────────────────────
 
 function ImageUploadField({
-  label, hint, currentUrl, onUploaded,
-}: { label: string; hint?: string; currentUrl: string; onUploaded: (url: string) => void }) {
+  label, hint, currentUrl, section, onUploaded,
+}: { label: string; hint?: string; currentUrl: string; section: string; onUploaded: (url: string) => void }) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [urlInput, setUrlInput] = useState('')
@@ -38,7 +38,7 @@ function ImageUploadField({
     setUploading(true)
     setError('')
     try {
-      const url = await uploadSiteImage(file)
+      const url = await uploadSiteImage(file, section)
       onUploaded(url)
     } catch (err: unknown) {
       setError((err as Error).message)
@@ -209,6 +209,7 @@ function HeaderPanel({ settings, onChange }: { settings: SiteSettings; onChange:
         label="Navbar Logo"
         hint="Works best as a wide PNG with transparent background."
         currentUrl={settings.logoUrl}
+          section="header"
         onUploaded={url => onChange({ ...settings, logoUrl: url })}
       />
       <div style={{ marginBottom: 24 }}>
@@ -242,6 +243,7 @@ function FooterPanel({ settings, onChange }: { settings: SiteSettings; onChange:
         label="Footer Logo"
         hint="Works best as a wide PNG with transparent or dark background."
         currentUrl={settings.footerLogoUrl}
+          section="footer"
         onUploaded={url => onChange({ ...settings, footerLogoUrl: url })}
       />
       <div style={{ marginBottom: 24 }}>
@@ -277,6 +279,7 @@ function HeroPanel({ settings, onChange }: { settings: SiteSettings; onChange: (
         label="Background Image"
         hint="Full-width image behind the hero text. Use a high-resolution landscape photo."
         currentUrl={hero.backgroundImage}
+          section="hero"
         onUploaded={url => update({ backgroundImage: url })}
       />
       <div style={{ marginBottom: 12 }}>
@@ -319,7 +322,7 @@ function ExpertisePanel({ settings, onChange }: { settings: SiteSettings; onChan
       {settings.serviceCards.map((card, i) => (
         <div key={i} style={cardBoxStyle}>
           <p style={cardIndexStyle}>Card {i + 1}</p>
-          <ImageUploadField label="Image" currentUrl={card.img} onUploaded={url => update(i, { ...card, img: url })} />
+          <ImageUploadField label="Image" currentUrl={card.img} section="expertise" onUploaded={url => update(i, { ...card, img: url })} />
           <TextField label="Title" value={card.title} onChange={v => update(i, { ...card, title: v })} />
           <div style={{ marginTop: 10 }}>
             <TextField label="Description" value={card.desc} onChange={v => update(i, { ...card, desc: v })} multiline />
@@ -383,7 +386,7 @@ function InstagramPanel({ settings, onChange }: { settings: SiteSettings; onChan
               </button>
             </div>
           </div>
-          <ImageUploadField label="Cover Image" hint="Upload the post/reel's cover photo — a square image works best." currentUrl={post.image} onUploaded={url => update(i, { image: url })} />
+          <ImageUploadField label="Cover Image" hint="Upload the post/reel's cover photo — a square image works best." currentUrl={post.image} section="instagram" onUploaded={url => update(i, { image: url })} />
           <TextField
             label="Instagram Post / Reel Link"
             value={post.url}
@@ -526,7 +529,7 @@ function ServicesPanel({ settings, onChange }: { settings: SiteSettings; onChang
               <Trash2 size={12} /> Remove
             </button>
           </div>
-          <ImageUploadField label="Image" currentUrl={item.img} onUploaded={url => update(i, { ...item, img: url })} />
+          <ImageUploadField label="Image" currentUrl={item.img} section="services" onUploaded={url => update(i, { ...item, img: url })} />
           <div style={{ marginBottom: 10 }}>
             <TextField label="Title" value={item.title} placeholder="e.g. Residential Design" onChange={v => update(i, { ...item, title: v })} />
           </div>

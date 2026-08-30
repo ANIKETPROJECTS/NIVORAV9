@@ -1,8 +1,12 @@
 import { Router } from 'express'
-import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 import { SiteSettings } from '../models/SiteSettings.js'
 import { validateToken } from '../adminAuth.js'
+import {
+  deleteRemovedCloudinaryUrls,
+  uploadBufferToCloudinary,
+  slugifyFolderSegment,
+} from '../cloudinary.js'
 
 const router = Router()
 
@@ -15,14 +19,8 @@ const upload = multer({
   },
 })
 
-function uploadToCloudinary(buffer, folder = 'nivora/site') {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: 'image', quality: 'auto', fetch_format: 'auto' },
-      (err, result) => (err ? reject(err) : resolve(result.secure_url))
-    )
-    stream.end(buffer)
-  })
+function settingsFolder(section) {
+  return `nivora/${slugifyFolderSegment(section, 'site')}`
 }
 
 function requireAdmin(req, res, next) {
@@ -60,6 +58,7 @@ router.get('/', async (_req, res) => {
 // ── PUT /api/site-settings (admin — JSON fields only) ─────────────────────────
 router.put('/', requireAdmin, async (req, res) => {
   try {
+    const previousSettings = await SiteSettings.findOne({ _singleton: 'default' }).lean()
     const allowed = ['logoUrl', 'logoSize', 'footerLogoUrl', 'footerLogoSize', 'serviceCards', 'homePortfolio', 'instagramPosts', 'homeHero', 'homePhilosophyImage', 'servicePageHero', 'servicesList', 'homeStats', 'aboutStats']
     const update = {}
     for (const key of allowed) {
@@ -70,6 +69,7 @@ router.put('/', requireAdmin, async (req, res) => {
       { $set: update },
       { returnDocument: 'after', upsert: true, runValidators: true }
     )
+    await deleteRemovedCloudinaryUrls(previousSettings, doc.toObject())
     // Use same toObject() pattern as GET so all fields are always serialized
     const plain = doc.toObject({ versionKey: false })
     if (plain.logoSize == null)       plain.logoSize       = 38
@@ -85,7 +85,7 @@ router.put('/', requireAdmin, async (req, res) => {
 router.post('/upload-image', requireAdmin, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file' })
-    const url = await uploadToCloudinary(req.file.buffer, 'nivora/site')
+    const url = await uploadBufferToCloudinary(req.file.buffer, settingsFolder(req.body?.section))
     res.json({ url })
   } catch (err) {
     console.error(err)

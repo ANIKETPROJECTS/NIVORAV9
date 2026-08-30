@@ -102,7 +102,7 @@ export default function AdminProjectForm({ initial, onSave, onCancel, isEdit }: 
     if (!files.length) return
     setUploadingCover(true)
     try {
-      const urls = await uploadImages([files[0]])
+      const urls = await uploadImages([files[0]], form.name || form.id)
       set('coverImage', urls[0])
     } catch (err: unknown) {
       setError((err as Error).message)
@@ -117,7 +117,7 @@ export default function AdminProjectForm({ initial, onSave, onCancel, isEdit }: 
     if (!files.length) return
     setUploadingHero(true)
     try {
-      const urls = await uploadImages([files[0]])
+      const urls = await uploadImages([files[0]], form.name || form.id)
       set('heroImage', urls[0])
     } catch (err: unknown) {
       setError((err as Error).message)
@@ -132,7 +132,7 @@ export default function AdminProjectForm({ initial, onSave, onCancel, isEdit }: 
     if (!files.length) return
     setUploadingGallery(true)
     try {
-      const urls = await uploadImages(files)
+      const urls = await uploadImages(files, form.name || form.id)
       set('images', [...(form.images || []), ...urls])
     } catch (err: unknown) {
       setError((err as Error).message)

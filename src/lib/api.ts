@@ -220,7 +220,7 @@ export function deleteProject(id: string): Promise<{ message: string }> {
 }
 
 /**
- * Upload one or more image files to Cloudinary via the backend (projects folder).
+ * Upload one or more portfolio images to the project's Cloudinary folder.
  * Returns an array of secure Cloudinary URLs.
  */
 /** Shared 403 handler for multipart upload fetches (can't go through adminRequest). */
@@ -232,10 +232,11 @@ function handleUploadResponse(res: Response) {
   }
 }
 
-export async function uploadImages(files: File[]): Promise<string[]> {
+export async function uploadImages(files: File[], projectName?: string): Promise<string[]> {
   const token = getAdminToken() || ''
   const form = new FormData()
   files.forEach(f => form.append('images', f))
+  if (projectName?.trim()) form.append('projectName', projectName.trim())
   const res = await fetch(`${BASE}/projects/upload-images`, {
     method: 'POST',
     headers: { 'x-admin-token': token },
@@ -251,13 +252,14 @@ export async function uploadImages(files: File[]): Promise<string[]> {
 }
 
 /**
- * Upload a single image to the site/branding folder in Cloudinary.
+ * Upload a site-settings image to its section folder in Cloudinary.
  * Returns the secure URL.
  */
-export async function uploadSiteImage(file: File): Promise<string> {
+export async function uploadSiteImage(file: File, section = 'site'): Promise<string> {
   const token = getAdminToken() || ''
   const form = new FormData()
   form.append('image', file)
+  form.append('section', section)
   const res = await fetch(`${BASE}/site-settings/upload-image`, {
     method: 'POST',
     headers: { 'x-admin-token': token },

@@ -1,8 +1,13 @@
 import { Router } from 'express'
-import { v2 as cloudinary } from 'cloudinary'
 import multer from 'multer'
 import { Project } from '../models/Project.js'
 import { validateToken } from '../adminAuth.js'
+import {
+  deleteCloudinaryUrls,
+  deleteRemovedCloudinaryUrls,
+  uploadBufferToCloudinary,
+  slugifyFolderSegment,
+} from '../cloudinary.js'
 
 const router = Router()
 
@@ -18,15 +23,8 @@ const upload = multer({
   },
 })
 
-// Helper: upload a buffer to Cloudinary and return the secure URL
-function uploadToCloudinary(buffer, folder = 'nivora/projects') {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: 'image', quality: 'auto', fetch_format: 'auto' },
-      (err, result) => (err ? reject(err) : resolve(result.secure_url))
-    )
-    stream.end(buffer)
-  })
+function projectFolder(projectName) {
+  return `nivora/portfolio/${slugifyFolderSegment(projectName, 'untitled-project')}`
 }
 
 // ── Admin guard — validates the session token issued by /api/admin/login ──────
@@ -92,7 +90,10 @@ router.put('/reorder', requireAdmin, async (req, res) => {
 router.post('/upload-image', requireAdmin, upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' })
-    const url = await uploadToCloudinary(req.file.buffer)
+    const url = await uploadBufferToCloudinary(
+      req.file.buffer,
+      projectFolder(req.body?.projectName || req.body?.projectId)
+    )
     res.json({ url })
   } catch (err) {
     console.error(err)
@@ -104,12 +105,13 @@ router.post('/upload-image', requireAdmin, upload.single('image'), async (req, r
 router.post('/upload-images', requireAdmin, upload.array('images', 30), async (req, res) => {
   try {
     if (!req.files?.length) return res.status(400).json({ error: 'No files uploaded' })
+    const folder = projectFolder(req.body?.projectName || req.body?.projectId)
     // Upload in batches of 5 to avoid memory pressure
     const urls = []
     const batch = 5
     for (let i = 0; i < req.files.length; i += batch) {
       const chunk = req.files.slice(i, i + batch)
-      const chunkUrls = await Promise.all(chunk.map(f => uploadToCloudinary(f.buffer)))
+      const chunkUrls = await Promise.all(chunk.map(f => uploadBufferToCloudinary(f.buffer, folder)))
       urls.push(...chunkUrls)
     }
     res.json({ urls })
@@ -151,12 +153,14 @@ router.get('/:id', async (req, res) => {
 // ── PUT /api/projects/:id ─────────────────────────────────────────────────────
 router.put('/:id', requireAdmin, async (req, res) => {
   try {
+    const previousProject = await Project.findOne({ id: req.params.id }).lean()
     const project = await Project.findOneAndUpdate(
       { id: req.params.id },
       { $set: req.body },
       { returnDocument: 'after', runValidators: true }
     )
     if (!project) return res.status(404).json({ error: 'Project not found' })
+    await deleteRemovedCloudinaryUrls(previousProject, project.toObject())
     res.json(project)
   } catch (err) {
     console.error(err)
@@ -169,7 +173,16 @@ router.delete('/:id', requireAdmin, async (req, res) => {
   try {
     const project = await Project.findOneAndDelete({ id: req.params.id })
     if (!project) return res.status(404).json({ error: 'Project not found' })
-    res.json({ message: 'Deleted successfully' })
+    const cleanup = await deleteCloudinaryUrls([
+      project.coverImage,
+      project.heroImage,
+      ...(project.images || []),
+    ])
+    res.json({
+      message: 'Deleted successfully',
+      cloudinaryDeleted: cleanup.deleted,
+      cloudinaryDeleteFailures: cleanup.failed,
+    })
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: 'Failed to delete project' })
