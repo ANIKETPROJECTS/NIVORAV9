@@ -163,7 +163,10 @@ export default function ExcelDashboard() {
           {loading ? (
             <div className="exc-loading"><Loader2 size={28} className="exc-spin" /> Loading records…</div>
           ) : enquiries.length === 0 ? (
-            <div className="exc-empty"><p>No enquiries found</p></div>
+            <div className="exc-empty">
+              <p className="exc-empty-desktop">No enquiries found</p>
+              <p className="exc-empty-mobile">No entries found for this date</p>
+            </div>
           ) : (
             <>
               <div className="exc-table-wrap">
@@ -238,7 +241,7 @@ export default function ExcelDashboard() {
                       <span className="exc-card-label">Email</span>
                       <span className="exc-card-value">{e.email || '—'}</span>
                     </div>
-                    <div className="exc-card-field">
+                    <div className="exc-card-field exc-card-status-field">
                       <span className="exc-card-label">Space Type</span>
                       <span className="exc-card-value">{e.spaceType || '—'}</span>
                     </div>
@@ -406,6 +409,7 @@ export default function ExcelDashboard() {
           flex-direction: column; gap: 16px; color: #b0a498;
           font-size: 14px; padding: 80px 0;
         }
+         .exc-empty-mobile { display: none; }
         .exc-spin { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .exc-table-wrap { overflow-x: auto; border-radius: 6px; border: 1px solid #e2d9ce; background: #fff; }
@@ -507,23 +511,48 @@ export default function ExcelDashboard() {
             }
             .exc-sidebar-brand { padding: 16px; border-bottom: none; }
             .exc-sidebar-footer { margin-top: 0; padding: 16px; border-top: none; }
-            .exc-topbar { position: relative; }
+             .exc-topbar {
+               position: relative;
+               flex-shrink: 0;
+               align-items: stretch;
+               gap: 16px;
+             }
+             .exc-topbar-left {
+               width: 100%;
+               align-items: flex-start;
+               gap: 6px;
+             }
             .exc-topbar-right {
+               display: grid;
+               grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+               gap: 10px;
               width: 100%;
-              justify-content: flex-start;
-              align-items: center;
+               align-items: stretch;
+               justify-content: stretch;
             }
             .exc-date-controls {
+               display: grid;
+               grid-template-columns: repeat(2, minmax(0, 1fr));
+               gap: 8px;
+               grid-column: 1 / -1;
               width: 100%;
-              flex-wrap: wrap;
             }
+             .exc-date-shortcut { width: 100%; min-width: 0; }
             .exc-date-picker {
-              flex: 1 1 150px;
+               grid-column: 1 / -1;
+               width: 100%;
               min-width: 0;
+               justify-content: space-between;
             }
             .exc-date-picker input { min-width: 0; width: 100%; }
+             .exc-btn-ghost-sm {
+               grid-column: 1;
+               width: 100%;
+               justify-content: center;
+             }
             .exc-btn-add {
-              flex: 1 1 180px;
+               grid-column: 2;
+               width: 100%;
               justify-content: center;
               min-width: 0;
             }
@@ -543,10 +572,8 @@ export default function ExcelDashboard() {
               box-shadow: 0 3px 14px rgba(100,80,60,0.06);
             }
             .exc-card-header {
-              display: flex;
-              align-items: flex-start;
-              justify-content: space-between;
-              gap: 12px;
+               flex-direction: column;
+               gap: 8px;
               padding-bottom: 14px;
               border-bottom: 1px solid #ede8e1;
             }
@@ -560,15 +587,14 @@ export default function ExcelDashboard() {
               overflow-wrap: anywhere;
             }
             .exc-card-submitted {
-              flex: 0 0 auto;
               display: flex;
               flex-direction: column;
-              align-items: flex-end;
+               align-items: flex-start;
               gap: 3px;
               color: #9a8e82;
               font-size: 10px;
               line-height: 1.3;
-              text-align: right;
+               text-align: left;
             }
             .exc-card-submitted span {
               color: #b0a498;
@@ -597,6 +623,18 @@ export default function ExcelDashboard() {
               line-height: 1.2;
               text-transform: uppercase;
             }
+             .exc-card-status-field {
+               flex-direction: row;
+               align-items: center;
+               flex-wrap: wrap;
+               gap: 7px;
+             }
+             .exc-card-status-field .exc-card-label { margin: 0; }
+             .exc-card-status-field .exc-badge {
+               width: fit-content;
+               flex: 0 0 auto;
+               white-space: nowrap;
+             }
             .exc-card-value {
               min-width: 0;
               color: #2a2218;
@@ -626,6 +664,18 @@ export default function ExcelDashboard() {
               flex-wrap: wrap;
               gap: 6px;
             }
+             .exc-empty {
+               min-height: 160px;
+               padding: 36px 16px;
+               text-align: center;
+             }
+             .exc-empty-desktop { display: none; }
+             .exc-empty-mobile {
+               display: block;
+               margin: 0;
+               color: #7a6d60;
+               font-size: 14px;
+             }
           }
       `}</style>
     </div>
