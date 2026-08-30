@@ -114,6 +114,7 @@ export interface SiteSettings {
   footerLogoUrl: string
   footerLogoSize: number
   homeHero: HomeHero
+  homePhilosophyImage?: string
   serviceCards: ServiceCard[]
   homePortfolio: HomePortfolioItem[]
   instagramPosts?: InstagramPost[]

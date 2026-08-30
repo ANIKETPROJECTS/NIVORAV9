@@ -15,6 +15,7 @@ import developerCover from '../assets/services/developer-solutions-cover.jpg'
 import renovationCover from '../assets/services/renovation-makeovers-cover.jpg'
 
 const heroImg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=85'
+const philosophyImage = 'https://res.cloudinary.com/tgmyheme/image/upload/v1788063037/nivora/site/our-philosophy-IMG_0171.jpg'
 
 
 const transformations = [
@@ -2726,6 +2727,7 @@ export default function Home({ splashDone }: { splashDone: boolean }) {
   const { settings } = useSiteSettings()
   const serviceCards = settings?.serviceCards?.length ? settings.serviceCards : DEFAULT_SERVICE_CARDS
   const instagramPosts = settings?.instagramPosts?.length ? settings.instagramPosts : DEFAULT_INSTAGRAM_POSTS
+  const philosophyImageUrl = settings?.homePhilosophyImage || philosophyImage
   const location = useLocation()
   const [animKey, setAnimKey] = useState(0)
   const philosophySectionRef = useRef<HTMLElement>(null)
@@ -2981,7 +2983,7 @@ export default function Home({ splashDone }: { splashDone: boolean }) {
               }}>
                 <img
                   ref={philosophyImgRef}
-                  src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?w=700&q=85"
+                  src={philosophyImageUrl}
                   alt="NIVORA Studio — editorial"
                   className="philosophy-photo"
                   style={{

@@ -556,6 +556,7 @@ const EMPTY_SETTINGS: SiteSettings = {
   logoUrl: '', logoSize: 38,
   footerLogoUrl: '', footerLogoSize: 200,
   homeHero: { backgroundImage: '', headline: '', subheadline: '', ctaText: '', ctaLink: '' },
+  homePhilosophyImage: '',
   serviceCards: [],
   homePortfolio: [],
   instagramPosts: [],

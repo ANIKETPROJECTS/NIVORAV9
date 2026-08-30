@@ -60,6 +60,7 @@ const siteSettingsSchema = new mongoose.Schema({
 
   // ── Home Page ────────────────────────────────────────────────────────────────
   homeHero: { type: homeHeroSchema, default: () => ({}) },
+  homePhilosophyImage: { type: String, default: '' },
   serviceCards: { type: [serviceCardSchema], default: [] },
   homePortfolio: { type: [portfolioItemSchema], default: [] },
   instagramPosts: { type: [instagramPostSchema], default: [] },
