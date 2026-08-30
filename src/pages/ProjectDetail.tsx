@@ -270,6 +270,12 @@ export default function ProjectDetail() {
 
   // Gallery images: all images stored in MongoDB (the hero banner is a separate field)
   const galleryImages = project.images.filter(img => img && img.trim() !== '')
+  const clientName = project.client?.trim()
+  // Keep legacy data from putting a client back into the eyebrow label.
+  const projectBadge = (project.badge || `${project.category} · ${project.year}`)
+    .replace(clientName ? `(${clientName})` : '', '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
 
   return (
     <div style={{ background: '#FFFCF7' }} className="pt-20">
@@ -303,15 +309,15 @@ export default function ProjectDetail() {
         <div className="absolute bottom-0 left-0 right-0 p-12" style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <FadeIn>
             <p style={{ color: '#D4B483', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-              {project.badge || `${project.category} · ${project.year}`}
+              {projectBadge}
             </p>
             <h1 className="font-serif font-light mb-2" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400, fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', color: '#f5f0e8', lineHeight: 1.1, letterSpacing: '-0.01em' }}>
               {project.name}
             </h1>
             <p style={{ color: 'rgba(245,240,232,0.7)', letterSpacing: '0.08em' }}>{project.location}</p>
-            {project.client?.trim() && (
+            {clientName && (
               <p style={{ color: 'rgba(245,240,232,0.62)', letterSpacing: '0.06em', fontSize: 12, margin: '0.45rem 0 0' }}>
-                Client: {project.client}
+                Client: {clientName}
               </p>
             )}
           </FadeIn>

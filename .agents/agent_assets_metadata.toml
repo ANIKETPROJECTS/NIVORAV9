@@ -28,3 +28,17 @@ mtime_ms = 1788109886375
 storage_uri = "gcs://replit-rams-assets-pike/rams/assets/repl:f66de70c-0fa5-47ce-83c8-853eea47b92c/e676d39f-b12a-4026-b6fd-6e899ccec7d7/c9204b42-dab3-4e57-a479-085b70aceeb2"
 storage_version_token = "1788109900348910"
 content_type = "image/jpeg"
+
+[[outputs]]
+id = "poR3kOXLuSjkLkX0P3iSS"
+uri = "file://screenshots/blushwood-haven-detail.jpg"
+type = "image"
+title = "Blushwood Haven detail page"
+description = "Verified preview at /portfolio/blushwood-haven showing the corrected title, clean eyebrow label, and Client: Jhalak on its own line below Mumbai."
+logical_id = "8f699203-f450-46f7-acde-b94e1fd3781b"
+content_hash = "sha256:daba8b23d07a037cb2939e6c7101d949f24d419447e7155d3fb0d35ca5fed7bc"
+size = 106351
+mtime_ms = 1788114693063
+storage_uri = "gcs://replit-rams-assets-sisko/rams/assets/repl:96754850-01cd-4ae4-a2c4-110b71fd71e0/8f699203-f450-46f7-acde-b94e1fd3781b/0efcd6ae-6489-4837-a5cd-4826936ff688"
+storage_version_token = "1788114706216462"
+content_type = "image/jpeg"

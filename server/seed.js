@@ -234,7 +234,7 @@ const projects = [
     ],
   },
   {
-    id: 'sage-cafe-pune',
+    id: 'blushwood-haven',
     name: 'Blushwood Haven',
     client: 'Jhalak',
     location: 'FC Road, Pune',

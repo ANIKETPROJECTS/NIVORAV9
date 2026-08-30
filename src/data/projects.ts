@@ -1,6 +1,7 @@
 export interface Project {
   id: string
   name: string
+  client?: string
   location: string
   category: 'residential' | 'commercial' | 'architecture'
   concept: string
@@ -41,6 +42,7 @@ export const projects: Project[] = [
   {
     id: 'serenity-villa-mumbai',
     name: 'Royal Living Redefined',
+    client: 'Arvind Mohite',
     location: 'Juhu, Mumbai',
     category: 'residential',
     concept: 'Calm monumentality with organic textures',
@@ -70,6 +72,7 @@ export const projects: Project[] = [
   {
     id: 'verdant-apartment-pune',
     name: 'Modern Elegance',
+    client: 'Tushar Shah',
     location: 'Koregaon Park, Pune',
     category: 'residential',
     concept: 'Urban calm in a 3BHK canvas',
@@ -196,6 +199,7 @@ export const projects: Project[] = [
   {
     id: 'amber-bungalow-lonavala',
     name: 'The Soft Neutral Story',
+    client: 'Samiksha Shetty',
     location: 'Lonavala',
     category: 'residential',
     concept: 'Weekend sanctuary in the Sahyadris',
@@ -217,6 +221,7 @@ export const projects: Project[] = [
   {
     id: 'onyx-office-mumbai',
     name: 'The Layered Calm',
+    client: 'Kapil Arora',
     location: 'BKC, Mumbai',
     category: 'commercial',
     concept: 'Where ambition meets calm',
@@ -241,8 +246,9 @@ export const projects: Project[] = [
     year: '2024',
   },
   {
-    id: 'sage-cafe-pune',
+    id: 'blushwood-haven',
     name: 'Blushwood Haven',
+    client: 'Jhalak',
     location: 'FC Road, Pune',
     category: 'commercial',
     concept: 'Slow coffee, considered space',
