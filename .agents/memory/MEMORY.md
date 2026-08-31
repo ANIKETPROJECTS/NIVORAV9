@@ -3,3 +3,4 @@
 - [Secret hygiene when user types values in chat](secret-hygiene-chat-values.md) — if a user pastes a password/connection string as plain chat text instead of via the secret form, setEnvVars still writes it into .replit in plaintext; must delete and re-request via requestSecrets.
 - [Instagram cover image auto-fetch](instagram-cover-image-fetch.md) — Instagram blocks unauthenticated scraping from server IPs; only reliable auto option is the official oEmbed API with a Meta app token, otherwise use manual upload.
 - [Cloudinary deletion caching](cloudinary-deletion-caching.md) — a successful destroy can leave the delivery URL cacheable briefly; verify deletion via destroy results, not immediate URL status.
+- [Portable npm lockfiles](portable-npm-lockfiles.md) — never commit environment-private package tarball URLs; VPS installs need public registry resolved entries.
