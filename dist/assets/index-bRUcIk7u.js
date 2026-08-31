@@ -3941,5 +3941,206 @@ Looking forward to connecting!`,HO=`https://wa.me/${FO}?text=${encodeURIComponen
                font-size: 14px;
              }
           }
+           /* ── Compact phone layout ─────────────────────────────────────── */
+           @media (max-width: 767px) {
+             .exc-root,
+             .exc-main {
+               width: 100%;
+               min-width: 0;
+             }
+             .exc-root { overflow-x: hidden; }
+             .exc-sidebar-brand,
+             .exc-sidebar-footer {
+               min-width: 0;
+               flex: 0 1 auto;
+             }
+             .exc-sidebar-brand { padding: 14px 16px; }
+             .exc-sidebar-footer { padding: 14px 16px; }
+             .exc-brand-name { font-size: 22px; }
+             .exc-brand-sub {
+               max-width: 100%;
+               overflow: hidden;
+               text-overflow: ellipsis;
+               white-space: nowrap;
+               letter-spacing: 0.16em;
+             }
+             .exc-logout { white-space: nowrap; }
+
+             .exc-topbar {
+               width: 100%;
+               padding: 16px;
+               gap: 14px;
+             }
+             .exc-topbar-right {
+               width: 100%;
+               display: grid;
+               grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+               grid-template-areas:
+                 "date-controls date-controls"
+                 "refresh download";
+               gap: 10px;
+             }
+             .exc-date-controls {
+               grid-area: date-controls;
+               width: 100%;
+               min-width: 0;
+               display: grid;
+               grid-template-columns: repeat(2, minmax(0, 1fr));
+               gap: 8px;
+             }
+             .exc-date-shortcut,
+             .exc-filter-control,
+             .exc-date-picker {
+               width: 100%;
+               min-width: 0;
+             }
+             .exc-date-shortcut {
+               min-height: 42px;
+               padding: 8px 6px;
+               overflow: hidden;
+               text-overflow: ellipsis;
+             }
+             .exc-filter-control,
+             .exc-date-picker {
+               grid-column: 1 / -1;
+             }
+             .exc-date-picker {
+               min-height: 42px;
+               padding: 4px 8px;
+             }
+             .exc-date-picker input {
+               min-width: 0;
+               width: 100%;
+               max-width: 100%;
+               font-size: 13px;
+             }
+             .exc-filter-control { position: relative; z-index: 2; }
+             .exc-filter-button {
+               width: 100%;
+               min-height: 42px;
+             }
+             .exc-filter-popover {
+               right: 0;
+               left: 0;
+               width: 100%;
+               max-width: none;
+               max-height: min(70vh, 35rem);
+               overflow-y: auto;
+             }
+             .exc-btn-ghost-sm {
+               grid-area: refresh;
+               width: 100%;
+               min-width: 0;
+               min-height: 42px;
+               justify-content: center;
+             }
+             .exc-btn-add {
+               grid-area: download;
+               width: 100%;
+               min-width: 0;
+               min-height: 42px;
+               justify-content: center;
+               padding: 8px 10px;
+               line-height: 1.25;
+               white-space: normal;
+               text-align: center;
+             }
+             .exc-topbar-left {
+               width: 100%;
+               min-width: 0;
+             }
+             .exc-page-title {
+               max-width: 100%;
+               overflow-wrap: anywhere;
+             }
+
+             .exc-content {
+               width: 100%;
+               min-width: 0;
+               padding: 20px 16px 32px;
+             }
+             .exc-range-summary {
+               margin: 0 0 18px;
+               padding-bottom: 12px;
+             }
+             .exc-range-summary strong {
+               display: block;
+               margin-top: 4px;
+               overflow-wrap: anywhere;
+             }
+             .exc-card {
+               width: 100%;
+               min-width: 0;
+               padding: 16px;
+             }
+             .exc-card-header { display: flex; }
+             .exc-card-fields {
+               grid-template-columns: minmax(0, 1fr);
+               gap: 12px;
+             }
+             .exc-card-field,
+             .exc-card-field-full {
+               grid-column: 1;
+               width: 100%;
+               min-width: 0;
+             }
+             .exc-card-value {
+               max-width: 100%;
+               overflow-wrap: anywhere;
+               word-break: break-word;
+             }
+             .exc-card-actions,
+             .exc-card-actions .exc-actions {
+               width: 100%;
+               min-width: 0;
+             }
+             .exc-card-actions .exc-action-btn,
+             .exc-card-actions .exc-confirm {
+               max-width: 100%;
+             }
+
+             .exc-modal-overlay {
+               align-items: flex-start;
+               overflow-y: auto;
+               padding: max(12px, env(safe-area-inset-top)) 12px 12px;
+             }
+             .exc-modal {
+               width: 100%;
+               max-width: none;
+               max-height: calc(100dvh - 24px);
+             }
+             .exc-modal-header,
+             .exc-modal-body,
+             .exc-modal-footer {
+               padding-left: 16px;
+               padding-right: 16px;
+             }
+             .exc-modal-footer {
+               flex-wrap: wrap;
+             }
+             .exc-modal-footer > button {
+               flex: 1 1 120px;
+               justify-content: center;
+               min-height: 42px;
+             }
+           }
+           @media (max-width: 380px) {
+             .exc-topbar,
+             .exc-content {
+               padding-left: 12px;
+               padding-right: 12px;
+             }
+             .exc-sidebar-brand,
+             .exc-sidebar-footer {
+               padding-left: 12px;
+               padding-right: 12px;
+             }
+             .exc-date-shortcut { font-size: 12px; }
+             .exc-btn-add {
+               font-size: 11px;
+               letter-spacing: 0;
+             }
+             .exc-card { padding: 14px; }
+           }
       `},void 0,!1,{fileName:"/home/runner/workspace/src/pages/excel/ExcelDashboard.tsx",lineNumber:559,columnNumber:7},this)]},void 0,!0,{fileName:"/home/runner/workspace/src/pages/excel/ExcelDashboard.tsx",lineNumber:218,columnNumber:5},this)}function fF({children:n}){return sessionStorage.getItem("nivora_excel_admin")==="true"?i.jsxDEV(i.Fragment,{children:n},void 0,!1,{fileName:"/home/runner/workspace/src/pages/excel/ExcelProtectedRoute.tsx",lineNumber:6,columnNumber:10},this):i.jsxDEV(vD,{to:"/excelsheet",replace:!0},void 0,!1,{fileName:"/home/runner/workspace/src/pages/excel/ExcelProtectedRoute.tsx",lineNumber:5,columnNumber:27},this)}const pF=(()=>{try{const n=performance.getEntriesByType("navigation");if(n.length>0){const r=n[0].type;return r==="navigate"||r==="reload"}}catch{}return!0})();let nD=!1;function hF(){const{pathname:n}=ga();return w.useEffect(()=>{window.scrollTo(0,0)},[n]),null}function pi({children:n}){return i.jsxDEV(i.Fragment,{children:[i.jsxDEV(az,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:56,columnNumber:7},this),i.jsxDEV("main",{children:n},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:57,columnNumber:7},this),i.jsxDEV(cz,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:58,columnNumber:7},this),i.jsxDEV(uz,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:59,columnNumber:7},this),i.jsxDEV(pz,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:60,columnNumber:7},this)]},void 0,!0,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:55,columnNumber:5},this)}function gF(){const n=ga(),r=n.pathname==="/",s=()=>pF&&!nD,[l,u]=w.useState(0),[f,m]=w.useState(!r||!s()),[g,h]=w.useState(r&&s());w.useEffect(()=>{n.pathname==="/"&&s()?(h(!0),m(!1),u(x=>x+1)):(h(!1),m(!0))},[n.key]);const v=()=>{nD=!0,m(!0),h(!1)};return i.jsxDEV(i.Fragment,{children:[g&&i.jsxDEV(vz,{onExitComplete:v},l,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:101,columnNumber:9},this),i.jsxDEV(xz,{splashDone:f},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:103,columnNumber:7},this),i.jsxDEV(te.div,{animate:{x:g?"100%":0},transition:{duration:.7,ease:[.65,0,.35,1]},style:{overflowX:"hidden",minHeight:"100vh"},children:[i.jsxDEV(hF,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:109,columnNumber:9},this),i.jsxDEV(bD,{children:[i.jsxDEV(fr,{path:"/",element:i.jsxDEV(pi,{children:i.jsxDEV(Uz,{splashDone:f},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:111,columnNumber:44},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:111,columnNumber:36},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:111,columnNumber:11},this),i.jsxDEV(fr,{path:"/portfolio",element:i.jsxDEV(pi,{children:i.jsxDEV(Yz,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:112,columnNumber:53},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:112,columnNumber:45},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:112,columnNumber:11},this),i.jsxDEV(fr,{path:"/portfolio/:id",element:i.jsxDEV(pi,{children:i.jsxDEV($O,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:113,columnNumber:57},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:113,columnNumber:49},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:113,columnNumber:11},this),i.jsxDEV(fr,{path:"/services",element:i.jsxDEV(pi,{children:i.jsxDEV(tO,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:114,columnNumber:52},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:114,columnNumber:44},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:114,columnNumber:11},this),i.jsxDEV(fr,{path:"/about",element:i.jsxDEV(pi,{children:i.jsxDEV(bO,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:115,columnNumber:49},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:115,columnNumber:41},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:115,columnNumber:11},this),i.jsxDEV(fr,{path:"/testimonials",element:i.jsxDEV(pi,{children:i.jsxDEV(jO,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:116,columnNumber:56},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:116,columnNumber:48},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:116,columnNumber:11},this),i.jsxDEV(fr,{path:"/contact",element:i.jsxDEV(pi,{children:i.jsxDEV(PO,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:117,columnNumber:51},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:117,columnNumber:43},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:117,columnNumber:11},this),i.jsxDEV(fr,{path:"/quote",element:i.jsxDEV(pi,{children:i.jsxDEV(OO,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:118,columnNumber:49},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:118,columnNumber:41},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:118,columnNumber:11},this),i.jsxDEV(fr,{path:"/thank-you",element:i.jsxDEV(pi,{children:i.jsxDEV(UO,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:119,columnNumber:53},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:119,columnNumber:45},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:119,columnNumber:11},this)]},void 0,!0,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:110,columnNumber:9},this)]},void 0,!0,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:104,columnNumber:7},this)]},void 0,!0,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:99,columnNumber:5},this)}function vF(){return i.jsxDEV($R,{children:i.jsxDEV(bD,{children:[i.jsxDEV(fr,{path:"/adminpannel",element:i.jsxDEV(YO,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:131,columnNumber:45},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:131,columnNumber:9},this),i.jsxDEV(fr,{path:"/adminpannel/dashboard",element:i.jsxDEV(cF,{children:i.jsxDEV(lF,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:136,columnNumber:15},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:135,columnNumber:13},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:132,columnNumber:9},this),i.jsxDEV(fr,{path:"/excelsheet",element:i.jsxDEV(uF,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:141,columnNumber:44},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:141,columnNumber:9},this),i.jsxDEV(fr,{path:"/excelsheet/data",element:i.jsxDEV(fF,{children:i.jsxDEV(dF,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:146,columnNumber:15},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:145,columnNumber:13},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:142,columnNumber:9},this),i.jsxDEV(fr,{path:"/*",element:i.jsxDEV(gF,{},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:151,columnNumber:35},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:151,columnNumber:9},this)]},void 0,!0,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:129,columnNumber:7},this)},void 0,!1,{fileName:"/home/runner/workspace/src/App.tsx",lineNumber:128,columnNumber:5},this)}lD(document.getElementById("root")).render(i.jsxDEV(w.StrictMode,{children:i.jsxDEV(vF,{},void 0,!1,{fileName:"/home/runner/workspace/src/main.tsx",lineNumber:10,columnNumber:5},void 0)},void 0,!1,{fileName:"/home/runner/workspace/src/main.tsx",lineNumber:9,columnNumber:3},void 0));
-//# sourceMappingURL=index-Hsz5tYcM.js.map
+//# sourceMappingURL=index-bRUcIk7u.js.map
