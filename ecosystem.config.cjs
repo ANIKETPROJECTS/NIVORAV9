@@ -9,7 +9,9 @@ module.exports = {
       watch: false,
       env: {
         NODE_ENV: 'production',
-        API_PORT: 3001,
+        // Port 3002 is used by the Nivora VPS Nginx upstream. Port 3001 is
+        // already occupied by another service on this VPS.
+        API_PORT: 3002,
 
         // ── Fill these in with your real values before deploying on your VPS ──
         // This lets pm2 supply all config, so you don't need a .env file there.

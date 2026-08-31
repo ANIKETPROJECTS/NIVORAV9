@@ -137,7 +137,7 @@ pm2 start ecosystem.config.cjs
 pm2 save
 ```
 
-Point the site/server block at the port from `API_PORT` (3001 in the included
+Point the site/server block at the port from `API_PORT` (3002 in the included
 PM2 configuration). For example:
 
 ```nginx
@@ -145,7 +145,7 @@ server {
     server_name www.nivorainteriors.com nivorainteriors.com;
 
     location / {
-        proxy_pass http://127.0.0.1:3001;
+        proxy_pass http://127.0.0.1:3002;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -159,7 +159,7 @@ After changing Nginx, run `sudo nginx -t && sudo systemctl reload nginx`.
 Verify the API before opening the portfolio page:
 
 ```bash
-curl -i http://127.0.0.1:3001/api/health
+curl -i http://127.0.0.1:3002/api/health
 curl -i https://www.nivorainteriors.com/api/projects
 ```
 
