@@ -1,0 +1,81 @@
+root@vyuhxtechnologies:/var/www/NIVORAV5# curl -i http://127.0.0.1:3001/api/health
+HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Security-Policy: default-src 'none'
+X-Content-Type-Options: nosniff
+Content-Type: text/html; charset=utf-8
+Content-Length: 149
+Date: Mon, 31 Aug 2026 13:41:03 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/health</pre>
+</body>
+</html>
+root@vyuhxtechnologies:/var/www/NIVORAV5# sudo nginx -t
+sudo systemctl reload nginx
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+root@vyuhxtechnologies:/var/www/NIVORAV5# curl -i http://127.0.0.1:3001/api/health
+curl -i https://www.nivorainteriors.com/api/health
+curl -i https://www.nivorainteriors.com/api/projects
+HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Access-Control-Allow-Origin: *
+Content-Security-Policy: default-src 'none'
+X-Content-Type-Options: nosniff
+Content-Type: text/html; charset=utf-8
+Content-Length: 149
+Date: Mon, 31 Aug 2026 13:41:26 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot GET /api/health</pre>
+</body>
+</html>
+HTTP/1.1 502 Bad Gateway
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 31 Aug 2026 13:41:27 GMT
+Content-Type: text/html
+Content-Length: 166
+Connection: keep-alive
+
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx/1.18.0 (Ubuntu)</center>
+</body>
+</html>
+HTTP/1.1 502 Bad Gateway
+Server: nginx/1.18.0 (Ubuntu)
+Date: Mon, 31 Aug 2026 13:41:27 GMT
+Content-Type: text/html
+Content-Length: 166
+Connection: keep-alive
+
+<html>
+<head><title>502 Bad Gateway</title></head>
+<body>
+<center><h1>502 Bad Gateway</h1></center>
+<hr><center>nginx/1.18.0 (Ubuntu)</center>
+</body>
+</html>
+root@vyuhxtechnologies:/var/www/NIVORAV5# pm2 status
+pm2 logs nivora-api --lines 100
+sudo ss -ltnp | grep 3001
