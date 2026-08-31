@@ -1094,6 +1094,22 @@ export default function ExcelDashboard() {
                min-width: 0;
              }
              .exc-root { overflow-x: hidden; }
+             .exc-topbar {
+               display: flex !important;
+               flex-direction: column !important;
+               align-items: stretch !important;
+               justify-content: flex-start !important;
+               height: auto !important;
+               min-height: 0 !important;
+               overflow: visible !important;
+             }
+             .exc-topbar > .exc-topbar-left,
+             .exc-topbar > .exc-topbar-right {
+               position: static !important;
+               float: none !important;
+               flex: 0 0 auto !important;
+               transform: none !important;
+             }
              .exc-sidebar-brand,
              .exc-sidebar-footer {
                min-width: 0;
@@ -1129,6 +1145,8 @@ export default function ExcelDashboard() {
              .exc-topbar-right {
                order: 2;
                width: 100%;
+               height: auto !important;
+               min-height: 0 !important;
                display: grid;
                grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
                grid-template-areas:
@@ -1209,16 +1227,29 @@ export default function ExcelDashboard() {
              .exc-content {
                width: 100%;
                min-width: 0;
+               display: block !important;
+               position: static !important;
+               clear: both !important;
+               margin: 0 !important;
                padding: 20px 16px 32px;
                 border-top: 1px solid #e2d9ce;
              }
              .exc-range-summary {
-               margin: 0 0 18px;
+               position: static !important;
+               display: flex;
+               flex-direction: column;
+               align-items: flex-start;
+               gap: 4px;
+               width: 100%;
+               min-height: 0;
+               margin: 0 0 18px !important;
                padding-bottom: 12px;
+               line-height: 1.45;
              }
              .exc-range-summary strong {
                display: block;
                margin-top: 4px;
+               width: 100%;
                overflow-wrap: anywhere;
              }
              .exc-card {
