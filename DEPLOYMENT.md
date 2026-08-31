@@ -124,6 +124,51 @@ npm run dev
 
 ---
 
+## VPS deployment (PM2 + Nginx)
+
+The VPS should run the Express process after building the React app. The
+Express process serves both `dist/` and `/api/*` from the same port, so Nginx
+does not need a separate static root and API upstream.
+
+```bash
+npm ci
+npm run build
+pm2 start ecosystem.config.cjs
+pm2 save
+```
+
+Point the site/server block at the port from `API_PORT` (3001 in the included
+PM2 configuration). For example:
+
+```nginx
+server {
+    server_name www.nivorainteriors.com nivorainteriors.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+After changing Nginx, run `sudo nginx -t && sudo systemctl reload nginx`.
+Verify the API before opening the portfolio page:
+
+```bash
+curl -i http://127.0.0.1:3001/api/health
+curl -i https://www.nivorainteriors.com/api/projects
+```
+
+Both API requests must return HTTP 200. If the first succeeds but the second
+returns 502, Nginx is still pointing at the wrong port or the PM2 process is
+not running. Check with `pm2 status` and `pm2 logs nivora-api`.
+
+---
+
 ## Troubleshooting
 
 | Symptom | Fix |

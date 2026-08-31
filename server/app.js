@@ -3,12 +3,17 @@
 import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { v2 as cloudinary } from 'cloudinary'
 import projectRoutes from './routes/projects.js'
 import adminLoginRoute from './routes/adminLogin.js'
 import siteSettingsRoute from './routes/siteSettings.js'
 import contactRoute from './routes/contact.js'
 import enquiriesRoute from './routes/enquiries.js'
+
+const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const distDirectory = path.join(projectRoot, 'dist')
 
 // ── Cloudinary config ─────────────────────────────────────────────────────────
 // Accept both the canonical names and the shorter aliases used in Replit Secrets.
@@ -49,6 +54,19 @@ app.get('/api/debug', (_req, res) => {
   res.json({
     status: 'function alive',
     env: Object.fromEntries(vars.map(k => [k, !!process.env[k]])),
+  })
+})
+
+// ── VPS static app hosting ────────────────────────────────────────────────────
+// Netlify serves dist/ from its CDN. On a VPS, PM2 runs this same process
+// behind Nginx, so serve the built React app here too. Keeping the API and
+// frontend on one origin prevents /api requests from reaching a static-only
+// web server and returning a reverse-proxy 502.
+app.use(express.static(distDirectory, { index: false }))
+app.get(/^(?!\/api(?:\/|$)).*/, (req, res, next) => {
+  if (req.method !== 'GET') return next()
+  res.sendFile(path.join(distDirectory, 'index.html'), (err) => {
+    if (err) next()
   })
 })
 

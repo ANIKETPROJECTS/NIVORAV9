@@ -4,6 +4,7 @@ module.exports = {
     {
       name: 'nivora-api',
       script: 'server/index.js',
+      cwd: __dirname,
       interpreter: 'node',
       watch: false,
       env: {

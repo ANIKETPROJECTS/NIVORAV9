@@ -1,0 +1,114 @@
+portfolio:1 Denying load of chrome-extension://ojplmecpdpgccookcobabopnaifgidhf/assets/couponCollection.js-rRX9pka3.js. Resources must be listed in the web_accessible_resources manifest key in order to be loaded by pages outside the extension.
+couponCollection.js-loader-BS-SsW4n.js:8  GET chrome-extension://invalid/ net::ERR_FAILED
+(anonymous) @ couponCollection.js-loader-BS-SsW4n.js:8
+(anonymous) @ couponCollection.js-loader-BS-SsW4n.js:11
+(anonymous) @ couponCollection.js-loader-BS-SsW4n.js:13
+api.ts:146  GET https://www.nivorainteriors.com/api/projects 502 (Bad Gateway)
+request @ api.ts:146
+fetchProjects @ api.ts:196
+(anonymous) @ Portfolio.tsx:196
+Qj @ react-dom.production.min.js:243
+Hk @ react-dom.production.min.js:285
+(anonymous) @ react-dom.production.min.js:281
+J @ scheduler.production.min.js:13
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+I @ scheduler.production.min.js:14
+(anonymous) @ scheduler.production.min.js:18
+Fk @ react-dom.production.min.js:296
+Dk @ react-dom.production.min.js:266
+gi @ react-dom.production.min.js:265
+fl @ react-dom.production.min.js:307
+(anonymous) @ react-dom.production.min.js:309
+(anonymous) @ main.tsx:8
+api.ts:146  GET https://www.nivorainteriors.com/api/site-settings 502 (Bad Gateway)
+request @ api.ts:146
+fetchSiteSettings @ api.ts:280
+(anonymous) @ useSiteSettings.ts:24
+(anonymous) @ useSiteSettings.ts:39
+Qj @ react-dom.production.min.js:243
+Hk @ react-dom.production.min.js:285
+(anonymous) @ react-dom.production.min.js:281
+J @ scheduler.production.min.js:13
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+I @ scheduler.production.min.js:14
+(anonymous) @ scheduler.production.min.js:18
+Fk @ react-dom.production.min.js:296
+Dk @ react-dom.production.min.js:266
+gi @ react-dom.production.min.js:265
+fl @ react-dom.production.min.js:307
+(anonymous) @ react-dom.production.min.js:309
+(anonymous) @ main.tsx:8
+TypeError: Failed to fetch dynamically imported module: chrome-extension://ojplmecpdpgccookcobabopnaifgidhf/assets/couponCollection.js-rRX9pka3.js
+Promise.catch
+(anonymous) @ couponCollection.js-loader-BS-SsW4n.js:11
+(anonymous) @ couponCollection.js-loader-BS-SsW4n.js:13
+api.ts:146  GET https://www.nivorainteriors.com/api/site-settings 502 (Bad Gateway)
+request @ api.ts:146
+fetchSiteSettings @ api.ts:280
+(anonymous) @ useSiteSettings.ts:24
+(anonymous) @ useSiteSettings.ts:39
+Qj @ react-dom.production.min.js:243
+Hk @ react-dom.production.min.js:285
+(anonymous) @ react-dom.production.min.js:281
+J @ scheduler.production.min.js:13
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+I @ scheduler.production.min.js:14
+(anonymous) @ scheduler.production.min.js:18
+Fk @ react-dom.production.min.js:296
+Dk @ react-dom.production.min.js:266
+gi @ react-dom.production.min.js:265
+fl @ react-dom.production.min.js:307
+(anonymous) @ react-dom.production.min.js:309
+(anonymous) @ main.tsx:8
+Portfolio.tsx:202 Portfolio fetch error: Error: Request failed: 502
+    at Zu (api.ts:152:11)
+(anonymous) @ Portfolio.tsx:202
+Promise.catch
+(anonymous) @ Portfolio.tsx:201
+Qj @ react-dom.production.min.js:243
+Hk @ react-dom.production.min.js:285
+(anonymous) @ react-dom.production.min.js:281
+J @ scheduler.production.min.js:13
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+R @ scheduler.production.min.js:14
+postMessage
+(anonymous) @ scheduler.production.min.js:14
+I @ scheduler.production.min.js:14
+(anonymous) @ scheduler.production.min.js:18
+Fk @ react-dom.production.min.js:296
+Dk @ react-dom.production.min.js:266
+gi @ react-dom.production.min.js:265
+fl @ react-dom.production.min.js:307
+(anonymous) @ react-dom.production.min.js:309
+(anonymous) @ main.tsx:8
+content.ts-CrAW2ToA.js:5 [BHK] widget sdk 1.0.0
+content.ts-CrAW2ToA.js:5 [BHK] install: missing/invalid publicKey or merchantId — aborting
+E3 @ content.ts-CrAW2ToA.js:5
+(anonymous) @ content.ts-CrAW2ToA.js:5
+api.ts:146  GET https://www.nivorainteriors.com/api/site-settings 502 (Bad Gateway)
+request @ api.ts:146
+fetchSiteSettings @ api.ts:280
+(anonymous) @ useSiteSettings.ts:24
+(anonymous) @ useSiteSettings.ts:48
+api.ts:146  GET https://www.nivorainteriors.com/api/site-settings 502 (Bad Gateway)
+request @ api.ts:146
+fetchSiteSettings @ api.ts:280
+(anonymous) @ useSiteSettings.ts:24
+(anonymous) @ useSiteSettings.ts:48

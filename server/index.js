@@ -4,7 +4,9 @@
 import app from './app.js'
 import { connectDB } from './db.js'
 
-const PORT = process.env.API_PORT || 3001
+// API_PORT is kept for the existing Replit/VPS setup. PORT also works with
+// hosting providers and reverse-proxy conventions.
+const PORT = Number(process.env.PORT || process.env.API_PORT || 3001)
 
 // Start the HTTP server immediately so routes that don't need MongoDB
 // (e.g. admin login, health check) are available right away.
