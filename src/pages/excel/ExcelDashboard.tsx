@@ -1116,7 +1116,18 @@ export default function ExcelDashboard() {
                padding: 16px;
                gap: 14px;
              }
+             .exc-topbar-left {
+               order: 1;
+               width: 100%;
+               min-width: 0;
+               display: flex;
+               flex-direction: column;
+               align-items: flex-start;
+               gap: 5px;
+               padding-bottom: 2px;
+             }
              .exc-topbar-right {
+               order: 2;
                width: 100%;
                display: grid;
                grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
@@ -1190,10 +1201,6 @@ export default function ExcelDashboard() {
                white-space: normal;
                text-align: center;
              }
-             .exc-topbar-left {
-               width: 100%;
-               min-width: 0;
-             }
              .exc-page-title {
                max-width: 100%;
                overflow-wrap: anywhere;
@@ -1203,6 +1210,7 @@ export default function ExcelDashboard() {
                width: 100%;
                min-width: 0;
                padding: 20px 16px 32px;
+                border-top: 1px solid #e2d9ce;
              }
              .exc-range-summary {
                margin: 0 0 18px;
