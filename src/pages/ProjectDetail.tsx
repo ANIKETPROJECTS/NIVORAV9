@@ -280,16 +280,9 @@ export default function ProjectDetail() {
   return (
     <div style={{ background: '#FFFCF7' }} className="pt-20">
 
-      {/* Hero */}
-      {/* Desktop: fixed 70vh viewport-fill hero with object-cover, same as every other
-          project page. Mobile: full uncropped image via object-contain + auto height.
-          "The Quiet Curve" only: cover-fit image is scaled down ~8% on desktop so more
-          of the room (ceiling, side table) is visible without changing the hero height —
-          the dark green backdrop shows through the small revealed margin, matching the
-          existing dark gradient overlay treatment. */}
+      {/* Hero — full-bleed cover on desktop, uncropped image on mobile. */}
       <div className="relative overflow-hidden" style={{
         height: isMobile ? 'auto' : '70vh',
-        background: (!isMobile && project.id === 'the-quiet-curve') ? '#2D3E29' : undefined,
       }}>
         <img
           src={project.heroImage || project.images[0] || project.coverImage}
@@ -298,9 +291,6 @@ export default function ProjectDetail() {
           style={{
             filter: 'contrast(1.07) saturate(1.05)',
             ...(isMobile ? { height: 'auto', objectFit: 'contain' } : {}),
-            ...((!isMobile && project.id === 'the-quiet-curve')
-              ? { transform: 'scale(0.92)', transformOrigin: 'center center' }
-              : {}),
           }}
         />
         <div className="absolute inset-0" style={{
