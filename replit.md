@@ -18,6 +18,21 @@ Two workflows must both be running:
 
 The Vite dev server proxies `/api/*` requests to the Express API on port 3001.
 
+### Imported project setup status
+
+The GitHub import was set up and verified on Replit:
+
+- Project dependencies install from `package-lock.json`.
+- `Start application` serves the Vite frontend on port 5000.
+- `Start API server` serves Express on port 3001.
+- `GET /api/health` responds through the frontend proxy.
+- MongoDB connects when `MONGODB_URI` is present as a Replit Secret.
+- `npm run build` completes successfully.
+
+Cloudinary uploads and admin login additionally require the Cloudinary and admin
+secrets listed below. Email notifications are optional; contact submissions are
+still stored in MongoDB when the email secrets are absent.
+
 ## Replit secrets
 
 The startup secrets are set as Replit Secrets (not plaintext env vars):
