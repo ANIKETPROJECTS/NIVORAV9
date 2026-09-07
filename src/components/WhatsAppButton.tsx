@@ -1,5 +1,5 @@
 const WHATSAPP_NUMBER = '917276687805'
-const WHATSAPP_MESSAGE = `Hi NIVORA Interiors! 👋
+const WHATSAPP_MESSAGE = `Hi NIVORA INTERIORS! 👋
 
 I’m interested in your interior design services and would like to discuss my project.
 
@@ -13,7 +13,7 @@ I’m interested in your interior design services and would like to discuss my p
 
 📅 Expected Start Date:
 
-I came across NIVORA Interiors through your website and would love to know more about your services.`
+I came across NIVORA INTERIORS through your website and would love to know more about your services.`
 const WHATSAPP_URL = `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
 
 export default function WhatsAppButton() {

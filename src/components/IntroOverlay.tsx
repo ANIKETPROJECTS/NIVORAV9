@@ -150,7 +150,7 @@ export default function IntroOverlay({ onExitComplete }: { onExitComplete?: () =
                   />
                   <img
                     src={logoSrc}
-                    alt="Nivora Interiors"
+                    alt="NIVORA INTERIORS"
                     style={{
                       width: 'clamp(220px, 30vw, 320px)',
                       height: 'auto',

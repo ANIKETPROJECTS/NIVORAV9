@@ -105,7 +105,7 @@ router.post('/', async (req, res) => {
   ]
 
   const html = `
-    <h2 style="font-family:sans-serif;color:#2D3B2D;">New Enquiry — Nivora Interiors</h2>
+    <h2 style="font-family:sans-serif;color:#2D3B2D;">New Enquiry — NIVORA INTERIORS</h2>
     <table style="font-family:sans-serif;font-size:14px;border-collapse:collapse;">
       ${fields.map(([label, value]) => `
         <tr>
@@ -119,7 +119,7 @@ router.post('/', async (req, res) => {
 
   try {
     await t.sendMail({
-      from: `"Nivora Interiors Website" <${process.env.EMAIL_USER}>`,
+      from: `"NIVORA INTERIORS Website" <${process.env.EMAIL_USER}>`,
       to,
       replyTo: email,
       subject: `New Enquiry from ${fullName}`,

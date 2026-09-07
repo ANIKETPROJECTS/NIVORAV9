@@ -155,7 +155,7 @@ function FounderSection({ founderImg }: { founderImg: string }) {
           </blockquote>
         </div>
         <div className="founder-image-wrap overflow-hidden" style={{ borderRadius: 4, height: '100%' }}>
-          <img src={founderImg} alt="Shweta Mahadik — Founder, NIVORA Interiors" className="w-full h-full object-cover object-bottom hover:scale-105 transition-transform duration-700" loading="lazy" />
+          <img src={founderImg} alt="Shweta Mahadik — Founder, NIVORA INTERIORS" className="w-full h-full object-cover object-bottom hover:scale-105 transition-transform duration-700" loading="lazy" />
         </div>
       </div>
     </section>

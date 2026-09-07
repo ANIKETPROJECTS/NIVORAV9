@@ -75,7 +75,7 @@ export default function Navbar() {
           >
             <img
               src={logoSrc}
-              alt="Nivora Interiors"
+              alt="NIVORA INTERIORS"
               style={{ height: `${settings?.logoSize ?? 38}px`, width: 'auto', objectFit: 'contain' }}
             />
           </a>

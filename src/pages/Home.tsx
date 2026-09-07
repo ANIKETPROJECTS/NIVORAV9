@@ -1257,7 +1257,7 @@ function HeroSection({ splashDone }: { splashDone: boolean }) {
       >
         <img
           src={heroBg}
-          alt="NIVORA Interiors"
+          alt="NIVORA INTERIORS"
           className="hero-bg-img"
           style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', display: 'block' }}
           loading="eager"

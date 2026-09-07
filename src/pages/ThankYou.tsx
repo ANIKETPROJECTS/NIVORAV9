@@ -26,7 +26,7 @@ const LABEL: React.CSSProperties = {
 }
 
 const THANK_YOU_WHATSAPP_NUMBER = '917276687805'
-const THANK_YOU_WHATSAPP_MESSAGE = `Hi NIVORA Interiors!
+const THANK_YOU_WHATSAPP_MESSAGE = `Hi NIVORA INTERIORS!
 
 I’d love to discuss my interior project with your team. I’ve just submitted an enquiry through your website and would like to know more about how we can work together.
 

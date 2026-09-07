@@ -498,7 +498,7 @@ export default function Contact() {
               {/* top section */}
               <div>
                 <h2 style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400, fontSize: 26, color: '#262421', margin: '0 0 4px', letterSpacing: '-0.01em' }}>
-                  Nivora Interiors
+                  NIVORA INTERIORS
                 </h2>
                 <p style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', fontSize: 14, color: '#a18661', margin: '0 0 32px' }}>
                   From Vision to Execution
@@ -558,7 +558,7 @@ export default function Contact() {
               {/* Google Maps embed — fills remaining card height */}
               <div style={{ flex: 1, minHeight: 220, borderRadius: 12, overflow: 'hidden', marginTop: 8 }}>
                 <iframe
-                  title="Nivora Interiors Location"
+                  title="NIVORA INTERIORS Location"
                   src="https://maps.google.com/maps?q=New+Dhavalgiri+Building,+Ambernath+East,+Maharashtra+421501,+India&output=embed"
                   width="100%"
                   height="100%"
