@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { fetchProjects, fetchSiteSettings } from "../lib/api";
 import { testimonials } from "../data/testimonials";
-import ConsultationButton from "../components/ConsultationButton";
 
 const statDefinitions = [
   { key: "projects", suffix: "+", label: "Projects Completed" },
@@ -293,7 +293,7 @@ function TestimonialCard({
 }
 
 export default function Testimonials() {
-  const [projectCount, setProjectCount] = useState<number | null>(25);
+  const [projectCount, setProjectCount] = useState<number | null>(null);
   const [yearsOfExcellence, setYearsOfExcellence] = useState<number | null>(
     null,
   );
@@ -306,7 +306,7 @@ export default function Testimonials() {
     fetchProjects()
       .then((projects) => {
         if (cancelled) return;
-        setProjectCount(Math.max(projects.length, 25));
+        setProjectCount(projects.length);
 
         // Use the project years as a meaningful fallback if the configured
         // SiteSettings value cannot be loaded.
@@ -582,7 +582,35 @@ export default function Testimonials() {
             Claim your Free Consultation today and let us start building your
             dream.
           </p>
-          <ConsultationButton />
+          <Link
+            to="/contact"
+            style={{
+              display: "inline-block",
+              background: "#21291a",
+              color: "#f5f2ed",
+              fontFamily: "'Jost', sans-serif",
+              fontWeight: 500,
+              fontSize: 12,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              padding: "16px 40px",
+              borderRadius: 12,
+              textDecoration: "none",
+              transition: "background 0.3s ease, transform 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement;
+              el.style.background = "#5f745e";
+              el.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement;
+              el.style.background = "#21291a";
+              el.style.transform = "translateY(0)";
+            }}
+          >
+            Claim My Free Offer Now
+          </Link>
         </motion.div>
       </section>
     </div>
