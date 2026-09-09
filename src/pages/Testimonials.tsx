@@ -1,24 +1,24 @@
-import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { fetchProjects, fetchSiteSettings } from '../lib/api'
-import { testimonials } from '../data/testimonials'
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { fetchProjects, fetchSiteSettings } from "../lib/api";
+import { testimonials } from "../data/testimonials";
 
 const statDefinitions = [
-  { key: 'projects', suffix: '+', label: 'Projects Completed' },
-  { key: 'years', suffix: '+', label: 'Years of Design Excellence' },
-  { key: 'handover', suffix: '%', label: 'On-Time Handover' },
-] as const
+  { key: "projects", suffix: "+", label: "Projects Completed" },
+  { key: "years", suffix: "+", label: "Years of Design Excellence" },
+  { key: "handover", suffix: "%", label: "On-Time Handover" },
+] as const;
 
-type StatKey = typeof statDefinitions[number]['key']
+type StatKey = (typeof statDefinitions)[number]["key"];
 
 // The Project model does not currently track handover status, so this is the
 // requested fallback until an on-time/completion status field is available.
-const ON_TIME_HANDOVER_FALLBACK = 100
+const ON_TIME_HANDOVER_FALLBACK = 100;
 
 function parseStatNumber(value?: string): number | null {
-  const match = value?.match(/\d+(?:\.\d+)?/)
-  return match ? Number(match[0]) : null
+  const match = value?.match(/\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : null;
 }
 
 function AnimatedStatValue({
@@ -27,46 +27,51 @@ function AnimatedStatValue({
   shouldStart,
   delay,
 }: {
-  value: number | null
-  suffix: string
-  shouldStart: boolean
-  delay: number
+  value: number | null;
+  suffix: string;
+  shouldStart: boolean;
+  delay: number;
 }) {
-  const [displayValue, setDisplayValue] = useState(0)
-  const startedRef = useRef(false)
+  const [displayValue, setDisplayValue] = useState(0);
+  const startedRef = useRef(false);
 
   useEffect(() => {
-    if (!shouldStart || value === null || startedRef.current) return
-    startedRef.current = true
+    if (!shouldStart || value === null || startedRef.current) return;
+    startedRef.current = true;
 
-    let frameId = 0
-    let delayId = 0
-    let startTime: number | null = null
-    const duration = 1100
+    let frameId = 0;
+    let delayId = 0;
+    let startTime: number | null = null;
+    const duration = 1100;
 
     const tick = (timestamp: number) => {
-      if (startTime === null) startTime = timestamp
-      const progress = Math.min((timestamp - startTime) / duration, 1)
-      const easedProgress = 1 - Math.pow(1 - progress, 3)
-      setDisplayValue(Math.round(value * easedProgress))
+      if (startTime === null) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      setDisplayValue(Math.round(value * easedProgress));
 
       if (progress < 1) {
-        frameId = window.requestAnimationFrame(tick)
+        frameId = window.requestAnimationFrame(tick);
       }
-    }
+    };
 
     delayId = window.setTimeout(() => {
-      frameId = window.requestAnimationFrame(tick)
-    }, delay)
+      frameId = window.requestAnimationFrame(tick);
+    }, delay);
 
     return () => {
-      window.clearTimeout(delayId)
-      window.cancelAnimationFrame(frameId)
-    }
-  }, [shouldStart, value, delay])
+      window.clearTimeout(delayId);
+      window.cancelAnimationFrame(frameId);
+    };
+  }, [shouldStart, value, delay]);
 
-  if (value === null) return <>—</>
-  return <>{displayValue}{suffix}</>
+  if (value === null) return <>—</>;
+  return (
+    <>
+      {displayValue}
+      {suffix}
+    </>
+  );
 }
 
 const fadeUp = (delay = 0) => ({
@@ -74,41 +79,57 @@ const fadeUp = (delay = 0) => ({
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    transition: {
+      duration: 0.65,
+      delay,
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+    },
   },
-})
+});
 
 const fadeDown = (delay = 0) => ({
   hidden: { opacity: 0, y: -15 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    transition: {
+      duration: 0.6,
+      delay,
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+    },
   },
-})
+});
 
 function ProjectBadge({ project }: { project: string }) {
   return (
-    <span style={{
-      display: 'inline-block',
-      fontFamily: "'Jost', sans-serif",
-      fontSize: 9,
-      letterSpacing: '0.12em',
-      textTransform: 'uppercase',
-      padding: '3px 8px',
-      borderRadius: 6,
-      lineHeight: 1.6,
-      background: 'rgba(161,134,97,0.12)',
-      color: '#a18661',
-      border: '1px solid rgba(161,134,97,0.35)',
-    }}>
+    <span
+      style={{
+        display: "inline-block",
+        fontFamily: "'Jost', sans-serif",
+        fontSize: 9,
+        letterSpacing: "0.12em",
+        textTransform: "uppercase",
+        padding: "3px 8px",
+        borderRadius: 6,
+        lineHeight: 1.6,
+        background: "rgba(161,134,97,0.12)",
+        color: "#a18661",
+        border: "1px solid rgba(161,134,97,0.35)",
+      }}
+    >
       {project}
     </span>
-  )
+  );
 }
 
-function TestimonialCard({ t, index }: { t: typeof testimonials[0]; index: number }) {
-  const colDelay = (index % 3) * 0.15
+function TestimonialCard({
+  t,
+  index,
+}: {
+  t: (typeof testimonials)[0];
+  index: number;
+}) {
+  const colDelay = (index % 3) * 0.15;
 
   return (
     <motion.div
@@ -120,114 +141,147 @@ function TestimonialCard({ t, index }: { t: typeof testimonials[0]; index: numbe
       <div
         className="testimonial-card"
         style={{
-          background: '#ffffff',
-          border: '1px solid rgba(95,116,94,0.25)',
+          background: "#ffffff",
+          border: "1px solid rgba(95,116,94,0.25)",
           borderRadius: 16,
           padding: 32,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          position: 'relative',
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease',
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          transition:
+            "transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, border-color 0.3s ease",
         }}
-        onMouseEnter={e => {
-          const el = e.currentTarget as HTMLDivElement
-          el.style.borderColor = '#5f745e'
-          el.style.borderWidth = '1.5px'
-          el.style.transform = 'translateY(-5px)'
-          el.style.background = '#faf9f6'
-          el.style.boxShadow = '0 12px 36px rgba(33,41,26,0.10)'
+        onMouseEnter={(e) => {
+          const el = e.currentTarget as HTMLDivElement;
+          el.style.borderColor = "#5f745e";
+          el.style.borderWidth = "1.5px";
+          el.style.transform = "translateY(-5px)";
+          el.style.background = "#faf9f6";
+          el.style.boxShadow = "0 12px 36px rgba(33,41,26,0.10)";
         }}
-        onMouseLeave={e => {
-          const el = e.currentTarget as HTMLDivElement
-          el.style.borderColor = 'rgba(95,116,94,0.35)'
-          el.style.borderWidth = '1px'
-          el.style.transform = 'translateY(0)'
-          el.style.background = '#ffffff'
-          el.style.boxShadow = 'none'
+        onMouseLeave={(e) => {
+          const el = e.currentTarget as HTMLDivElement;
+          el.style.borderColor = "rgba(95,116,94,0.35)";
+          el.style.borderWidth = "1px";
+          el.style.transform = "translateY(0)";
+          el.style.background = "#ffffff";
+          el.style.boxShadow = "none";
         }}
       >
         {/* Decorative large quote mark */}
-        <span style={{
-          position: 'absolute',
-          top: 16,
-          right: 20,
-          fontSize: 64,
-          lineHeight: 1,
-          color: '#a18661',
-          fontFamily: "'Cormorant Garamond', serif",
-          opacity: 0.22,
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}>"</span>
+        <span
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 20,
+            fontSize: 64,
+            lineHeight: 1,
+            color: "#a18661",
+            fontFamily: "'Cormorant Garamond', serif",
+            opacity: 0.22,
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        >
+          "
+        </span>
 
         {/* Stars */}
-        <div style={{ fontSize: 14, color: '#a18661', letterSpacing: 2, marginBottom: 16 }}>
-          {'★'.repeat(t.stars)}
+        <div
+          style={{
+            fontSize: 14,
+            color: "#a18661",
+            letterSpacing: 2,
+            marginBottom: 16,
+          }}
+        >
+          {"★".repeat(t.stars)}
         </div>
 
         {/* Review text */}
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: 'italic',
-          fontSize: 16,
-          lineHeight: 1.8,
-          color: '#2c2c2c',
-          flex: 1,
-          marginBottom: 0,
-        }}>
+        <p
+          style={{
+            fontFamily: "'Cormorant Garamond', serif",
+            fontStyle: "italic",
+            fontSize: 16,
+            lineHeight: 1.8,
+            color: "#2c2c2c",
+            flex: 1,
+            marginBottom: 0,
+          }}
+        >
           "{t.text}"
         </p>
 
         {/* Divider */}
-        <div style={{
-          width: 40,
-          height: 1,
-          background: '#a18661',
-          margin: '20px 0',
-          flexShrink: 0,
-        }} />
+        <div
+          style={{
+            width: 40,
+            height: 1,
+            background: "#a18661",
+            margin: "20px 0",
+            flexShrink: 0,
+          }}
+        />
 
         {/* Client info */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
-          <div style={{
-            width: 40,
-            height: 40,
-            borderRadius: '50%',
-            background: '#a18661',
-            color: '#ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: "'Jost', sans-serif",
-            fontWeight: 700,
-            fontSize: 12,
-            flexShrink: 0,
-            letterSpacing: '0.5px',
-          }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 12,
+            marginBottom: 14,
+          }}
+        >
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: "50%",
+              background: "#a18661",
+              color: "#ffffff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontFamily: "'Jost', sans-serif",
+              fontWeight: 700,
+              fontSize: 12,
+              flexShrink: 0,
+              letterSpacing: "0.5px",
+            }}
+          >
             {t.initials}
           </div>
           <div>
-            <p style={{
-              fontFamily: "'Jost', sans-serif",
-              fontWeight: 500,
-              fontSize: 14,
-              color: '#21291a',
-              margin: 0,
-            }}>{t.name}</p>
-            <span style={{
-              display: 'inline-block',
-              fontFamily: "'Jost', sans-serif",
-              fontSize: 11,
-              fontWeight: 400,
-              letterSpacing: '0.04em',
-              color: '#4a4a4a',
-              background: 'rgba(33,41,26,0.06)',
-              border: '1px solid rgba(33,41,26,0.12)',
-              borderRadius: 6,
-              padding: '2px 8px',
-              marginTop: 4,
-            }}>{t.location}</span>
+            <p
+              style={{
+                fontFamily: "'Jost', sans-serif",
+                fontWeight: 500,
+                fontSize: 14,
+                color: "#21291a",
+                margin: 0,
+              }}
+            >
+              {t.name}
+            </p>
+            <span
+              style={{
+                display: "inline-block",
+                fontFamily: "'Jost', sans-serif",
+                fontSize: 11,
+                fontWeight: 400,
+                letterSpacing: "0.04em",
+                color: "#4a4a4a",
+                background: "rgba(33,41,26,0.06)",
+                border: "1px solid rgba(33,41,26,0.12)",
+                borderRadius: 6,
+                padding: "2px 8px",
+                marginTop: 4,
+              }}
+            >
+              {t.location}
+            </span>
           </div>
         </div>
 
@@ -235,82 +289,95 @@ function TestimonialCard({ t, index }: { t: typeof testimonials[0]; index: numbe
         <ProjectBadge project={t.project} />
       </div>
     </motion.div>
-  )
+  );
 }
 
 export default function Testimonials() {
-  const [projectCount, setProjectCount] = useState<number | null>(null)
-  const [yearsOfExcellence, setYearsOfExcellence] = useState<number | null>(null)
-  const [statsInView, setStatsInView] = useState(false)
-  const statsSectionRef = useRef<HTMLElement>(null)
+  const [projectCount, setProjectCount] = useState<number | null>(null);
+  const [yearsOfExcellence, setYearsOfExcellence] = useState<number | null>(
+    null,
+  );
+  const [statsInView, setStatsInView] = useState(false);
+  const statsSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    let cancelled = false
+    let cancelled = false;
 
     fetchProjects()
-      .then(projects => {
-        if (cancelled) return
-        setProjectCount(projects.length)
+      .then((projects) => {
+        if (cancelled) return;
+        setProjectCount(projects.length);
 
         // Use the project years as a meaningful fallback if the configured
         // SiteSettings value cannot be loaded.
         const projectYears = projects
-          .map(project => Number(project.year))
-          .filter(year => Number.isFinite(year) && year > 0)
+          .map((project) => Number(project.year))
+          .filter((year) => Number.isFinite(year) && year > 0);
         if (projectYears.length > 0) {
-          setYearsOfExcellence(Math.max(0, new Date().getFullYear() - Math.min(...projectYears)))
+          setYearsOfExcellence(
+            Math.max(0, new Date().getFullYear() - Math.min(...projectYears)),
+          );
         }
       })
       .catch(() => {
         // Keep the project value unavailable rather than showing a stale
         // hardcoded count when the live source cannot be reached.
-      })
+      });
 
     fetchSiteSettings()
-      .then(settings => {
-        if (cancelled) return
-        const configuredYears = settings.homeStats?.find(stat =>
-          stat.label.toLowerCase().includes('years')
-        )
-        const parsedYears = parseStatNumber(configuredYears?.value)
-        if (parsedYears !== null) setYearsOfExcellence(parsedYears)
+      .then((settings) => {
+        if (cancelled) return;
+        const configuredYears = settings.homeStats?.find((stat) =>
+          stat.label.toLowerCase().includes("years"),
+        );
+        const parsedYears = parseStatNumber(configuredYears?.value);
+        if (parsedYears !== null) setYearsOfExcellence(parsedYears);
       })
       .catch(() => {
         // The project-year-derived value remains in place when available.
-      })
+      });
 
-    return () => { cancelled = true }
-  }, [])
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
-    const section = statsSectionRef.current
-    if (!section) return
+    const section = statsSectionRef.current;
+    if (!section) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setStatsInView(true)
-          observer.disconnect()
+          setStatsInView(true);
+          observer.disconnect();
         }
       },
-      { threshold: 0.4 }
-    )
+      { threshold: 0.4 },
+    );
 
-    observer.observe(section)
-    return () => observer.disconnect()
-  }, [])
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
 
   const statValues: Record<StatKey, number | null> = {
     projects: projectCount,
     years: yearsOfExcellence,
     handover: ON_TIME_HANDOVER_FALLBACK,
-  }
+  };
 
   return (
-    <div style={{ background: '#f5f2ed', minHeight: '100vh' }}>
-
+    <div style={{ background: "#f5f2ed", minHeight: "100vh" }}>
       {/* Page Hero */}
-      <section style={{ paddingTop: 140, paddingBottom: 60, textAlign: 'center', paddingLeft: 24, paddingRight: 24 }}>
+      <section
+        style={{
+          paddingTop: 140,
+          paddingBottom: 60,
+          textAlign: "center",
+          paddingLeft: 24,
+          paddingRight: 24,
+        }}
+      >
         <motion.p
           variants={fadeDown(0)}
           initial="hidden"
@@ -319,12 +386,14 @@ export default function Testimonials() {
           style={{
             fontFamily: "'Jost', sans-serif",
             fontSize: 11,
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            color: '#a18661',
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            color: "#a18661",
             marginBottom: 16,
           }}
-        >Client Stories</motion.p>
+        >
+          Client Stories
+        </motion.p>
 
         <motion.h1
           variants={fadeUp(0.15)}
@@ -334,12 +403,14 @@ export default function Testimonials() {
           style={{
             fontFamily: "'Playfair Display', serif",
             fontWeight: 400,
-            fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
-            color: '#262421',
-            margin: '0 0 20px',
+            fontSize: "clamp(2.5rem, 6vw, 4.5rem)",
+            color: "#262421",
+            margin: "0 0 20px",
             lineHeight: 1.1,
           }}
-        >What Clients Say</motion.h1>
+        >
+          What Clients Say
+        </motion.h1>
 
         <motion.p
           variants={fadeUp(0.3)}
@@ -350,22 +421,25 @@ export default function Testimonials() {
             fontFamily: "'Cormorant Garamond', serif",
             fontWeight: 300,
             fontSize: 15,
-            color: 'rgba(33,41,26,0.55)',
+            color: "rgba(33,41,26,0.55)",
             maxWidth: 560,
-            margin: '0 auto',
+            margin: "0 auto",
             lineHeight: 1.75,
           }}
         >
-          Every project is a relationship. These are the words of people who trusted us with their spaces.
+          Every project is a relationship. These are the words of people who
+          trusted us with their spaces.
         </motion.p>
       </section>
 
       {/* Cards Grid */}
-      <section style={{ maxWidth: 1200, margin: '0 auto', padding: '20px 24px 80px' }}>
+      <section
+        style={{ maxWidth: 1200, margin: "0 auto", padding: "20px 24px 80px" }}
+      >
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
             gap: 24,
           }}
           className="testi-grid"
@@ -385,16 +459,24 @@ export default function Testimonials() {
       </section>
 
       {/* Stats Bar */}
-      <section ref={statsSectionRef} style={{ background: '#ffffff', borderTop: '1px solid rgba(95,116,94,0.18)', borderBottom: '1px solid rgba(95,116,94,0.18)', padding: '64px 24px' }}>
+      <section
+        ref={statsSectionRef}
+        style={{
+          background: "#ffffff",
+          borderTop: "1px solid rgba(95,116,94,0.18)",
+          borderBottom: "1px solid rgba(95,116,94,0.18)",
+          padding: "64px 24px",
+        }}
+      >
         <div
           style={{
             maxWidth: 900,
-            margin: '0 auto',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            margin: "0 auto",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             gap: 0,
-            flexWrap: 'wrap',
+            flexWrap: "wrap",
           }}
           className="stats-bar"
         >
@@ -418,16 +500,23 @@ export default function Testimonials() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.4 }}
-              style={{ flex: 1, textAlign: 'center', padding: '16px 40px', minWidth: 180 }}
+              style={{
+                flex: 1,
+                textAlign: "center",
+                padding: "16px 40px",
+                minWidth: 180,
+              }}
             >
-              <p style={{
-                fontFamily: "'Cormorant Garamond', serif",
-                fontWeight: 400,
-                fontSize: 'clamp(2rem, 4vw, 3rem)',
-                color: '#21291a',
-                margin: '0 0 8px',
-                lineHeight: 1,
-              }}>
+              <p
+                style={{
+                  fontFamily: "'Cormorant Garamond', serif",
+                  fontWeight: 400,
+                  fontSize: "clamp(2rem, 4vw, 3rem)",
+                  color: "#21291a",
+                  margin: "0 0 8px",
+                  lineHeight: 1,
+                }}
+              >
                 <AnimatedStatValue
                   value={statValues[stat.key]}
                   suffix={stat.suffix}
@@ -435,72 +524,89 @@ export default function Testimonials() {
                   delay={i * 120}
                 />
               </p>
-              <p style={{
-                fontFamily: "'Jost', sans-serif",
-                fontWeight: 400,
-                fontSize: 11,
-                letterSpacing: '0.12em',
-                textTransform: 'uppercase',
-                color: 'rgba(33,41,26,0.5)',
-                margin: 0,
-              }}>{stat.label}</p>
+              <p
+                style={{
+                  fontFamily: "'Jost', sans-serif",
+                  fontWeight: 400,
+                  fontSize: 11,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  color: "rgba(33,41,26,0.5)",
+                  margin: 0,
+                }}
+              >
+                {stat.label}
+              </p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* CTA Section */}
-      <section style={{ background: '#f5f2ed', padding: '80px 24px', textAlign: 'center' }}>
+      <section
+        style={{
+          background: "#f5f2ed",
+          padding: "80px 24px",
+          textAlign: "center",
+        }}
+      >
         <motion.div
           variants={fadeUp(0)}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
         >
-          <h2 style={{
-            fontFamily: "'Playfair Display', serif",
-            fontWeight: 400,
-            fontSize: 'clamp(1.8rem, 4vw, 2.8rem)',
-            color: '#262421',
-            margin: '0 0 16px',
-            letterSpacing: '-0.01em',
-          }}>Ready to transform your space?</h2>
-          <p style={{
-            fontFamily: "'Cormorant Garamond', serif",
-            fontWeight: 300,
-            fontSize: 15,
-            color: 'rgba(33,41,26,0.55)',
-            maxWidth: 480,
-            margin: '0 auto 40px',
-            lineHeight: 1.75,
-          }}>
-            Claim your Free Layout Consultation today and let us start building your dream.
+          <h2
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              fontWeight: 400,
+              fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+              color: "#262421",
+              margin: "0 0 16px",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Ready to transform your space?
+          </h2>
+          <p
+            style={{
+              fontFamily: "'Cormorant Garamond', serif",
+              fontWeight: 300,
+              fontSize: 15,
+              color: "rgba(33,41,26,0.55)",
+              maxWidth: 480,
+              margin: "0 auto 40px",
+              lineHeight: 1.75,
+            }}
+          >
+            Claim your Free Consultation today and let us start building your
+            dream.
           </p>
           <Link
             to="/contact"
             style={{
-              display: 'inline-block',
-              background: '#21291a',
-              color: '#f5f2ed',
+              display: "inline-block",
+              background: "#21291a",
+              color: "#f5f2ed",
               fontFamily: "'Jost', sans-serif",
               fontWeight: 500,
               fontSize: 12,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-              padding: '16px 40px',
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              padding: "16px 40px",
               borderRadius: 12,
-              textDecoration: 'none',
-              transition: 'background 0.3s ease, transform 0.3s ease',
+              textDecoration: "none",
+              transition: "background 0.3s ease, transform 0.3s ease",
             }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLAnchorElement
-              el.style.background = '#5f745e'
-              el.style.transform = 'translateY(-2px)'
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement;
+              el.style.background = "#5f745e";
+              el.style.transform = "translateY(-2px)";
             }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLAnchorElement
-              el.style.background = '#21291a'
-              el.style.transform = 'translateY(0)'
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLAnchorElement;
+              el.style.background = "#21291a";
+              el.style.transform = "translateY(0)";
             }}
           >
             Claim My Free Offer Now
@@ -508,5 +614,5 @@ export default function Testimonials() {
         </motion.div>
       </section>
     </div>
-  )
+  );
 }
