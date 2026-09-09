@@ -137,9 +137,13 @@ const services = [
 const DEFAULT_HOME_STATS = [
   { value: 5,  from: 0, suffix: '+', label: 'Years Experience',    duration: 1200 },
   { value: 25, from: 0, suffix: '+', label: 'Projects Completed',  duration: 1800 },
-  { value: 50, from: 0, suffix: '+', label: 'Clients Served',      duration: 1600 },
+  { value: 50, from: 0, suffix: '+', label: 'Design Concepts',      duration: 1600 },
   { value: 90, from: 0, suffix: '%', label: 'Client Satisfaction', duration: 1400 },
 ]
+
+function getHomeStatLabel(label: string) {
+  return label.trim().toLowerCase() === 'clients served' ? 'Design Concepts' : label
+}
 
 function parseStatValue(v: string): { numeric: number; suffix: string } {
   const m = v.match(/^(\d+(?:\.\d+)?)(.*)$/)
@@ -153,7 +157,7 @@ function StatsSection() {
     if (settings?.homeStats?.length) {
       return settings.homeStats.map(s => {
         const { numeric, suffix } = parseStatValue(s.value)
-        return { value: numeric, from: 0, suffix, label: s.label, duration: 1400 }
+        return { value: numeric, from: 0, suffix, label: getHomeStatLabel(s.label), duration: 1400 }
       })
     }
     return DEFAULT_HOME_STATS
@@ -357,11 +361,11 @@ function StatsSection() {
 function MobileStatsCarousel() {
   const { settings } = useSiteSettings()
   const slides = settings?.homeStats?.length
-    ? settings.homeStats.map(s => ({ value: s.value, label: s.label }))
+    ? settings.homeStats.map(s => ({ value: s.value, label: getHomeStatLabel(s.label) }))
     : [
         { value: '2+',  label: 'Years Experience'    },
         { value: '25+', label: 'Projects Completed'  },
-        { value: '50+', label: 'Clients Served'       },
+        { value: '50+', label: 'Design Concepts'       },
         { value: '90%', label: 'Client Satisfaction' },
       ]
   const n = slides.length
