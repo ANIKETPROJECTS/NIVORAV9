@@ -57,7 +57,7 @@ notification email is sent:
 | `EMAIL_APP_SECRET` | Gmail app password |
 | `EMAIL_TO` | Inbox that receives contact-form enquiries |
 
-Note: `ecosystem.config.cjs` (used for standalone VPS/PM2 deploys outside Replit) intentionally keeps its own copy of these values in plaintext per the project owner's request — that file is unrelated to the Replit Secrets above and is not used when running on Replit.
+Note: `ecosystem.config.cjs` (used for standalone VPS/PM2 deploys outside Replit) only defines the production API port. VPS credentials belong in the untracked `.env` file and are not used when running on Replit.
 
 ## Instagram section (Home page)
 

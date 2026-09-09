@@ -131,11 +131,18 @@ Express process serves both `dist/` and `/api/*` from the same port, so Nginx
 does not need a separate static root and API upstream.
 
 ```bash
-npm ci
+npm ci --registry=https://registry.npmjs.org/ --no-audit --no-fund
 npm run build
-pm2 start ecosystem.config.cjs
+
+# First deployment or an existing deployment after pulling new code:
+pm2 startOrRestart ecosystem.config.cjs --update-env
+
 pm2 save
 ```
+
+Create a VPS-only `.env` file in the project directory using the keys in
+`.env.example`. Do not commit that file. The PM2 config only sets the API port;
+the application loads the credentials from `.env` at startup.
 
 Point the site/server block at the port from `API_PORT` (3002 in the included
 PM2 configuration). For example:
@@ -156,7 +163,9 @@ server {
 ```
 
 After changing Nginx, run `sudo nginx -t && sudo systemctl reload nginx`.
-Verify the API before opening the portfolio page:
+Verify the API before opening the portfolio page. Run both checks after every
+pull; the first one catches a stopped or wrongly configured PM2 process, while
+the second catches an Nginx upstream mismatch:
 
 ```bash
 curl -i http://127.0.0.1:3002/api/health
@@ -165,7 +174,8 @@ curl -i https://www.nivorainteriors.com/api/projects
 
 Both API requests must return HTTP 200. If the first succeeds but the second
 returns 502, Nginx is still pointing at the wrong port or the PM2 process is
-not running. Check with `pm2 status` and `pm2 logs nivora-api`.
+not running. Check with `pm2 status`, `pm2 logs nivora-api`, and
+`sudo ss -ltnp | grep 3002`.
 
 ---
 
