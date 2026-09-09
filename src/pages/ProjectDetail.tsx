@@ -294,7 +294,7 @@ export default function ProjectDetail() {
           alignItems: 'center',
           background: 'rgba(35,47,32,0.94)',
           borderRight: isMobile ? 'none' : '1px solid rgba(245,240,232,0.18)',
-        }} />
+        }}>
           <FadeIn>
             <div style={{
               width: '100%',
