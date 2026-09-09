@@ -293,7 +293,7 @@ function TestimonialCard({
 }
 
 export default function Testimonials() {
-  const [projectCount, setProjectCount] = useState<number | null>(null);
+  const [projectCount, setProjectCount] = useState<number | null>(25);
   const [yearsOfExcellence, setYearsOfExcellence] = useState<number | null>(
     null,
   );
@@ -306,7 +306,7 @@ export default function Testimonials() {
     fetchProjects()
       .then((projects) => {
         if (cancelled) return;
-        setProjectCount(projects.length);
+        setProjectCount(Math.max(projects.length, 25));
 
         // Use the project years as a meaningful fallback if the configured
         // SiteSettings value cannot be loaded.
@@ -586,8 +586,8 @@ export default function Testimonials() {
             to="/contact"
             style={{
               display: "inline-block",
-              background: "#21291a",
-              color: "#f5f2ed",
+              background: "linear-gradient(135deg, #E0C38A 0%, #C8A46A 50%, #A8854F 100%)",
+              color: "#2D3E29",
               fontFamily: "'Jost', sans-serif",
               fontWeight: 500,
               fontSize: 12,
@@ -596,16 +596,19 @@ export default function Testimonials() {
               padding: "16px 40px",
               borderRadius: 12,
               textDecoration: "none",
-              transition: "background 0.3s ease, transform 0.3s ease",
+              boxShadow: "0 2px 14px rgba(168,133,79,0.28)",
+              transition: "background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease",
             }}
             onMouseEnter={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = "#5f745e";
+              el.style.background = "linear-gradient(135deg, #EDD09A 0%, #D4B078 50%, #B8904E 100%)";
+              el.style.boxShadow = "0 4px 22px rgba(168,133,79,0.45)";
               el.style.transform = "translateY(-2px)";
             }}
             onMouseLeave={(e) => {
               const el = e.currentTarget as HTMLAnchorElement;
-              el.style.background = "#21291a";
+              el.style.background = "linear-gradient(135deg, #E0C38A 0%, #C8A46A 50%, #A8854F 100%)";
+              el.style.boxShadow = "0 2px 14px rgba(168,133,79,0.28)";
               el.style.transform = "translateY(0)";
             }}
           >
