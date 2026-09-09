@@ -414,7 +414,7 @@ function HomeStatsPanel({ settings, onChange }: { settings: SiteSettings; onChan
     : [
         { value: '5+',  label: 'Years Experience'    },
         { value: '25+', label: 'Projects Completed'  },
-        { value: '50+', label: 'Clients Served'      },
+        { value: '50+', label: 'Design Concepts'      },
         { value: '90%', label: 'Client Satisfaction' },
       ]
 
@@ -568,7 +568,7 @@ const EMPTY_SETTINGS: SiteSettings = {
   homeStats: [
     { value: '5+',  label: 'Years Experience'    },
     { value: '25+', label: 'Projects Completed'  },
-    { value: '50+', label: 'Clients Served'      },
+    { value: '50+', label: 'Design Concepts'      },
     { value: '90%', label: 'Client Satisfaction' },
   ],
   aboutStats: [

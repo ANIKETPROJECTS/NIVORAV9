@@ -67,7 +67,7 @@ const siteSettingsSchema = new mongoose.Schema({
   homeStats: { type: [statItemSchema], default: [
     { value: '2+',  label: 'Years Experience'    },
     { value: '25+', label: 'Projects Completed'  },
-    { value: '50+', label: 'Clients Served'      },
+    { value: '50+', label: 'Design Concepts'      },
     { value: '90%', label: 'Client Satisfaction' },
   ]},
 
