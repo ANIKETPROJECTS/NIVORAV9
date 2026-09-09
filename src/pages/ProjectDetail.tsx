@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from 'lucide-react'
 import { motion } from 'framer-motion'
 import FadeIn from '../components/FadeIn'
+import ConsultationButton from '../components/ConsultationButton'
 import { fetchProject } from '../lib/api'
 import type { Project } from '../lib/api'
 import heroTexture from '../../attached_assets/shhsbszgb_1788958501035.png'
@@ -613,31 +614,7 @@ export default function ProjectDetail() {
             <h2 className="font-serif font-light mb-8" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400, fontSize: '2.5rem', color: '#262421', letterSpacing: '-0.01em' }}>
               Ready to design your space?
             </h2>
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 transition-all duration-300 font-medium text-xs tracking-[0.2em] uppercase px-10 py-4"
-              style={{
-                background: 'linear-gradient(135deg, #D8B67A 0%, #C9A063 50%, #B98B4E 100%)',
-                color: '#2E2A26',
-                borderRadius: 4,
-                textDecoration: 'none',
-                transition: 'background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease',
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.background = 'linear-gradient(135deg, #E5C68A 0%, #D4AA73 50%, #C49B5E 100%)'
-                el.style.transform = 'translateY(-2px)'
-                el.style.boxShadow = '0 10px 25px rgba(185,139,78,0.25)'
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.background = 'linear-gradient(135deg, #D8B67A 0%, #C9A063 50%, #B98B4E 100%)'
-                el.style.transform = 'translateY(0)'
-                el.style.boxShadow = 'none'
-              }}
-            >
-              Book a Free Consultation
-            </Link>
+            <ConsultationButton />
           </FadeIn>
         </div>
       </div>

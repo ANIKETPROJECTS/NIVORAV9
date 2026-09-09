@@ -1,9 +1,8 @@
 import { useRef, useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
 import { motion, useInView } from 'framer-motion'
 import FadeIn from '../components/FadeIn'
 import ProcessSection from '../components/ProcessSection'
+import ConsultationButton from '../components/ConsultationButton'
 import { useSiteSettings } from '../hooks/useSiteSettings'
 import residentialCover from '../assets/services/residential-interiors-cover.jpg'
 import commercialCover from '../assets/services/commercial-interiors-cover.jpg'
@@ -873,37 +872,7 @@ export default function Services() {
           }}>
             Book a free consultation and we'll guide you through the best approach for your project.
           </p>
-          <Link
-            to="/contact"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 10,
-              backgroundColor: '#a18661',
-              color: '#1C2818',
-              fontFamily: "'Inter', sans-serif",
-              fontWeight: 500,
-              fontSize: 10,
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              padding: '18px 48px',
-              textDecoration: 'none',
-              borderRadius: 2,
-              transition: 'background 0.3s ease, transform 0.3s ease',
-            }}
-            onMouseEnter={e => {
-              const el = e.currentTarget as HTMLElement
-              el.style.backgroundColor = '#ddb97a'
-              el.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={e => {
-              const el = e.currentTarget as HTMLElement
-              el.style.backgroundColor = '#a18661'
-              el.style.transform = 'translateY(0)'
-            }}
-          >
-            Book Free Consultation <ArrowRight size={13} strokeWidth={1.5} />
-          </Link>
+          <ConsultationButton />
         </FadeIn>
       </section>
     </div>

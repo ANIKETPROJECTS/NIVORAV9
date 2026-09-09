@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
 import { motion, useInView } from 'framer-motion'
+import ConsultationButton from './ConsultationButton'
 
 const STEPS = [
   {
@@ -560,34 +560,7 @@ export default function ProcessSection() {
         }}>
           End-to-End &nbsp;·&nbsp; Transparent &nbsp;·&nbsp; Hassle-Free
         </p>
-        <Link
-          to="/contact"
-          style={{
-            display: 'inline-block',
-            fontFamily: "'Inter', sans-serif",
-            fontWeight: 400,
-            fontSize: 10,
-            letterSpacing: '0.25em',
-            textTransform: 'uppercase',
-            background: '#2A3926',
-            color: '#ffffff',
-            padding: '18px 52px',
-            textDecoration: 'none',
-            transition: 'background 0.3s ease, transform 0.3s ease',
-          }}
-          onMouseEnter={e => {
-            const el = e.currentTarget as HTMLElement
-            el.style.background = '#3a5e3c'
-            el.style.transform = 'translateY(-2px)'
-          }}
-          onMouseLeave={e => {
-            const el = e.currentTarget as HTMLElement
-            el.style.background = '#2A3926'
-            el.style.transform = 'translateY(0)'
-          }}
-        >
-          Book Free Consultation
-        </Link>
+        <ConsultationButton />
       </motion.div>
 
       <style>{`

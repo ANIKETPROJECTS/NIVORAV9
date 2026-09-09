@@ -14,6 +14,7 @@ import visualizationCover from '../assets/services/2d-3d-visualization-cover.jpg
 import developerCover from '../assets/services/developer-solutions-cover.jpg'
 import renovationCover from '../assets/services/renovation-makeovers-cover.jpg'
 import { testimonials } from '../data/testimonials'
+import ConsultationButton from '../components/ConsultationButton'
 
 const heroImg = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=85'
 const philosophyImage = 'https://res.cloudinary.com/tgmyheme/image/upload/v1788063037/nivora/site/our-philosophy-IMG_0171.jpg'
@@ -673,17 +674,17 @@ function CompareSlider({
 
   const labelBase: React.CSSProperties = {
     position: 'absolute',
-    bottom: 16,
+    bottom: 12,
     zIndex: 6,
     fontFamily: "'Montserrat', sans-serif",
     fontWeight: 400,
-    fontSize: 9,
-    letterSpacing: '0.28em',
+    fontSize: 8,
+    letterSpacing: '0.18em',
     textTransform: 'uppercase',
     color: '#C8A56A',
     background: 'rgba(250,248,244,0.92)',
     border: '1px solid rgba(200,165,106,0.55)',
-    padding: '5px 12px',
+    padding: '4px 9px',
     borderRadius: 100,
     backdropFilter: 'blur(4px)',
     pointerEvents: 'auto',
@@ -778,7 +779,7 @@ function CompareSlider({
       {/* SLIDE TO COMPARE badge — above handle */}
       <div style={{
         position: 'absolute',
-        top: 'calc(50% - 38px)',
+        top: 'calc(50% - 34px)',
         left: `${pos}%`,
         transform: 'translateX(-50%)',
         transition: dividerTransition,
@@ -787,13 +788,13 @@ function CompareSlider({
         whiteSpace: 'nowrap',
         fontFamily: "'Montserrat', sans-serif",
         fontWeight: 400,
-        fontSize: 8,
-        letterSpacing: '0.22em',
+        fontSize: 7,
+        letterSpacing: '0.16em',
         textTransform: 'uppercase',
         color: 'rgba(255,255,255,0.75)',
         background: 'rgba(0,0,0,0.32)',
         backdropFilter: 'blur(4px)',
-        padding: '3px 9px',
+        padding: '2px 7px',
         borderRadius: 100,
       }}>
         Slide to Compare
@@ -1387,38 +1388,7 @@ function HeroSection({ splashDone }: { splashDone: boolean }) {
           style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}
         >
           <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.25 }} className="hero-btn-wrap">
-            <Link
-              to="/contact"
-              className="hero-btn-primary"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 10,
-                fontFamily: "'Cinzel', serif",
-                fontSize: 10,
-                letterSpacing: '0.22em',
-                textTransform: 'uppercase',
-                background: 'linear-gradient(135deg, #E0C38A 0%, #C8A46A 50%, #A8854F 100%)',
-                color: '#2D3E29',
-                fontWeight: 600,
-                padding: '17px 40px',
-                textDecoration: 'none',
-                transition: 'background 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease',
-                boxShadow: '0 4px 24px rgba(168,133,79,0.35)',
-              }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.background = 'linear-gradient(135deg, #EDD09A 0%, #D4B078 50%, #B8904E 100%)'
-                el.style.boxShadow = '0 8px 32px rgba(168,133,79,0.50)'
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLAnchorElement
-                el.style.background = 'linear-gradient(135deg, #E0C38A 0%, #C8A46A 50%, #A8854F 100%)'
-                el.style.boxShadow = '0 4px 24px rgba(168,133,79,0.35)'
-              }}
-            >
-              Book Free Consultation
-            </Link>
+            <ConsultationButton />
           </motion.div>
 
           <motion.div
