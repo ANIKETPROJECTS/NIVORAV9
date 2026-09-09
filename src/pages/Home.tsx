@@ -1003,13 +1003,13 @@ function TransformationCarousel() {
             clearAutoTimer()
           }}
         />
-        <div style={{ padding: '1.5rem 1.75rem 1.75rem', borderTop: '1px solid #F5F1EA' }}>
+        <div className="trf-card-body" style={{ padding: '1.5rem 1.75rem 1.75rem', borderTop: '1px solid #F5F1EA' }}>
           <h3 style={{
             fontFamily: "'Playfair Display', serif", fontWeight: 400,
             fontSize: 'clamp(1.1rem, 1.8vw, 1.4rem)', color: '#262421',
             margin: '0 0 0.9rem', letterSpacing: '-0.01em',
           }}>{t.title}</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem 1.5rem' }}>
+          <div className="trf-card-copy" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '1rem 1.5rem' }}>
             <div>
               <p style={{
                 fontFamily: "'Montserrat', sans-serif", fontWeight: 400, fontSize: 9,
@@ -1039,13 +1039,14 @@ function TransformationCarousel() {
   }
 
   return (
-    <div ref={sectionRef} style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px' }}>
+    <div ref={sectionRef} className="trf-carousel-root" style={{ maxWidth: 1100, margin: '0 auto', padding: '0 20px' }}>
       <style>{`
         .trf-card {
           border-radius: 20px;
           background: #fff;
           box-shadow: 0 8px 48px rgba(38,36,33,0.09), 0 2px 12px rgba(38,36,33,0.05);
           overflow: hidden;
+          min-width: 0;
         }
         .trf-carousel-viewport { overflow: hidden; }
         .trf-carousel-track {
@@ -1073,6 +1074,15 @@ function TransformationCarousel() {
           transition: background 300ms ease, transform 300ms ease;
         }
         .trf-dot.active { background: #C8A56A; transform: scale(1.35); }
+        @media (max-width: 640px) {
+          /* The section already supplies mobile side padding; remove the
+             carousel's second inset so the card stays comfortably wide. */
+          .trf-carousel-root { padding-left: 0 !important; padding-right: 0 !important; }
+          .trf-carousel-page { gap: 0; }
+          .trf-card { border-radius: 16px; }
+          .trf-card-body { padding: 1.35rem 1.25rem 1.5rem !important; }
+          .trf-card-copy { column-gap: 0.85rem !important; }
+        }
       `}</style>
 
       {/* Viewport + track */}
