@@ -505,6 +505,7 @@ function CompareSlider({
   const draggingRef = useRef(false)
   const activePointerIdRef = useRef<number | null>(null)
   const isAnimatingRef = useRef(false)
+  const manualPausedRef = useRef(false)
   const mountedRef = useRef(true)
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const onDragChangeRef = useRef(onDragChange)
@@ -557,16 +558,16 @@ function CompareSlider({
   })
 
   const playReveal = async () => {
-    if (isAnimatingRef.current || draggingRef.current) return
+    if (manualPausedRef.current || isAnimatingRef.current || draggingRef.current) return
     isAnimatingRef.current = true
     await moveTo(98, 900)
-    if (draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
+    if (manualPausedRef.current || draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
     await sleep(600)
-    if (draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
+    if (manualPausedRef.current || draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
     await moveTo(2, 900)
-    if (draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
+    if (manualPausedRef.current || draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
     await sleep(600)
-    if (draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
+    if (manualPausedRef.current || draggingRef.current || !mountedRef.current) { isAnimatingRef.current = false; return }
     await moveTo(50, 600)
     if (mountedRef.current) setTransitionMs(0)
     isAnimatingRef.current = false
@@ -617,6 +618,7 @@ function CompareSlider({
 
   const startDrag = (clientX: number) => {
     draggingRef.current = true
+    manualPausedRef.current = true
     onUserInteractRef.current?.()
     onDragChangeRef.current?.(true)
     cancelAnim()
@@ -664,7 +666,7 @@ function CompareSlider({
   }
 
   const onContainerMouseEnter = () => {
-    if (!isAnimatingRef.current && !draggingRef.current) playReveal()
+    if (!manualPausedRef.current && !isAnimatingRef.current && !draggingRef.current) playReveal()
   }
 
   const dividerTransition = transitionMs > 0 ? `left ${transitionMs}ms ease-in-out` : 'none'
