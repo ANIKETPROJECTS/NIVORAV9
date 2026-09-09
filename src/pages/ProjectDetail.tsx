@@ -6,6 +6,7 @@ import FadeIn from '../components/FadeIn'
 import { fetchProject } from '../lib/api'
 import type { Project } from '../lib/api'
 import heroTexture from '../../attached_assets/shhsbszgb_1788958501035.png'
+import blushwoodGalleryImage from '../../attached_assets/1_(2)_1788959687687.png'
 
 
 interface LightboxProps {
@@ -269,8 +270,13 @@ export default function ProjectDetail() {
     )
   }
 
-  // Gallery images: all images stored in MongoDB (the hero banner is a separate field)
-  const galleryImages = project.images.filter(img => img && img.trim() !== '')
+  // Gallery images: all images stored in MongoDB (the hero banner is a separate field).
+  // Keep this newly supplied Blushwood image visible without requiring a database
+  // rewrite of the existing project record.
+  const galleryImages = [
+    ...project.images,
+    ...(project.id === 'blushwood-haven' ? [blushwoodGalleryImage] : []),
+  ].filter(img => img && img.trim() !== '')
   const clientName = project.client?.trim()
   // Keep legacy data from putting a client back into the eyebrow label.
   const projectBadge = (project.badge || `${project.category} · ${project.year}`)
