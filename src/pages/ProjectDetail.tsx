@@ -280,34 +280,24 @@ export default function ProjectDetail() {
   return (
     <div style={{ background: '#FFFCF7' }} className="pt-20">
 
-      {/* Hero — compact frame with the complete source image always visible. */}
+      {/* Hero — dedicated text panel beside an uncropped image panel. */}
       <div className="relative overflow-hidden" style={{
         height: isMobile ? 'auto' : 'min(60vh, 620px)',
         background: '#e8e0d5',
+        display: 'grid',
+        gridTemplateColumns: isMobile ? '1fr' : '38% 62%',
       }}>
-        <img
-          src={project.heroImage || project.images[0] || project.coverImage}
-          alt={project.name}
-          className="w-full h-full block"
-          style={{
-            filter: 'contrast(1.07) saturate(1.05)',
-            objectFit: 'contain',
-            objectPosition: 'center',
-            ...(isMobile ? { height: 'auto' } : {}),
-          }}
-        />
-        <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, rgba(45,62,41,0.08) 0%, rgba(45,62,41,0.16) 42%, rgba(20,25,18,0.68) 100%)',
+        <div style={{
+          minHeight: isMobile ? 260 : undefined,
+          padding: isMobile ? '1.25rem' : '2.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          background: 'rgba(35,47,32,0.94)',
+          borderRight: isMobile ? 'none' : '1px solid rgba(245,240,232,0.18)',
         }} />
-        <div className="absolute bottom-0 left-0 right-0" style={{
-          maxWidth: '80rem',
-          margin: '0 auto',
-          padding: isMobile ? '1.25rem' : '3rem',
-        }}>
           <FadeIn>
             <div style={{
-              width: 'fit-content',
-              maxWidth: 'min(100%, 720px)',
+              width: '100%',
               padding: isMobile ? '1rem 1.15rem' : '1.25rem 1.5rem',
               borderRadius: 10,
               border: '1px solid rgba(245,240,232,0.28)',
@@ -330,6 +320,26 @@ export default function ProjectDetail() {
               )}
             </div>
           </FadeIn>
+        </div>
+        <div style={{
+          minHeight: isMobile ? 260 : undefined,
+          background: '#e8e0d5',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <img
+            src={project.heroImage || project.images[0] || project.coverImage}
+            alt={project.name}
+            className="w-full block"
+            style={{
+              width: '100%',
+              height: isMobile ? 'auto' : '100%',
+              filter: 'contrast(1.07) saturate(1.05)',
+              objectFit: 'contain',
+              objectPosition: 'center',
+            }}
+          />
         </div>
       </div>
 
