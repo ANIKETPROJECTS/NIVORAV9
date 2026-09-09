@@ -298,7 +298,7 @@ export default function ProjectDetail() {
           borderRight: isMobile ? 'none' : '1px solid rgba(245,240,232,0.18)',
         }}>
           <FadeIn style={{ width: '100%', maxWidth: 420 }}>
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%', textAlign: 'center' }}>
               <p style={{ color: '#F0D39D', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
                 {projectBadge}
               </p>
