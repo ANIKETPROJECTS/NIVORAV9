@@ -558,8 +558,9 @@ function CtaButton() {
     <div ref={ref} style={{ position: 'relative', display: 'inline-block' }}>
       <ConsultationButton>
         <span style={{ position: 'relative', zIndex: 1 }}>
-          Book Free Consultation <ArrowRight size={13} />
+            Book Free Consultation
         </span>
+          <ArrowRight size={13} strokeWidth={1.5} style={{ position: 'relative', zIndex: 1 }} />
         {isMobile && (
           <motion.span
             aria-hidden="true"

@@ -10,11 +10,14 @@ interface ConsultationButtonProps {
 export default function ConsultationButton({ children, className = '' }: ConsultationButtonProps) {
   return (
     <Link to="/contact" className={`consultation-button ${className}`.trim()}>
-      {children ?? (
-        <>
-          Book Free Consultation <ArrowRight size={13} strokeWidth={1.5} />
-        </>
-      )}
+      <span className="consultation-button-content">
+        {children ?? (
+          <>
+            <span>Book Free Consultation</span>
+            <ArrowRight size={13} strokeWidth={1.5} />
+          </>
+        )}
+      </span>
     </Link>
   )
 }
