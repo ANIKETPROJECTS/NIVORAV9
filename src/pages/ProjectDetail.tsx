@@ -297,7 +297,7 @@ export default function ProjectDetail() {
           }}
         />
         <div className="absolute inset-0" style={{
-          background: 'linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.52) 100%)',
+          background: 'linear-gradient(to bottom, rgba(45,62,41,0.08) 0%, rgba(45,62,41,0.16) 42%, rgba(20,25,18,0.68) 100%)',
         }} />
         <div className="absolute bottom-0 left-0 right-0 p-12" style={{ maxWidth: '80rem', margin: '0 auto' }}>
           <FadeIn>
