@@ -280,17 +280,16 @@ export default function ProjectDetail() {
   return (
     <div style={{ background: '#FFFCF7' }} className="pt-20">
 
-      {/* Hero — full-bleed cover on desktop, uncropped image on mobile. */}
+      {/* Hero — preserve the complete source image at every viewport size. */}
       <div className="relative overflow-hidden" style={{
-        height: isMobile ? 'auto' : '70vh',
+        height: 'auto',
       }}>
         <img
           src={project.heroImage || project.images[0] || project.coverImage}
           alt={project.name}
-          className={isMobile ? 'w-full block' : 'w-full h-full object-cover'}
+          className="w-full h-auto block"
           style={{
             filter: 'contrast(1.07) saturate(1.05)',
-            ...(isMobile ? { height: 'auto', objectFit: 'contain' } : {}),
           }}
         />
         <div className="absolute inset-0" style={{
