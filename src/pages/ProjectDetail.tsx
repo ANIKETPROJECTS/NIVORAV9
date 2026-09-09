@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import FadeIn from '../components/FadeIn'
 import { fetchProject } from '../lib/api'
 import type { Project } from '../lib/api'
+import heroTexture from '../../attached_assets/shhsbszgb_1788958501035.png'
 
 
 interface LightboxProps {
@@ -283,7 +284,10 @@ export default function ProjectDetail() {
       {/* Hero — dedicated text panel beside an uncropped image panel. */}
       <div className="relative overflow-hidden" style={{
         height: isMobile ? 'auto' : 'min(60vh, 620px)',
-        background: '#e8e0d5',
+        backgroundColor: '#e8e0d5',
+        backgroundImage: `url(${heroTexture})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         display: 'grid',
         gridTemplateColumns: isMobile ? '1fr' : '38% 62%',
         gridTemplateRows: isMobile ? 'auto auto' : 'minmax(0, 1fr)',
@@ -325,7 +329,10 @@ export default function ProjectDetail() {
           height: isMobile ? 'auto' : '100%',
           minWidth: 0,
           minHeight: isMobile ? 260 : undefined,
-          background: '#e8e0d5',
+          backgroundColor: '#e8e0d5',
+          backgroundImage: `url(${heroTexture})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
