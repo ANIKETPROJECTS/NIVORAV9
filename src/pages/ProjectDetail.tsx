@@ -291,21 +291,12 @@ export default function ProjectDetail() {
           minHeight: isMobile ? 260 : undefined,
           padding: isMobile ? '1.25rem' : '2.5rem',
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'flex-start',
           background: 'rgba(35,47,32,0.94)',
           borderRight: isMobile ? 'none' : '1px solid rgba(245,240,232,0.18)',
         }}>
           <FadeIn>
-            <div style={{
-              width: '100%',
-              padding: isMobile ? '1rem 1.15rem' : '1.25rem 1.5rem',
-              borderRadius: 10,
-              border: '1px solid rgba(245,240,232,0.28)',
-              background: 'rgba(35,47,32,0.58)',
-              backdropFilter: 'blur(5px)',
-              WebkitBackdropFilter: 'blur(5px)',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.16)',
-            }}>
+            <div style={{ width: '100%' }}>
               <p style={{ color: '#F0D39D', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
                 {projectBadge}
               </p>
