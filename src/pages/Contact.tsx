@@ -438,13 +438,13 @@ export default function Contact() {
                     type="submit"
                     className="contact-submit-btn"
                     disabled={status === 'submitting'}
-                    whileHover={status === 'submitting' ? {} : { scale: 1.02, boxShadow: '0 8px 28px rgba(45,59,45,0.22)' }}
+                    whileHover={status === 'submitting' ? {} : { scale: 1.02, boxShadow: '0 8px 28px rgba(168,133,79,0.45)' }}
                     whileTap={status === 'submitting' ? {} : { scale: 0.97 }}
                     transition={{ duration: 0.2, ease: 'easeOut' }}
                     style={{
                       width: '100%',
-                      background: '#21291a',
-                      color: '#a18661',
+                      background: 'linear-gradient(135deg, #E0C38A 0%, #C8A46A 50%, #A8854F 100%)',
+                      color: '#2D3E29',
                       fontFamily: "'Jost', sans-serif",
                       fontSize: 13,
                       letterSpacing: '0.12em',
@@ -459,6 +459,7 @@ export default function Contact() {
                       justifyContent: 'center',
                       gap: 10,
                       borderRadius: 8,
+                      boxShadow: '0 2px 14px rgba(168,133,79,0.28)',
                     }}
                   >
                     {status === 'submitting' ? (

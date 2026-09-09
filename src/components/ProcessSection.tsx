@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
-import ConsultationButton from './ConsultationButton'
 
 const STEPS = [
   {
@@ -540,28 +539,6 @@ export default function ProcessSection() {
           </div>
         ))}
       </div>
-
-      {/* CTA */}
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-        style={{ textAlign: 'center', marginTop: 80, padding: '0 24px' }}
-      >
-        <p style={{
-          fontFamily: "'Inter', sans-serif",
-          fontWeight: 300,
-          fontSize: 10,
-          letterSpacing: '0.35em',
-          color: 'rgba(28,40,24,0.32)',
-          textTransform: 'uppercase',
-          margin: '0 0 28px',
-        }}>
-          End-to-End &nbsp;·&nbsp; Transparent &nbsp;·&nbsp; Hassle-Free
-        </p>
-        <ConsultationButton />
-      </motion.div>
 
       <style>{`
         .process-heading-mobile { display: none; }
