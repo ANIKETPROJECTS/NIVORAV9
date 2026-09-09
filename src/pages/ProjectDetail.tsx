@@ -288,6 +288,7 @@ export default function ProjectDetail() {
         gridTemplateColumns: isMobile ? '1fr' : '38% 62%',
       }}>
         <div style={{
+          height: '100%',
           minHeight: isMobile ? 260 : undefined,
           padding: isMobile ? '1.25rem' : '2.5rem',
           display: 'flex',
@@ -297,7 +298,7 @@ export default function ProjectDetail() {
           background: 'rgba(35,47,32,0.94)',
           borderRight: isMobile ? 'none' : '1px solid rgba(245,240,232,0.18)',
         }}>
-          <FadeIn style={{ width: '100%', maxWidth: 420 }}>
+          <FadeIn direction="none" style={{ width: '100%', maxWidth: 420 }}>
             <div style={{ width: '100%', textAlign: 'center' }}>
               <p style={{ color: '#F0D39D', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
                 {projectBadge}
