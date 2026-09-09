@@ -293,7 +293,7 @@ function TestimonialCard({
 }
 
 export default function Testimonials() {
-  const [projectCount, setProjectCount] = useState<number | null>(null);
+  const [projectCount, setProjectCount] = useState<number | null>(25);
   const [yearsOfExcellence, setYearsOfExcellence] = useState<number | null>(
     null,
   );
@@ -306,7 +306,7 @@ export default function Testimonials() {
     fetchProjects()
       .then((projects) => {
         if (cancelled) return;
-        setProjectCount(projects.length);
+        setProjectCount(Math.max(projects.length, 25));
 
         // Use the project years as a meaningful fallback if the configured
         // SiteSettings value cannot be loaded.
