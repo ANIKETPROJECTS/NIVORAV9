@@ -609,7 +609,7 @@ export default function Testimonials() {
               el.style.transform = "translateY(0)";
             }}
           >
-            Claim My Free Offer Now
+            Book Free Consultation
           </Link>
         </motion.div>
       </section>

@@ -217,7 +217,7 @@ Claim your Free Layout Consultation today and let’s start building your dream.
 
 Add a bold CTA button:
 
-CLAIM MY FREE OFFER NOW
+Book Free Consultation
 
 Services Page Structure
 The Services page must be interactive and have 3 major service categories:

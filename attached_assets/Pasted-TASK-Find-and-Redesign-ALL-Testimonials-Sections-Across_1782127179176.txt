@@ -142,7 +142,7 @@ Page structure:
    Heading: "Ready to transform your space?" — cream
    Subtext: "Claim your Free Layout Consultation today and let us 
    start building your dream."
-   Button: "CLAIM MY FREE OFFER NOW" — background #a18661, 
+   Button: "Book Free Consultation" — background #a18661, 
    text #f5f2ed, padding 16px 40px, no border radius or small 4px only
 
 STEP 6 — Homepage Testimonials Section update:
