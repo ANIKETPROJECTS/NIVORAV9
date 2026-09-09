@@ -280,16 +280,20 @@ export default function ProjectDetail() {
   return (
     <div style={{ background: '#FFFCF7' }} className="pt-20">
 
-      {/* Hero — preserve the complete source image at every viewport size. */}
+      {/* Hero — compact frame with the complete source image always visible. */}
       <div className="relative overflow-hidden" style={{
-        height: 'auto',
+        height: isMobile ? 'auto' : 'min(60vh, 620px)',
+        background: '#e8e0d5',
       }}>
         <img
           src={project.heroImage || project.images[0] || project.coverImage}
           alt={project.name}
-          className="w-full h-auto block"
+          className="w-full h-full block"
           style={{
             filter: 'contrast(1.07) saturate(1.05)',
+            objectFit: 'contain',
+            objectPosition: 'center',
+            ...(isMobile ? { height: 'auto' } : {}),
           }}
         />
         <div className="absolute inset-0" style={{
