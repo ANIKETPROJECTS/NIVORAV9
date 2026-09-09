@@ -299,20 +299,36 @@ export default function ProjectDetail() {
         <div className="absolute inset-0" style={{
           background: 'linear-gradient(to bottom, rgba(45,62,41,0.08) 0%, rgba(45,62,41,0.16) 42%, rgba(20,25,18,0.68) 100%)',
         }} />
-        <div className="absolute bottom-0 left-0 right-0 p-12" style={{ maxWidth: '80rem', margin: '0 auto' }}>
+        <div className="absolute bottom-0 left-0 right-0" style={{
+          maxWidth: '80rem',
+          margin: '0 auto',
+          padding: isMobile ? '1.25rem' : '3rem',
+        }}>
           <FadeIn>
-            <p style={{ color: '#D4B483', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
-              {projectBadge}
-            </p>
-            <h1 className="font-serif font-light mb-2" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400, fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', color: '#f5f0e8', lineHeight: 1.1, letterSpacing: '-0.01em' }}>
-              {project.name}
-            </h1>
-            <p style={{ color: 'rgba(245,240,232,0.7)', letterSpacing: '0.08em' }}>{project.location}</p>
-            {clientName && (
-              <p style={{ color: 'rgba(245,240,232,0.62)', letterSpacing: '0.06em', fontSize: 12, margin: '0.45rem 0 0' }}>
-                Client: {clientName}
+            <div style={{
+              width: 'fit-content',
+              maxWidth: 'min(100%, 720px)',
+              padding: isMobile ? '1rem 1.15rem' : '1.25rem 1.5rem',
+              borderRadius: 10,
+              border: '1px solid rgba(245,240,232,0.28)',
+              background: 'rgba(35,47,32,0.58)',
+              backdropFilter: 'blur(5px)',
+              WebkitBackdropFilter: 'blur(5px)',
+              boxShadow: '0 10px 30px rgba(0,0,0,0.16)',
+            }}>
+              <p style={{ color: '#F0D39D', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
+                {projectBadge}
               </p>
-            )}
+              <h1 className="font-serif font-light mb-2" style={{ fontFamily: "'Playfair Display', serif", fontWeight: 400, fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', color: '#fffaf0', lineHeight: 1.1, letterSpacing: '-0.01em' }}>
+                {project.name}
+              </h1>
+              <p style={{ color: 'rgba(255,250,240,0.88)', letterSpacing: '0.08em' }}>{project.location}</p>
+              {clientName && (
+                <p style={{ color: 'rgba(255,250,240,0.78)', letterSpacing: '0.06em', fontSize: 12, margin: '0.45rem 0 0' }}>
+                  Client: {clientName}
+                </p>
+              )}
+            </div>
           </FadeIn>
         </div>
       </div>
