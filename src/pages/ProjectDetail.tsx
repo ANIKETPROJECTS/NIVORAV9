@@ -286,19 +286,27 @@ export default function ProjectDetail() {
         background: '#e8e0d5',
         display: 'grid',
         gridTemplateColumns: isMobile ? '1fr' : '38% 62%',
+        gridTemplateRows: isMobile ? 'auto auto' : 'minmax(0, 1fr)',
       }}>
         <div style={{
-          height: '100%',
-          minHeight: isMobile ? 260 : undefined,
-          padding: isMobile ? '1.25rem' : '2.5rem',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
+          height: isMobile ? 'auto' : '100%',
+          position: 'relative',
+          alignSelf: 'stretch',
+          minWidth: 0,
+          minHeight: isMobile ? 260 : 0,
+          overflow: 'hidden',
           background: 'rgba(35,47,32,0.94)',
           borderRight: isMobile ? 'none' : '1px solid rgba(245,240,232,0.18)',
         }}>
-          <div style={{ width: '100%', maxWidth: 420, textAlign: 'center' }}>
+          <div style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: isMobile ? 'calc(100% - 2.5rem)' : 'calc(100% - 5rem)',
+            maxWidth: 420,
+            textAlign: 'center',
+          }}>
               <p style={{ color: '#F0D39D', fontSize: 10, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
                 {projectBadge}
               </p>
@@ -314,6 +322,8 @@ export default function ProjectDetail() {
           </div>
         </div>
         <div style={{
+          height: isMobile ? 'auto' : '100%',
+          minWidth: 0,
           minHeight: isMobile ? 260 : undefined,
           background: '#e8e0d5',
           display: 'flex',
