@@ -10,7 +10,7 @@ import hospitalityCover from '../assets/services/hospitality-interiors-cover.jpg
 import architectureCover from '../assets/services/architecture-space-planning-cover.jpg'
 import visualizationCover from '../assets/services/2d-3d-visualization-cover.jpg'
 import developerCover from '../assets/services/developer-solutions-cover.jpg'
-import renovationCover from '../assets/services/renovation-makeovers-cover.jpg'
+import renovationCover from '../../attached_assets/IMG_2825.JPG_1788963108445.jpeg'
 
 const FALLBACK_SERVICE_CARDS = [
   {
