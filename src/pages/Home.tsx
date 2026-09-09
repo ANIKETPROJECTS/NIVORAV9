@@ -491,11 +491,13 @@ function CompareSlider({
   beforeLabel = 'Before', afterLabel = 'After',
   autoPlayKey = 0,
   onDragChange,
+  onUserInteract,
 }: {
   beforeImg: string; afterImg: string; title: string;
   beforeLabel?: string; afterLabel?: string;
   autoPlayKey?: number;
   onDragChange?: (isDragging: boolean) => void;
+  onUserInteract?: () => void;
 }) {
   const [pos, setPos] = useState(50)
   const [transitionMs, setTransitionMs] = useState(0)
@@ -506,6 +508,7 @@ function CompareSlider({
   const mountedRef = useRef(true)
   const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const onDragChangeRef = useRef(onDragChange)
+  const onUserInteractRef = useRef(onUserInteract)
   const [handleScale, setHandleScale] = useState(1)
   const [isDragging, setIsDragging] = useState(false)
   const pendingClientXRef = useRef<number | null>(null)
@@ -513,7 +516,10 @@ function CompareSlider({
   const [beforeHover, setBeforeHover] = useState(false)
   const [afterHover, setAfterHover] = useState(false)
 
-  useEffect(() => { onDragChangeRef.current = onDragChange }, [onDragChange])
+  useEffect(() => {
+    onDragChangeRef.current = onDragChange
+    onUserInteractRef.current = onUserInteract
+  }, [onDragChange, onUserInteract])
 
   useEffect(() => {
     mountedRef.current = true
@@ -611,6 +617,7 @@ function CompareSlider({
 
   const startDrag = (clientX: number) => {
     draggingRef.current = true
+    onUserInteractRef.current?.()
     onDragChangeRef.current?.(true)
     cancelAnim()
     setHandleScale(1.15)
@@ -834,6 +841,7 @@ function TransformationCarousel() {
   const cardsPerPageRef = useRef(cardsPerPage)
   const currentPageRef = useRef(currentPage)
   const autoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const autoPausedRef = useRef(false)
   const draggingSetRef = useRef<Set<number>>(new Set())
   const mountedRef = useRef(true)
   const sectionRef = useRef<HTMLDivElement>(null)
@@ -850,10 +858,12 @@ function TransformationCarousel() {
   }
 
   const scheduleAdvance = useCallback((fromPage: number, pageSize: number) => {
+    if (autoPausedRef.current) return
     clearAutoTimer()
     const delay = (pageSize - 1) * STAGGER_MS + REVEAL_MS + PAUSE_AFTER_MS
     autoTimerRef.current = setTimeout(() => {
       if (!mountedRef.current) return
+      if (autoPausedRef.current) return
       if (draggingSetRef.current.size > 0) {
         scheduleAdvance(fromPage, pageSize)
         return
@@ -863,7 +873,7 @@ function TransformationCarousel() {
       const nextPage = (fromPage + 1) % pc
       setSliding(true)
       setTimeout(() => {
-        if (!mountedRef.current) return
+        if (!mountedRef.current || autoPausedRef.current) return
         setCurrentPage(nextPage)
         currentPageRef.current = nextPage
         const start = nextPage * cpp
@@ -875,13 +885,14 @@ function TransformationCarousel() {
         })
         setTimeout(() => {
           if (mountedRef.current) setSliding(false)
-          scheduleAdvance(nextPage, end - start)
+          if (!autoPausedRef.current) scheduleAdvance(nextPage, end - start)
         }, 520)
       }, 0)
     }, delay)
   }, [])
 
   const goToPage = useCallback((page: number) => {
+    autoPausedRef.current = true
     clearAutoTimer()
     const cpp = cardsPerPageRef.current
     const pc = Math.ceil(TOTAL / cpp)
@@ -985,6 +996,10 @@ function TransformationCarousel() {
           afterLabel={t.afterLabel}
           autoPlayKey={playKeys[globalIndex]}
           onDragChange={(d) => handleDragChange(globalIndex, d)}
+          onUserInteract={() => {
+            autoPausedRef.current = true
+            clearAutoTimer()
+          }}
         />
         <div style={{ padding: '1.5rem 1.75rem 1.75rem', borderTop: '1px solid #F5F1EA' }}>
           <h3 style={{
